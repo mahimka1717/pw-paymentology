@@ -31,7 +31,7 @@ const pillars: { key: keyof Score; label: string }[] = [
   { key: 'momentum', label: 'Momentum' },
 ];
 
-export function ResultScreen({ outcome, style, normalized, totalScore, trackName, onRestart }: Props) {
+export function ResultScreen({ outcome, style, totalScore, trackName, onRestart }: Props) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full space-y-8">

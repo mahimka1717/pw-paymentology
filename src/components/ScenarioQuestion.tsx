@@ -9,7 +9,7 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, selectedOption, showFeedback, onChoose, onNext }: Props) {
+export function ScenarioQuestion({ scenario, selectedOption, onChoose }: Props) {
   return (
     <div className="flex flex-col h-full rounded-2xl p-6" style={{ background: 'linear-gradient(to right, #1e3a8a, #0a0a0a)' }}>
       {/* Decorative image */}

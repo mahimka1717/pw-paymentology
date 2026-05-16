@@ -14,7 +14,6 @@ const pillars: { key: keyof Score; label: string }[] = [
 ];
 
 const MAX_ABS = 12; // max possible absolute value across all tracks
-const CIRCLE_PCT = 50 / MAX_ABS; // percentage of half-bar that the circle occupies (treat circle as ~1 unit)
 
 export function ScoreBars({ totalScore, lastDelta }: Props) {
   return (
