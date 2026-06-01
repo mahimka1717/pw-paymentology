@@ -19,9 +19,9 @@ const outcomeEmoji: Record<Outcome, string> = {
 };
 
 const styleDescriptions: Record<Style, string> = {
-  'Consistent Aggressive': 'You consistently chose the boldest options, pushing for speed and growth at every turn.',
-  'Consistent Cautious': 'You took a measured, careful approach — preferring control and trust over rapid moves.',
-  'Situational': 'You adapted your strategy to each scenario, balancing aggression with caution.',
+  'Consistent Aggressive': 'You backed yourself early and kept pushing. The fact that trust and growth moved together under that kind of pace says something - you have good instincts for knowing when the model can take the pressure.',
+  'Consistent Cautious': 'You earned this the patient way. Every move was considered before it was made, and the outcome reflects that discipline. Where others hoped the foundations would hold, you made sure they would.',
+  'Situational': 'You knew which moments to push and which to protect. Not every opportunity was worth chasing, and you seemed to know the difference. That kind of read is harder to teach than most people admit.',
 };
 
 const pillars: { key: keyof Score; label: string }[] = [
