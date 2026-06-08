@@ -16,10 +16,20 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'fade-in-x': {
+          '0%': { opacity: '0', transform: 'translateX(8px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'spin-once': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(180deg)' },
+        },
       },
       animation: {
         'score-pop': 'score-pop 1.2s ease-out forwards',
         'fade-in': 'fade-in 0.3s ease-out',
+        'fade-in-x': 'fade-in-x 0.25s ease-out',
+        'spin-once': 'spin-once 0.5s ease-in-out',
       },
     },
   },

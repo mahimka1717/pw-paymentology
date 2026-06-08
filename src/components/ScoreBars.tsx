@@ -3,7 +3,7 @@ import { Score } from '../data/tracks';
 
 interface Props {
   totalScore: Score;
-  lastDelta: Score | null;
+  lastDelta?: Score | null;
 }
 
 const pillars: { key: keyof Score; label: string }[] = [
@@ -17,75 +17,68 @@ const MAX_ABS = 12; // max possible absolute value across all tracks
 
 export function ScoreBars({ totalScore, lastDelta }: Props) {
   return (
-    <div className="flex gap-[2%] items-center justify-between py-4 w-full backdrop-blur">
+    <div className="flex items-center justify-between w-full" style={{ gap: '12px' }}>
       {pillars.map(({ key, label }) => {
         const Icon = scoreIcons[key];
-        const value = totalScore[key];
+        const rawValue = Number(totalScore[key]);
+        const value = Number.isFinite(rawValue)
+          ? Math.max(-MAX_ABS, Math.min(MAX_ABS, rawValue))
+          : 0;
         const delta = lastDelta?.[key] ?? null;
-        // Fill percentage of the half-bar with minimum so small values are visible
-        const rawPct = Math.abs(value) / MAX_ABS * 50;
-        const fillPct = value !== 0 ? Math.max(rawPct, 10) : 0;
+        const positionPct = ((value + MAX_ABS) / (MAX_ABS * 2)) * 100;
+        const deltaColor = delta !== null && delta > 0 ? '#AAFF6E' : '#FFA0E6';
 
         return (
-          <div key={key} className="flex flex-col items-center flex-1 gap-1">
-            {/* Bar with centered circle */}
-            <div className="relative w-full flex items-center">
-              {/* Bar track — gray background, px-4 reserves space for numbers */}
-              <div className="relative flex-1 h-6 rounded-full bg-gray-200 px-4">
-                {/* Colored fill bar */}
-                {value !== 0 && (
-                  <div
-                    className="absolute top-0 h-full transition-all duration-700 ease-out"
-                    style={value > 0
-                      ? {
-                          left: '50%',
-                          width: `${fillPct}%`,
-                          borderRadius: '0 9999px 9999px 0',
-                          background: 'linear-gradient(to right, #fed7aa, #f97316)',
-                        }
-                      : {
-                          right: '50%',
-                          width: `${fillPct}%`,
-                          borderRadius: '9999px 0 0 9999px',
-                          background: 'linear-gradient(to left, #e9d5ff, #8b5cf6)',
-                        }
-                    }
-                  />
-                )}
-
-                {/* Value label at the edge of the fill bar */}
-                {value !== 0 && (
-                  <span
-                    className="absolute top-1/2 -translate-y-1/2 text-[10px] font-bold font-mono text-black leading-none z-20"
-                    style={value > 0
-                      ? { left: `calc(50% + ${fillPct}% + 5px)` }
-                      : { right: `calc(50% + ${fillPct}% + 5px)` }
-                    }
-                  >
-                    {value}
-                  </span>
-                )}
-
-                {/* Center circle with icon */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white border-2 border-indigo-950 flex items-center justify-center z-10">
-                  <Icon className="w-3.5 h-3.5" />
-                </div>
-              </div>
-
-              {/* Delta animation — centered above the circle */}
+          <div key={key} className="flex flex-col items-center flex-1 gap-1.5 min-w-0">
+            <div
+              className="relative w-full"
+              style={{
+                height: '40px',
+                borderRadius: '20px',
+                background: 'linear-gradient(to right, #FFA0E6, #A586FF, #AAFF6E)',
+              }}
+            >
               {delta !== null && delta !== 0 && (
                 <span
-                  key={`${key}-${Date.now()}`}
-                  className="absolute left-1/2 -translate-x-1/2 -top-4 text-[11px] font-bold animate-score-pop z-30"
-                  style={{ color: delta > 0 ? '#f97316' : '#8b5cf6' }}
+                  key={`${key}-${value}`}
+                  className="score-delta-pop absolute -translate-x-1/2 text-[11px] font-bold leading-none pointer-events-none"
+                  style={{
+                    left: `${positionPct}%`,
+                    bottom: '100%',
+                    marginBottom: '2px',
+                    color: deltaColor,
+                    textShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  }}
                 >
                   {delta > 0 ? `+${delta}` : delta}
                 </span>
               )}
+              <div
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-700 ease-out"
+                style={{ left: `${positionPct}%` }}
+              >
+                <div className="w-[34px] h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
+                  <span
+                    className="grid place-items-center leading-none"
+                    style={key === 'trust' ? { transform: 'translate(1px, 1px)' } : undefined}
+                  >
+                    <Icon className="block" />
+                  </span>
+                </div>
+              </div>
             </div>
-
-            {/* Label centered */}
-            <span className="text-[9px] font-medium text-indigo-950 uppercase tracking-wider">{label}</span>
+            <span
+              className="tracking-[0.04em]"
+              style={{
+                fontFamily: "'PP Monument Normal', sans-serif",
+                fontWeight: 400,
+                fontSize: '10px',
+                lineHeight: '12px',
+                color: '#FFFFFF',
+              }}
+            >
+              {label}
+            </span>
           </div>
         );
       })}

@@ -25,7 +25,7 @@ export interface Scenario {
 export interface Track {
   id: string;
   name: string;
-  intro: string;
+  intro: string[];
   scenarios: Scenario[];
 }
 
@@ -34,7 +34,7 @@ export const tracks: Track[] = [
   {
     id: 'fintech',
     name: 'Fintech',
-    intro: "This is where fintechs break out or burn out. Make the right calls, manage the risk, and turn early momentum into a card business that scales. Do you have what it takes?",
+    intro: ["This is where fintechs break out or burn out. Make the right calls, manage the risk, and turn early momentum into a card business that scales.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -109,7 +109,7 @@ export const tracks: Track[] = [
   {
     id: 'government',
     name: 'Government',
-    intro: "You're running a public payment programme that impacts real lives, with real consequences. Make the right calls, balance speed with control, and build a system people can rely on. Do you have what it takes?",
+    intro: ["You're running a public payment programme that impacts real lives, with real consequences. Make the right calls, balance speed with control, and build a system people can rely on.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -184,7 +184,7 @@ export const tracks: Track[] = [
   {
     id: 'telco',
     name: 'Telco',
-    intro: "You already have what most financial players want: reach, frequency, and a place in customers' everyday lives. But utility alone is not enough. Make the right calls, expand beyond the wallet, and turn everyday usage into a financial ecosystem people trust and stick with. Do you have what it takes?",
+    intro: ["You already have what most financial players want: reach, frequency, and a place in customers' everyday lives. But utility alone is not enough. Make the right calls, expand beyond the wallet, and turn everyday usage into a financial ecosystem people trust and stick with.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -259,7 +259,7 @@ export const tracks: Track[] = [
   {
     id: 'remittance',
     name: 'Remittance',
-    intro: "You've built a service people trust with money that matters. But in remittance, reliability is only the starting point. Make the right calls, defend your relevance, and turn a trusted transfer service into something harder to replace. Do you have what it takes?",
+    intro: ["You've built a service people trust with money that matters. But in remittance, reliability is only the starting point. Make the right calls, defend your relevance, and turn a trusted transfer service into something harder to replace.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -334,7 +334,7 @@ export const tracks: Track[] = [
   {
     id: 'digital-banks',
     name: 'Digital Banks',
-    intro: "You've built a digital bank people like. Now you need to become the one they rely on. Make the right calls, drive deeper usage, and turn a polished product into the customer's primary financial home. Do you have what it takes?",
+    intro: ["You've built a digital bank people like. Now you need to become the one they rely on. Make the right calls, drive deeper usage, and turn a polished product into the customer's primary financial home.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -409,7 +409,7 @@ export const tracks: Track[] = [
   {
     id: 'banks',
     name: 'Banks',
-    intro: "You're running a card business with real scale, real trust, and a lot worth protecting. But the market is moving faster than the bank, and legacy complexity is getting harder to hide. Make the right calls, modernise what matters, and prove this business can still compete. Do you have what it takes?",
+    intro: ["You're running a card business with real scale, real trust, and a lot worth protecting. But the market is moving faster than the bank, and legacy complexity is getting harder to hide. Make the right calls, modernise what matters, and prove this business can still compete.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,

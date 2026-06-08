@@ -1,28 +1,56 @@
+import { useEffect, useRef } from 'react';
+
 interface Props {
   feedback: string;
-  optionTitle: string;
   onClose: () => void;
 }
 
-export function FeedbackPopup({ feedback, optionTitle, onClose }: Props) {
+export function FeedbackPopup({ feedback, onClose }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(onClose, 15000);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
+    <div
+      ref={ref}
+      className="animate-fade-in"
+      style={{ position: 'relative', zIndex: 40 }}
+    >
       <div
-        className="bg-gray-900 border border-indigo-500/30 rounded-xl p-6 max-w-md mx-4 shadow-2xl animate-fade-in"
-        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '550px',
+          background: 'linear-gradient(to right, #3E4D9C, #D2AFFE)',
+          padding: '40px 48px 40px 36px',
+          borderRadius: '16px',
+          boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
+          position: 'relative',
+        }}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">📊</span>
-          <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Instant Feedback</h3>
-        </div>
-        <p className="text-xs text-gray-500 mb-2">You chose: <span className="text-white font-medium">{optionTitle}</span></p>
-        <p className="text-sm text-gray-300 leading-relaxed">{feedback}</p>
         <button
           onClick={onClose}
-          className="mt-4 px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors w-full"
+          className="close-btn-spin"
+          style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
         >
-          Continue
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
+          </svg>
         </button>
+        <p
+          style={{ fontFamily: "'PP Monument Wide', sans-serif", fontWeight: 900, fontSize: '25px', lineHeight: '30px', color: '#FFFFFF' }}
+        >{feedback}</p>
       </div>
     </div>
   );
