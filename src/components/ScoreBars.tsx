@@ -26,6 +26,8 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
           : 0;
         const delta = lastDelta?.[key] ?? null;
         const positionPct = ((value + MAX_ABS) / (MAX_ABS * 2)) * 100;
+        const prevValue = delta !== null ? Math.max(-MAX_ABS, Math.min(MAX_ABS, value - delta)) : value;
+        const prevPositionPct = ((prevValue + MAX_ABS) / (MAX_ABS * 2)) * 100;
         const deltaColor = delta !== null && delta > 0 ? '#AAFF6E' : '#FFA0E6';
 
         return (
@@ -38,32 +40,45 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                 background: 'linear-gradient(to right, #FFA0E6, #A586FF, #AAFF6E)',
               }}
             >
-              {delta !== null && delta !== 0 && (
-                <span
-                  key={`${key}-${value}`}
-                  className="score-delta-pop absolute -translate-x-1/2 text-[11px] font-bold leading-none pointer-events-none"
-                  style={{
-                    left: `${positionPct}%`,
-                    bottom: '100%',
-                    marginBottom: '2px',
-                    color: deltaColor,
-                    textShadow: '0 1px 3px rgba(0,0,0,0.4)',
-                  }}
-                >
-                  {delta > 0 ? `+${delta}` : delta}
-                </span>
-              )}
               <div
                 className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-700 ease-out"
                 style={{ left: `${positionPct}%` }}
               >
-                <div className="w-[34px] h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
+                {delta !== null && delta !== 0 && (
                   <span
-                    className="grid place-items-center leading-none"
-                    style={key === 'trust' ? { transform: 'translate(1px, 1px)' } : undefined}
+                    key={`${key}-${value}`}
+                    className="score-delta-pop absolute left-1/2 -translate-x-1/2 text-[11px] font-bold leading-none pointer-events-none"
+                    style={{
+                      bottom: '100%',
+                      marginBottom: '2px',
+                      color: deltaColor,
+                      textShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                    }}
                   >
-                    <Icon className="block" />
+                    {delta > 0 ? `+${delta}` : delta}
                   </span>
+                )}
+                <div className="relative w-[34px] h-[34px]">
+                  {delta !== null && delta !== 0 &&
+                    Array.from({ length: Math.abs(delta) }).map((_, i) => (
+                      <div
+                        key={`ripple-${key}-${value}-${i}`}
+                        className="score-ripple absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full pointer-events-none"
+                        style={{
+                          backgroundColor: delta > 0 ? '#AAFF6E' : '#FFA0E6',
+                          animationDelay: `${i * 0.42}s`,
+                        }}
+                      />
+                    ))
+                  }
+                  <div className="relative z-10 w-[34px] h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
+                    <span
+                      className="grid place-items-center leading-none"
+                      style={key === 'trust' ? { transform: 'translate(1px, 1px)' } : undefined}
+                    >
+                      <Icon className="block" />
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

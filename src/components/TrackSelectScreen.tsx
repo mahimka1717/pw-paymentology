@@ -32,9 +32,9 @@ export function TrackSelectScreen({ onSelect }: Props) {
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center px-4 py-12">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <div className="w-full lg:w-1/2">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center px-6 pt-0 pb-10">
+      <div className="mx-auto flex w-full max-w-[83.33vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
+        <div className="w-full lg:w-1/2 min-h-[750px]">
           <h1 className="text-[30px] leading-[36px] font-bold mb-[50px] text-left uppercase">
             Issuer's Playbook
           </h1>
@@ -80,7 +80,7 @@ export function TrackSelectScreen({ onSelect }: Props) {
 
         <div className="w-full lg:w-1/2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-            {tracks.map((track) => {
+            {/* {tracks.map((track) => {
               const Icon = trackIcons[track.id];
               return (
                 <button
@@ -96,7 +96,7 @@ export function TrackSelectScreen({ onSelect }: Props) {
                   </h3>
                 </button>
               );
-            })}
+            })} */}
           </div>
         </div>
       </div>

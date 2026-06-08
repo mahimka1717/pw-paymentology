@@ -80,7 +80,20 @@ h6 {
 }
 
 .score-delta-pop {
-  animation: score-delta-pop 1s ease-out forwards;
+  animation: score-delta-pop 2s ease-out forwards;
+}
+
+@keyframes score-ripple {
+  0%   { width: 34px; height: 34px; opacity: 1; }
+  50%  { width: 57px; height: 57px; opacity: 1; }
+  100% { width: 80px; height: 80px; opacity: 0; }
+}
+
+.score-ripple {
+  width: 34px;
+  height: 34px;
+  opacity: 0;
+  animation: score-ripple 1.2s linear forwards;
 }
 
 @keyframes spin-once {

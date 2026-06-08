@@ -71,7 +71,7 @@ export function GameScreen({
 
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
-      <div className="w-full max-w-7xl">
+      <div className="w-full max-w-[83.33vw]">
         <div className="flex gap-6 items-stretch h-[750px]">
 
           {/* Left col — 4/12 */}
@@ -177,11 +177,13 @@ export function GameScreen({
                       style={{
                         fontFamily: "'PP Monument Wide', sans-serif",
                         fontWeight: 400,
-                        fontSize: '25px',
-                        lineHeight: '30px',
+                        fontSize: '20px',
+                        lineHeight: '24px',
                         color: '#FFFFFF',
                         background: '#15154A',
-                        width: '340px',
+                        width: 'auto',
+                        paddingLeft: '30px',
+                        paddingRight: '30px',
                         height: '52px',
                         borderRadius: '26px',
                         border: 'none',

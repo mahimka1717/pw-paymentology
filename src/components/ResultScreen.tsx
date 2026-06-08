@@ -60,8 +60,8 @@ function StyleIcon({ style }: { style: Style }) {
 
 export function ResultScreen({ outcome, style, onRestart }: Props) {
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-4 pt-0 pb-12">
-      <div className="w-full max-w-7xl flex flex-col gap-0">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
+      <div className="w-full max-w-[83.33vw] flex flex-col gap-0">
 
         {/* Part 1 — Outcome box */}
         <div className="flex rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)' }}>
