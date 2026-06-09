@@ -26,10 +26,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     <div className="h-full flex flex-col rounded-[32px] pt-[46px] pr-[60px] pb-[20px] pl-[36px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: 'linear-gradient(to bottom, #FFFFFF, #A3A3EC, #E4C3FF)' }}>
       {/* Scenario header — single line */}
       <div className="mb-[50px] flex items-baseline flex-wrap gap-[50px]">
-        <h2 className="whitespace-nowrap uppercase" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, fontSize: '20px', lineHeight: '24px' }}>
+        <h2 className="whitespace-nowrap uppercase" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, fontSize: '20px', lineHeight: '24px', opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
-        <p className="mb-[0]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, fontSize: '15px', lineHeight: '18px' }}>
+        <p className="mb-[0]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, fontSize: '15px', lineHeight: '18px', opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
           {scenario.description}
         </p>
       </div>
@@ -47,6 +47,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
               disabled={selectedOption !== null && selectedOption !== index}
               accentColor={accentColor}
               accentTextColor={accentTextColor}
+              animDelay={200 + index * 100}
               onSelect={() => {
                 if (selectedOption === null) {
                   onChoose(index, option.score, option.aggressive ?? false);

@@ -26,8 +26,6 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
           : 0;
         const delta = lastDelta?.[key] ?? null;
         const positionPct = ((value + MAX_ABS) / (MAX_ABS * 2)) * 100;
-        const prevValue = delta !== null ? Math.max(-MAX_ABS, Math.min(MAX_ABS, value - delta)) : value;
-        const prevPositionPct = ((prevValue + MAX_ABS) / (MAX_ABS * 2)) * 100;
         const deltaColor = delta !== null && delta > 0 ? '#AAFF6E' : '#FFA0E6';
 
         return (

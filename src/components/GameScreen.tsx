@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Track, Scenario, Score } from '../data/tracks';
 import { ScoreBars } from './ScoreBars';
 import { TrackSidebar } from './TrackSidebar';
 import { ScenarioQuestion } from './ScenarioQuestion';
 import { DidYouKnowMascot } from './DidYouKnowMascot';
 import { trackTheme } from '../data/theme';
+import type { Phase } from './App';
 
 interface Props {
+  phase: Phase;
   track: Track;
   scenario: Scenario;
   scenarioIndex: number;
@@ -18,7 +21,20 @@ interface Props {
   onNext: () => void;
 }
 
+function cascade(phase: Phase, index: number, total = 3): CSSProperties {
+  if (phase === 'idle') return {};
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
+  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+}
+
+function cardAnim(phase: Phase, delay: number): CSSProperties {
+  if (phase === 'idle') return {};
+  if (phase === 'enter') return { opacity: 0, animation: `card-in 600ms cubic-bezier(0.22,1,0.36,1) ${delay}ms forwards` };
+  return { animation: `card-out 400ms ease forwards` };
+}
+
 export function GameScreen({
+  phase,
   track,
   scenario,
   scenarioIndex,
@@ -32,6 +48,7 @@ export function GameScreen({
   const [showFeedback, setShowFeedback] = useState(false);
   const [showInsight, setShowInsight] = useState(false);
   const [isClosingInsight, setIsClosingInsight] = useState(false);
+  const [buttonsExiting, setButtonsExiting] = useState(false);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
 
@@ -62,9 +79,13 @@ export function GameScreen({
   };
 
   const handleNext = () => {
-    setShowFeedback(false);
-    setShowInsight(false);
-    onNext();
+    setButtonsExiting(true);
+    setTimeout(() => {
+      setButtonsExiting(false);
+      setShowFeedback(false);
+      setShowInsight(false);
+      onNext();
+    }, 250);
   };
 
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
@@ -76,14 +97,16 @@ export function GameScreen({
 
           {/* Left col — 4/12 */}
           <aside className="w-4/12 flex-shrink-0">
-            <TrackSidebar track={track} />
+            <TrackSidebar phase={phase} track={track} />
           </aside>
 
           {/* Right col — 8/12 */}
           <main className="flex-1 flex flex-col">
-            <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
+            <div style={cascade(phase, 1)}>
+              <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
+            </div>
             <div className="mt-[90px]" />
-            <div className="flex-1 min-h-0">
+            <div className="flex-1 min-h-0" style={cardAnim(phase, 300)}>
               <ScenarioQuestion
                 key={scenario.id}
                 scenario={scenario}
@@ -104,7 +127,10 @@ export function GameScreen({
               {selectedOption !== null && (
                 <>
                   {/* Did you know mascot + button */}
-                  <div className="relative">
+                  <div className="relative" style={buttonsExiting
+                    ? { animation: 'cascade-out 250ms ease forwards' }
+                    : { opacity: 0, animation: 'cascade-in 500ms ease forwards' }
+                  }>
                     {showInsight && (
                       <>
                         {/* Mascot */}
@@ -173,7 +199,7 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="hover:opacity-90 transition-opacity"
+                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A]"
                       style={{
                         fontFamily: "'PP Monument Wide', sans-serif",
                         fontWeight: 400,
@@ -197,7 +223,7 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="hover:opacity-90 transition-opacity"
+                    className="transition-colors hover:!bg-white"
                     style={{
                       fontFamily: "'PP Monument Wide', sans-serif",
                       fontWeight: 900,
@@ -210,6 +236,9 @@ export function GameScreen({
                       borderRadius: '26px',
                       border: 'none',
                       cursor: 'pointer',
+                      ...(buttonsExiting
+                        ? { animation: 'cascade-out 250ms ease forwards' }
+                        : { opacity: 0, animation: 'cascade-in 500ms ease 150ms forwards' }),
                     }}
                   >
                     Next

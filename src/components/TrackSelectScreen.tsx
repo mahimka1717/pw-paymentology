@@ -1,12 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
-import { trackIcons } from '../assets/trackIcons';
+
+import type { Phase } from './App';
+import type { CSSProperties } from 'react';
 
 interface Props {
+  phase: Phase;
   onSelect: (trackId: string) => void;
 }
 
-export function TrackSelectScreen({ onSelect }: Props) {
+function cascade(phase: Phase, index: number, total = 3): CSSProperties {
+  if (phase === 'idle') return {};
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
+  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+}
+
+export function TrackSelectScreen({ phase, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -35,15 +44,15 @@ export function TrackSelectScreen({ onSelect }: Props) {
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center px-6 pt-0 pb-10">
       <div className="mx-auto flex w-full max-w-[83.33vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
         <div className="w-full lg:w-1/2 min-h-[750px]">
-          <h1 className="text-[30px] leading-[36px] font-bold mb-[50px] text-left uppercase">
+          <h1 className="text-[30px] leading-[36px] font-bold mb-[50px] text-left uppercase" style={cascade(phase, 0)}>
             Issuer's Playbook
           </h1>
-          <p className="text-[20px] leading-[28px] text-left mb-[50px]">
+          <p className="text-[20px] leading-[28px] text-left mb-[50px]" style={cascade(phase, 1)}>
             This scenario-based gameplay transforms the complexities of next-generation issuer processing
             into a fast, engaging experience. Choose your track and make pivotal decisions on launch, risk,
             growth, and expansion — every move shapes the outcome.
           </p>
-          <div ref={dropdownRef} className="mt-6 relative w-full max-w-[320px]">
+          <div ref={dropdownRef} className="mt-6 relative w-full max-w-[320px]" style={cascade(phase, 2)}>
             <button
               type="button"
               className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-black outline-none transition-colors"

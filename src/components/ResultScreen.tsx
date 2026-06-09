@@ -1,13 +1,22 @@
+import type { CSSProperties } from 'react';
 import { Score } from '../data/tracks';
 import { outcomeDescriptions, Outcome, Style } from '../data/scoring';
+import type { Phase } from './App';
 
 interface Props {
+  phase: Phase;
   outcome: Outcome;
   style: Style;
   normalized: Score;
   totalScore: Score;
   trackName: string;
   onRestart: () => void;
+}
+
+function cascade(phase: Phase, index: number, total = 3): CSSProperties {
+  if (phase === 'idle') return {};
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
+  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
 }
 
 const outcomeImages: Record<Outcome, string> = {
@@ -58,13 +67,13 @@ function StyleIcon({ style }: { style: Style }) {
   );
 }
 
-export function ResultScreen({ outcome, style, onRestart }: Props) {
+export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
       <div className="w-full max-w-[83.33vw] flex flex-col gap-0">
 
         {/* Part 1 — Outcome box */}
-        <div className="flex rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)' }}>
+        <div className="flex rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
           {/* Left — image */}
           <div className="flex-shrink-0" style={{ width: '42.67%' }}>
             <img
@@ -107,7 +116,7 @@ export function ResultScreen({ outcome, style, onRestart }: Props) {
         </div>
 
         {/* Part 2 — Decision Style card */}
-        <div className="flex justify-end relative" style={{ marginBottom: '-70px' }}>
+        <div className="flex justify-end relative" style={{ marginBottom: '-70px', ...cascade(phase, 1) }}>
           <div
             className="relative"
             style={{
@@ -125,6 +134,11 @@ export function ResultScreen({ outcome, style, onRestart }: Props) {
                 backgroundColor: '#A586FF',
                 top: '20px',
                 left: '-96px',
+                ...(phase === 'enter'
+                  ? { opacity: 0, animation: 'cascade-in 500ms ease 450ms forwards' }
+                  : phase === 'exit'
+                    ? { animation: 'cascade-out 333ms ease forwards' }
+                    : {}),
               }}
             >
               <StyleIcon style={style} />
@@ -177,7 +191,7 @@ export function ResultScreen({ outcome, style, onRestart }: Props) {
         </div>
 
         {/* Restart */}
-        <div className="flex justify-center mt-[28px]" style={{ position: 'relative', zIndex: 10 }}>
+        <div className="flex justify-center mt-[28px]" style={{ position: 'relative', zIndex: 10, ...cascade(phase, 2) }}>
           <button
             onClick={onRestart}
             className="hover:opacity-90 transition-opacity"

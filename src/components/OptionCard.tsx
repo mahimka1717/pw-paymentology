@@ -7,9 +7,10 @@ interface Props {
   accentColor: string;
   accentTextColor: string;
   onSelect: () => void;
+  animDelay?: number;
 }
 
-export function OptionCard({ title, description, selected, disabled, accentColor, accentTextColor, onSelect }: Props) {
+export function OptionCard({ title, description, selected, disabled, accentColor, accentTextColor, onSelect, animDelay = 0 }: Props) {
   return (
     <button
       onClick={onSelect}
@@ -21,7 +22,11 @@ export function OptionCard({ title, description, selected, disabled, accentColor
             ? 'bg-white/50 opacity-50 cursor-not-allowed'
             : 'bg-white hover:shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)] cursor-pointer'
       }`}
-      style={selected ? { background: accentColor } : undefined}
+      style={{
+        ...(selected ? { background: accentColor } : undefined),
+        opacity: 0,
+        animation: `option-card-in 450ms cubic-bezier(0.22,1,0.36,1) ${animDelay}ms forwards`,
+      }}
     >
       <h4
         className="mb-[20px] uppercase"

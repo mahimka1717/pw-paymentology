@@ -149,3 +149,33 @@ h6 {
   animation: slide-in-from-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+@keyframes cascade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cascade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(30px); }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: perspective(800px) rotateX(-8deg) translateY(60px); }
+  to   { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0); }
+}
+
+@keyframes card-out {
+  from { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0); }
+  to   { opacity: 0; transform: perspective(800px) rotateX(8deg) translateY(60px); }
+}
+
+@keyframes text-slide-in {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes option-card-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+

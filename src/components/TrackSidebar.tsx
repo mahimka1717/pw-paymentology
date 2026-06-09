@@ -1,7 +1,9 @@
 import { Track } from '../data/tracks';
-import { tracks } from '../data/tracks';
+import type { Phase } from './App';
+import type { CSSProperties } from 'react';
 
 interface Props {
+  phase: Phase;
   track: Track;
 }
 
@@ -14,27 +16,20 @@ const trackTitleColor: Record<string, string> = {
   banks: '#3E4D9C',
 };
 
-const trackImageById = tracks.reduce<Record<string, string>>((result, item, index) => {
-  result[item.id] = `/img/track${index}.png`;
-  return result;
-}, {});
-
-export function TrackSidebar({ track }: Props) {
+export function TrackSidebar({ phase, track }: Props) {
   const titleColor = trackTitleColor[track.id] ?? '#FFFFFF';
-  const trackImage = trackImageById[track.id];
+
+  const h2Style: CSSProperties = phase === 'enter'
+    ? { color: titleColor, opacity: 0, animation: 'cascade-in 500ms ease forwards' }
+    : phase === 'exit'
+      ? { color: titleColor, animation: 'cascade-out 333ms ease forwards' }
+      : { color: titleColor };
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      <h2 className="w-full text-left text-2xl font-bold uppercase" style={{ color: titleColor }}>
+      <h2 className="w-full text-left text-2xl font-bold uppercase" style={h2Style}>
         {track.name}
       </h2>
-      {trackImage && (
-        <img
-          src={trackImage}
-          alt={`${track.name} track`}
-          className="absolute right-0 bottom-[80px] h-auto w-[92%] max-w-[430px] object-contain"
-        />
-      )}
     </div>
   );
 }
