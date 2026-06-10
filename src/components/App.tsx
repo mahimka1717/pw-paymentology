@@ -92,7 +92,7 @@ export default function App() {
       <TopBar />
 
       {/* City background — behind all screens */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+      <div className="fixed inset-0 hidden md:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
         <div
           className="city transition-all duration-700 ease-in-out"
           style={{
@@ -113,7 +113,7 @@ export default function App() {
       </div>
 
       {/* Building background — behind all screens, visible on intro */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+      <div className="fixed inset-0 hidden md:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
         <div
           className="building ease-in-out"
           style={{

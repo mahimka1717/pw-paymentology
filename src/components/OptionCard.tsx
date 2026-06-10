@@ -15,7 +15,7 @@ export function OptionCard({ title, description, selected, disabled, accentColor
     <button
       onClick={onSelect}
       disabled={disabled}
-      className={`relative flex min-h-[174px] flex-col text-left py-[25px] px-[20px] rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-all duration-200 ${
+      className={`relative flex min-h-[80px] md:min-h-[174px] flex-col text-left py-[14px] px-[14px] md:py-[25px] md:px-[20px] rounded-[12px] md:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-all duration-200 ${
         selected
           ? 'shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)]'
           : disabled
@@ -29,8 +29,8 @@ export function OptionCard({ title, description, selected, disabled, accentColor
       }}
     >
       <h4
-        className="mb-[20px] uppercase"
-        style={{ fontFamily: "'PP Monument Extended'", fontWeight: 900, fontSize: '15px', lineHeight: '18px', color: selected ? accentTextColor : '#111827' }}
+        className="mb-[10px] md:mb-[20px] uppercase text-[14px] leading-[17px] md:text-[15px] md:leading-[18px]"
+        style={{ fontFamily: "'PP Monument Extended'", fontWeight: 900, color: selected ? accentTextColor : '#111827' }}
       >
         {title}
       </h4>

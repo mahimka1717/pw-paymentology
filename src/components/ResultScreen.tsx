@@ -69,45 +69,41 @@ function StyleIcon({ style }: { style: Style }) {
 
 export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
-      <div className="w-full max-w-[83.33vw] flex flex-col gap-0">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10">
+      <div className="w-full max-w-[83.33vw] flex flex-col gap-[16px] md:gap-0">
 
         {/* Part 1 — Outcome box */}
-        <div className="flex rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
+        <div className="flex flex-col md:flex-row rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
           {/* Left — image */}
-          <div className="flex-shrink-0" style={{ width: '42.67%' }}>
+          <div className="flex-shrink-0 w-full md:w-[42.67%]">
             <img
               src={outcomeImages[outcome]}
               alt={outcome}
-              className="w-full h-full object-cover"
+              className="w-full h-[180px] md:h-full object-cover"
             />
           </div>
           {/* Right — text */}
           <div
-            className="flex flex-col justify-center text-white"
+            className="flex flex-col justify-center text-white p-[24px_20px_30px_20px] md:p-[110px_120px_200px_60px]"
             style={{
               flex: 1,
               background: 'linear-gradient(to right, #3D4B98, #000000)',
-              padding: '110px 120px 200px 60px',
             }}
           >
             <h1
+              className="text-[20px] leading-[26px] md:text-[40px] md:leading-[48px]"
               style={{
                 fontFamily: "'PP Monument Extended'",
                 fontWeight: 900,
-                fontSize: '40px',
-                lineHeight: '48px',
               }}
             >
               {outcome}
             </h1>
             <p
+              className="text-[13px] leading-[17px] md:text-[20px] md:leading-[24px] mt-[16px] md:mt-[70px]"
               style={{
-                marginTop: '70px',
                 fontFamily: "'PP Monument Wide'",
                 fontWeight: 400,
-                fontSize: '20px',
-                lineHeight: '24px',
               }}
             >
               {outcomeDescriptions[outcome]}
@@ -116,17 +112,13 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
         </div>
 
         {/* Part 2 — Decision Style card */}
-        <div className="flex justify-end relative" style={{ marginBottom: '-70px', ...cascade(phase, 1) }}>
+        <div className="flex justify-end relative mb-0 md:mb-[-70px]" style={cascade(phase, 1)}>
           <div
-            className="relative"
-            style={{
-              width: '720px',
-              transform: 'translate(50px, -70px)',
-            }}
+            className="relative w-full md:w-[720px] translate-y-0 md:translate-x-[50px] md:-translate-y-[70px]"
           >
-            {/* Style icon circle */}
+            {/* Style icon circle — desktop */}
             <div
-              className="absolute flex items-center justify-center"
+              className="hidden md:flex absolute items-center justify-center"
               style={{
                 width: '120px',
                 height: '120px',
@@ -146,14 +138,29 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
 
             {/* Card */}
             <div
-              className="text-[#15154A]"
+              className="text-[#15154A] p-[20px] md:p-[30px_50px]"
               style={{
                 background: '#FFFFFF',
                 borderRadius: '16px',
                 boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
-                padding: '30px 50px 30px 50px',
               }}
             >
+              {/* Style icon — mobile */}
+              <div
+                className="flex md:hidden absolute items-center justify-center"
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  backgroundColor: '#A586FF',
+                  top: '-10px',
+                  right: '-10px',
+                }}
+              >
+                <div style={{ transform: 'scale(0.6)' }}>
+                  <StyleIcon style={style} />
+                </div>
+              </div>
               <p
                 style={{
                   fontFamily: "'PP Monument Wide'",
@@ -165,23 +172,19 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 Your Decision Style
               </p>
               <h2
+                className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] mt-[16px] md:mt-[29px]"
                 style={{
-                  marginTop: '29px',
                   fontFamily: "'PP Monument Extended'",
                   fontWeight: 900,
-                  fontSize: '30px',
-                  lineHeight: '36px',
                 }}
               >
                 {style}
               </h2>
               <p
+                className="text-[13px] leading-[16px] md:text-[15px] md:leading-[18px] mt-[20px] md:mt-[40px]"
                 style={{
-                  marginTop: '40px',
                   fontFamily: "'PP Monument Wide'",
                   fontWeight: 400,
-                  fontSize: '15px',
-                  lineHeight: '18px',
                 }}
               >
                 {styleDescriptions[style]}
@@ -191,19 +194,16 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
         </div>
 
         {/* Restart */}
-        <div className="flex justify-center mt-[28px]" style={{ position: 'relative', zIndex: 10, ...cascade(phase, 2) }}>
+        <div className="flex justify-center mt-0 md:mt-[28px]" style={{ position: 'relative', zIndex: 10, ...cascade(phase, 2) }}>
           <button
             onClick={onRestart}
-            className="hover:opacity-90 transition-opacity"
+            className="hover:opacity-90 transition-opacity h-[42px] md:h-[52px] w-[160px] md:w-[200px] text-[14px] md:text-[20px]"
             style={{
               fontFamily: "'PP Monument Wide', sans-serif",
               fontWeight: 900,
-              fontSize: '20px',
               lineHeight: '24px',
               color: '#FFFFFF',
               background: '#3D4B98',
-              width: '200px',
-              height: '52px',
               borderRadius: '26px',
               border: 'none',
               cursor: 'pointer',

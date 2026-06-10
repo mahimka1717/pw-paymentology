@@ -31,13 +31,12 @@ export function FeedbackPopup({ feedback, onClose }: Props) {
     >
       <div
         style={{
-          width: '550px',
           background: 'linear-gradient(to right, #3E4D9C, #D2AFFE)',
-          padding: '40px 48px 40px 36px',
           borderRadius: '16px',
           boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
           position: 'relative',
         }}
+        className="w-[calc(100vw-48px)] md:w-[550px] p-[16px] pr-[44px] md:p-[40px_48px_40px_36px]"
       >
         <button
           onClick={onClose}
@@ -49,7 +48,8 @@ export function FeedbackPopup({ feedback, onClose }: Props) {
           </svg>
         </button>
         <p
-          style={{ fontFamily: "'PP Monument Wide', sans-serif", fontWeight: 900, fontSize: '25px', lineHeight: '30px', color: '#FFFFFF' }}
+          className="text-[14px] leading-[18px] md:text-[25px] md:leading-[30px]"
+          style={{ fontFamily: "'PP Monument Wide', sans-serif", fontWeight: 900, color: '#FFFFFF' }}
         >{feedback}</p>
       </div>
     </div>
