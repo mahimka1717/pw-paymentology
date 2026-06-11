@@ -71,9 +71,12 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                   <div className="relative z-10 w-[26px] h-[26px] md:w-[34px] md:h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
                     <span
                       className="grid place-items-center leading-none"
-                      style={key === 'trust' ? { transform: 'translate(1px, 1px)' } : undefined}
+                      style={{
+                        transformOrigin: 'center',
+                        transform: key === 'trust' ? 'translate(1px, 1px)' : undefined,
+                      }}
                     >
-                      <Icon className="block" />
+                      <Icon className="block w-[15px] h-[15px] lg:w-5 lg:h-5" />
                     </span>
                   </div>
                 </div>

@@ -23,26 +23,26 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     return { right: 'calc((100% - 40px) / 3 - 15px)' };
   };
   return (
-    <div className="h-full flex flex-col rounded-[20px] md:rounded-[32px] pt-[20px] pr-[16px] pb-[20px] pl-[16px] md:pt-[46px] md:pr-[60px] md:pb-[20px] md:pl-[36px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: 'linear-gradient(to bottom, #FFFFFF, #A3A3EC, #E4C3FF)' }}>
+    <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] pt-[20px] pr-[16px] pb-[20px] pl-[16px] md:pt-[40px] md:pr-[32px] md:pb-[40px] md:pl-[32px] lg:pt-[46px] lg:pr-[60px] lg:pb-[20px] lg:pl-[36px] min-[1024px]:max-[1260px]:pr-[36px] min-[1024px]:max-[1260px]:pl-[36px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: 'linear-gradient(to bottom, #FFFFFF, #A3A3EC, #E4C3FF)' }}>
       {/* Scenario header — single line */}
-      <div className="mb-[24px] md:mb-[50px] flex items-baseline flex-wrap gap-[16px] md:gap-[50px]">
-        <h2 className="uppercase text-[16px] leading-[20px] md:text-[20px] md:leading-[24px]" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
+      <div className="mb-[24px] lg:mb-[50px] min-[1024px]:max-[1260px]:mb-[40px] flex items-baseline flex-wrap gap-[16px] md:gap-[24px] lg:gap-[50px] min-[1024px]:max-[1260px]:gap-[24px]">
+        <h2 className="uppercase text-[16px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
-        <p className="mb-[0] text-[12px] leading-[15px] md:text-[15px] md:leading-[18px]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
+        <p className="mb-[0] text-[12px] leading-[15px] md:text-[15px] md:leading-[19px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
           {scenario.description}
         </p>
       </div>
 
       {/* Option cards */}
       <div className="relative flex-[3] min-h-0">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]">
           {scenario.options.map((option, index) => (
-            <div key={option.id} className="relative">
-              {/* Mobile feedback — above selected card */}
+            <div key={option.id} className="relative h-full">
+              {/* Mobile/tablet feedback — above selected card */}
               {showFeedback && selectedOption === index && (
                 <div
-                  className="absolute z-40 pointer-events-none md:hidden left-1/2 -translate-x-1/2"
+                  className="absolute z-40 pointer-events-none lg:hidden left-0 w-full"
                   style={{ bottom: 'calc(100% + 8px)' }}
                 >
                   <div className="pointer-events-auto">
@@ -74,7 +74,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         {/* Desktop feedback — positioned by option column */}
         {showFeedback && selectedOption !== null && (
           <div
-            className="absolute z-40 pointer-events-none hidden md:block"
+            className="absolute z-40 pointer-events-none hidden lg:block"
             style={{ bottom: 'calc(100% - 15px)', ...getPopupX(selectedOption) }}
           >
             <div className="pointer-events-auto">
@@ -87,7 +87,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         )}
       </div>
 
-      <div className="mt-[24px] md:mt-[20px] flex justify-center flex-shrink-0">
+      <div className="mt-[24px] md:mt-[40px] lg:mt-[20px] flex justify-center flex-shrink-0">
         <div className="flex gap-1.5">
           {Array.from({ length: totalScenarios }).map((_, i) => (
             <div

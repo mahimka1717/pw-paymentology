@@ -27,7 +27,7 @@ export function TrackSidebar({ phase, track }: Props) {
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      <h2 className="w-full text-left text-xl md:text-2xl font-bold uppercase" style={h2Style}>
+      <h2 className="w-full text-left text-xl md:text-2xl font-bold uppercase min-[1024px]:max-[1260px]:text-[22px] min-[1024px]:max-[1260px]:leading-[26px]" style={h2Style}>
         {track.name}
       </h2>
     </div>

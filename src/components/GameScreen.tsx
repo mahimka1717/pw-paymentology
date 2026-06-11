@@ -28,12 +28,6 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
 }
 
-function cardAnim(phase: Phase, delay: number): CSSProperties {
-  if (phase === 'idle') return {};
-  if (phase === 'enter') return { opacity: 0, animation: `card-in 600ms cubic-bezier(0.22,1,0.36,1) ${delay}ms forwards` };
-  return { animation: `card-out 400ms ease forwards` };
-}
-
 export function GameScreen({
   phase,
   track,
@@ -54,18 +48,6 @@ export function GameScreen({
   const insightToggleRef = useRef<HTMLButtonElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
   const buttonsAreaRef = useRef<HTMLDivElement>(null);
-  const [mascotTop, setMascotTop] = useState(0);
-
-  useEffect(() => {
-    if (!showInsight || !mascotRef.current) return;
-    const update = () => {
-      const rect = mascotRef.current?.getBoundingClientRect();
-      if (rect) setMascotTop(rect.top);
-    };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, [showInsight]);
 
   const handleCloseInsight = () => {
     setIsClosingInsight(true);
@@ -92,7 +74,9 @@ export function GameScreen({
     setShowFeedback(true);
     setShowInsight(false);
     setTimeout(() => {
-      smoothScrollTo(document.documentElement.scrollHeight, 1200);
+      if (window.innerWidth < 768) {
+        smoothScrollTo(document.documentElement.scrollHeight, 1200);
+      }
     }, 100);
   };
 
@@ -110,35 +94,35 @@ export function GameScreen({
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-start md:items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-start lg:items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10">
       <div className="w-full max-w-[83.33vw]">
-        <div className="flex flex-col md:flex-row md:gap-6 md:items-stretch md:h-[750px]">
+        <div className="flex flex-col lg:flex-row lg:gap-6 lg:items-stretch lg:h-[750px]">
 
           {/* Left col — 4/12 */}
-          <aside className="hidden md:block w-4/12 flex-shrink-0">
+          <aside className="hidden lg:block w-4/12 min-[1024px]:max-[1260px]:w-[26%] flex-shrink-0">
             <TrackSidebar phase={phase} track={track} />
           </aside>
 
           {/* Right col — 8/12 */}
-          <main className="flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] md:min-h-0">
+          <main className="flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0">
             <div style={cascade(phase, 0)}>
               <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
-            <div className="flex-1 min-h-[1.5rem] md:flex-none md:min-h-0 md:mt-[90px]" />
+            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
 
             {/* Mobile track title */}
-            <div className="md:hidden mb-[10px]" style={cascade(phase, 1)}>
+            <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>
               <h2
-                className="text-[15px] leading-[20px] font-bold uppercase"
+                className="text-[15px] leading-[20px] md:text-[28px] md:leading-[34px] font-bold uppercase"
                 style={{ color: theme.accent, fontFamily: "'PP Monument Wide', sans-serif" }}
               >
                 {track.name}
               </h2>
             </div>
 
-            <div className="md:flex-1 min-h-0" style={cascade(phase, 2)}>
+            <div className="lg:flex-1 min-h-0" style={cascade(phase, 2)}>
               <ScenarioQuestion
                 key={scenario.id}
                 scenario={scenario}
@@ -155,23 +139,20 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — space always reserved */}
-            <div ref={buttonsAreaRef} className="relative mt-[16px] md:mt-[28px] h-[42px] md:h-[52px] flex flex-row items-center justify-center gap-3 md:gap-4">
+            <div ref={buttonsAreaRef} className="relative mt-[16px] lg:mt-[28px] h-[42px] md:h-[52px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
                   {showInsight && (
                     <div
                       ref={insightPopupRef}
-                      className="z-40 md:hidden"
+                      className="z-40 lg:hidden left-[16px] right-[16px] md:left-[32px] md:right-[32px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
                       style={{
                         position: 'absolute',
                         bottom: 'calc(100% + 99px)',
-                        width: '100%',
-                        left: '0',
                         overflow: 'visible',
                         background: '#FFFFFF',
                         borderRadius: '12px',
-                        padding: '12px 30px 12px 12px',
                         boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
                         animation: isClosingInsight
                           ? 'slide-up-out 0.3s ease forwards'
@@ -187,7 +168,7 @@ export function GameScreen({
                           <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
                         </svg>
                       </button>
-                      <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, fontSize: '12px', lineHeight: '16px', color: '#3E4D9C' }}>
+                      <p className="text-[12px] leading-[16px] md:text-[17px] md:leading-[22px]" style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, color: '#3E4D9C' }}>
                         {scenario.insight}
                       </p>
                       {/* Triangle pointer — bottom 1/3 */}
@@ -220,13 +201,13 @@ export function GameScreen({
                             bottom: 'calc(100% + 2px)',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            width: window.innerWidth >= 768 ? '108px' : '54px',
-                            height: window.innerWidth >= 768 ? '150px' : '75px',
+                            width: window.innerWidth >= 1024 ? '108px' : '54px',
+                            height: window.innerWidth >= 1024 ? '150px' : '75px',
                             overflow: 'hidden',
                           }}
                         >
                           <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                            <div className="scale-50 origin-top-left md:scale-100">
+                            <div className="scale-50 origin-top-left lg:scale-100">
                               <DidYouKnowMascot accent={theme.accent} />
                             </div>
                           </div>
@@ -236,7 +217,7 @@ export function GameScreen({
                           {/* Desktop popup */}
                           <div
                             ref={insightPopupRef}
-                            className="absolute slide-in-from-right z-40 hidden md:block"
+                            className="absolute slide-in-from-right z-40 hidden lg:block"
                             style={{
                               bottom: 'calc(100% + 20px)',
                               right: 'calc(50% + 74px)',
@@ -285,19 +266,17 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A]"
+                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] text-[14px] h-[42px] md:text-[20px] md:h-[52px]"
                       style={{
                         fontFamily: "'PP Monument Wide', sans-serif",
                         fontWeight: 400,
-                        fontSize: '14px',
-                        lineHeight: '18px',
+                        lineHeight: '24px',
                         color: '#FFFFFF',
                         background: '#15154A',
                         width: 'auto',
                         paddingLeft: '20px',
                         paddingRight: '20px',
-                        height: '42px',
-                        borderRadius: '21px',
+                        borderRadius: '26px',
                         border: 'none',
                         cursor: 'pointer',
                       }}
@@ -309,17 +288,15 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="transition-colors hover:!bg-white"
+                    className="transition-colors hover:!bg-white text-[14px] h-[42px] md:text-[20px] md:h-[52px] md:w-[130px]"
                     style={{
                       fontFamily: "'PP Monument Wide', sans-serif",
                       fontWeight: 900,
-                      fontSize: '14px',
-                      lineHeight: '18px',
+                      lineHeight: '24px',
                       color: '#000000',
                       background: '#D8ACFF',
                       width: '100px',
-                      height: '42px',
-                      borderRadius: '21px',
+                      borderRadius: '26px',
                       border: 'none',
                       cursor: 'pointer',
                       ...(buttonsExiting
@@ -334,7 +311,7 @@ export function GameScreen({
             </div>
 
             {/* Bottom spacer: mirrors top spacer for vertical centering on mobile */}
-            <div className="flex-1 md:hidden" />
+            <div className="flex-1 lg:hidden" />
 
           </main>
 

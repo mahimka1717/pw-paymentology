@@ -46,7 +46,7 @@ body {
   --topbar-h: 3.75rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   body {
     --topbar-h: 7.5rem;
   }

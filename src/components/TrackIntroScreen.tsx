@@ -21,17 +21,17 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
       <div className="w-full max-w-[83.33vw]">
-        <div className="w-full md:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] flex flex-col">
+        <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] lg:min-h-[750px] flex flex-col">
           <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase" style={{ color: theme.accent, ...cascade(phase, 0, 4) }}>
             {track.name}
           </h1>
-          <div className="text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 md:mb-[120px] text-white flex flex-col gap-4" style={cascade(phase, 1, 4)}>
+          <div className="text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 lg:mb-[120px] text-white flex flex-col gap-4" style={cascade(phase, 1, 4)}>
             {track.intro.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
           </div>
-          <div className="flex-1 md:hidden" />
-          <div className="md:hidden my-0 overflow-hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 300ms forwards' } : { animation: 'city-out 333ms ease 100ms forwards' }}>
+          <div className="flex-1 lg:hidden" />
+          <div className="lg:hidden my-0 overflow-hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 300ms forwards' } : { animation: 'city-out 333ms ease 100ms forwards' }}>
             <img
               src={`/img/building${tracks.findIndex(t => t.id === track.id)}.png`}
               alt=""
@@ -48,7 +48,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
               Let's go!
             </button>
           </div>
-          <div className="flex-1 md:hidden" />
+          <div className="flex-1 lg:hidden" />
         </div>
       </div>
     </div>

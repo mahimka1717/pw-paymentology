@@ -41,9 +41,9 @@ export function TrackSelectScreen({ phase, onSelect }: Props) {
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center px-6 pt-0 pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch px-6 pt-0 pb-10">
       <div className="mx-auto flex w-full max-w-[83.33vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <div className="w-full lg:w-1/2 md:min-h-[750px]">
+        <div className="w-full lg:w-1/2 md:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             Issuer's Playbook
           </h1>
@@ -52,7 +52,8 @@ export function TrackSelectScreen({ phase, onSelect }: Props) {
             into a fast, engaging experience. Choose your track and make pivotal decisions on launch, risk,
             growth, and expansion — every move shapes the outcome.
           </p>
-          <div ref={dropdownRef} className="mt-6 relative w-full max-w-[320px]" style={cascade(phase, 2, 4)}>
+          <div className="flex-1 lg:hidden" />
+          <div ref={dropdownRef} className="relative w-full max-w-[320px]" style={cascade(phase, 2, 4)}>
             <button
               type="button"
               className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-black outline-none transition-colors"
@@ -88,7 +89,7 @@ export function TrackSelectScreen({ phase, onSelect }: Props) {
               </div>
             )}
           </div>
-          <div className="mt-[50px] md:hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 450ms forwards' } : { animation: 'city-out 333ms ease forwards' }}>
+          <div className="lg:hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 450ms forwards' } : { animation: 'city-out 333ms ease forwards' }}>
             <img
               src="/img/city.png"
               alt=""
@@ -96,6 +97,7 @@ export function TrackSelectScreen({ phase, onSelect }: Props) {
               draggable={false}
             />
           </div>
+          <div className="flex-1 lg:hidden" />
         </div>
 
         <div className="w-full lg:w-1/2">

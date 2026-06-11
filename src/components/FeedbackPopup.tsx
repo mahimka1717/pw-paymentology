@@ -36,7 +36,7 @@ export function FeedbackPopup({ feedback, onClose }: Props) {
           boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
           position: 'relative',
         }}
-        className="w-[83.33vw] md:w-[550px] p-[16px] pr-[44px] md:p-[40px_48px_40px_36px]"
+        className="w-full lg:w-[550px] p-[16px] pr-[44px] md:p-[40px_48px_40px_36px]"
       >
         <button
           onClick={onClose}
