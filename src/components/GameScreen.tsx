@@ -6,6 +6,7 @@ import { TrackSidebar } from './TrackSidebar';
 import { ScenarioQuestion } from './ScenarioQuestion';
 import { DidYouKnowMascot } from './DidYouKnowMascot';
 import { trackTheme } from '../data/theme';
+import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
 
 interface Props {
@@ -51,6 +52,20 @@ export function GameScreen({
   const [buttonsExiting, setButtonsExiting] = useState(false);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
+  const mascotRef = useRef<HTMLDivElement>(null);
+  const buttonsAreaRef = useRef<HTMLDivElement>(null);
+  const [mascotTop, setMascotTop] = useState(0);
+
+  useEffect(() => {
+    if (!showInsight || !mascotRef.current) return;
+    const update = () => {
+      const rect = mascotRef.current?.getBoundingClientRect();
+      if (rect) setMascotTop(rect.top);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [showInsight]);
 
   const handleCloseInsight = () => {
     setIsClosingInsight(true);
@@ -76,10 +91,14 @@ export function GameScreen({
     onChoose(index, delta, aggressive);
     setShowFeedback(true);
     setShowInsight(false);
+    setTimeout(() => {
+      smoothScrollTo(document.documentElement.scrollHeight, 1200);
+    }, 100);
   };
 
   const handleNext = () => {
     setButtonsExiting(true);
+    smoothScrollTo(0, 1200);
     setTimeout(() => {
       setButtonsExiting(false);
       setShowFeedback(false);
@@ -101,12 +120,25 @@ export function GameScreen({
           </aside>
 
           {/* Right col — 8/12 */}
-          <main className="flex-1 flex flex-col">
-            <div style={cascade(phase, 1)}>
+          <main className="flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] md:min-h-0">
+            <div style={cascade(phase, 0)}>
               <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
             </div>
-            <div className="mt-[20px] md:mt-[90px]" />
-            <div className="flex-1 min-h-0" style={cardAnim(phase, 300)}>
+
+            {/* Spacer: pushes content group to vertical center on mobile */}
+            <div className="flex-1 min-h-[1.5rem] md:flex-none md:min-h-0 md:mt-[90px]" />
+
+            {/* Mobile track title */}
+            <div className="md:hidden mb-[10px]" style={cascade(phase, 1)}>
+              <h2
+                className="text-[15px] leading-[20px] font-bold uppercase"
+                style={{ color: theme.accent, fontFamily: "'PP Monument Wide', sans-serif" }}
+              >
+                {track.name}
+              </h2>
+            </div>
+
+            <div className="md:flex-1 min-h-0" style={cascade(phase, 2)}>
               <ScenarioQuestion
                 key={scenario.id}
                 scenario={scenario}
@@ -123,9 +155,56 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — space always reserved */}
-            <div className="mt-[12px] md:mt-[28px] h-[42px] md:h-[52px] flex flex-row items-center justify-center gap-3 md:gap-4">
-              {selectedOption !== null && (
+            <div ref={buttonsAreaRef} className="relative mt-[16px] md:mt-[28px] h-[42px] md:h-[52px] flex flex-row items-center justify-center gap-3 md:gap-4">
+              {selectedOption !== null && phase !== 'exit' && (
                 <>
+                  {/* Mobile insight popup */}
+                  {showInsight && (
+                    <div
+                      ref={insightPopupRef}
+                      className="z-40 md:hidden"
+                      style={{
+                        position: 'absolute',
+                        bottom: 'calc(100% + 99px)',
+                        width: '100%',
+                        left: '0',
+                        overflow: 'visible',
+                        background: '#FFFFFF',
+                        borderRadius: '12px',
+                        padding: '12px 30px 12px 12px',
+                        boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
+                        animation: isClosingInsight
+                          ? 'slide-up-out 0.3s ease forwards'
+                          : 'slide-down-in 0.4s cubic-bezier(0.22,1,0.36,1) forwards',
+                      }}
+                    >
+                      <button
+                        onClick={handleCloseInsight}
+                        className="close-btn-spin"
+                        style={{ position: 'absolute', top: '8px', right: '8px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
+                        </svg>
+                      </button>
+                      <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, fontSize: '12px', lineHeight: '16px', color: '#3E4D9C' }}>
+                        {scenario.insight}
+                      </p>
+                      {/* Triangle pointer — bottom 1/3 */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-12px',
+                        left: '33.33%',
+                        transform: 'translateX(-50%)',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '8px solid transparent',
+                        borderRight: '8px solid transparent',
+                        borderTop: '12px solid #FFFFFF',
+                      }} />
+                    </div>
+                  )}
+
                   {/* Did you know mascot + button */}
                   <div className="relative" style={buttonsExiting
                     ? { animation: 'fade-out 250ms ease forwards' }
@@ -135,6 +214,7 @@ export function GameScreen({
                       <>
                         {/* Mascot */}
                         <div
+                          ref={mascotRef}
                           className="absolute z-40"
                           style={{
                             bottom: 'calc(100% + 2px)',
@@ -192,44 +272,6 @@ export function GameScreen({
                             }} />
                           </div>
                           {/* Mobile popup — above mascot, centered on screen */}
-                          <div
-                            ref={insightPopupRef}
-                            className="absolute slide-in-from-right z-40 md:hidden"
-                            style={{
-                              bottom: 'calc(100% + 100px)',
-                              left: '0',
-                              width: 'min(calc(100vw - 48px), 300px)',
-                              overflow: 'visible',
-                              background: '#FFFFFF',
-                              borderRadius: '12px',
-                              padding: '12px 30px 12px 12px',
-                              boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
-                            }}
-                          >
-                            <button
-                              onClick={handleCloseInsight}
-                              className="close-btn-spin"
-                              style={{ position: 'absolute', top: '8px', right: '8px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
-                            >
-                              <svg width="10" height="10" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
-                              </svg>
-                            </button>
-                            <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, fontSize: '11px', lineHeight: '15px', color: '#3E4D9C' }}>
-                              {scenario.insight}
-                            </p>
-                            {/* Triangle pointer — bottom left */}
-                            <div style={{
-                              position: 'absolute',
-                              bottom: '-12px',
-                              left: '50px',
-                              width: 0,
-                              height: 0,
-                              borderLeft: '8px solid transparent',
-                              borderRight: '8px solid transparent',
-                              borderTop: '12px solid #FFFFFF',
-                            }} />
-                          </div>
                         </>}
                       </>
                     )}
@@ -282,7 +324,7 @@ export function GameScreen({
                       cursor: 'pointer',
                       ...(buttonsExiting
                         ? { animation: 'fade-out 250ms ease forwards' }
-                        : { opacity: 0, animation: 'fade-in-only 500ms ease 150ms forwards' }),
+                        : { opacity: 0, animation: 'fade-in-only 500ms ease 50ms forwards' }),
                     }}
                   >
                     Next
@@ -290,6 +332,9 @@ export function GameScreen({
                 </>
               )}
             </div>
+
+            {/* Bottom spacer: mirrors top spacer for vertical centering on mobile */}
+            <div className="flex-1 md:hidden" />
 
           </main>
 

@@ -126,8 +126,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 backgroundColor: '#A586FF',
                 top: '20px',
                 left: '-96px',
+                transformOrigin: 'center center',
                 ...(phase === 'enter'
-                  ? { opacity: 0, animation: 'cascade-in 500ms ease 450ms forwards' }
+                  ? { opacity: 0, animation: 'scale-in 500ms ease 300ms forwards' }
                   : phase === 'exit'
                     ? { animation: 'cascade-out 333ms ease forwards' }
                     : {}),
@@ -155,6 +156,12 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                   backgroundColor: '#A586FF',
                   top: '-10px',
                   right: '-10px',
+                  transformOrigin: 'center center',
+                  ...(phase === 'enter'
+                    ? { opacity: 0, animation: 'scale-in 500ms ease 300ms forwards' }
+                    : phase === 'exit'
+                      ? { animation: 'cascade-out 333ms ease forwards' }
+                      : {}),
                 }}
               >
                 <div style={{ transform: 'scale(0.6)' }}>
@@ -194,7 +201,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
         </div>
 
         {/* Restart */}
-        <div className="flex justify-center mt-0 md:mt-[28px]" style={{ position: 'relative', zIndex: 10, ...cascade(phase, 2) }}>
+        <div className="flex justify-center mt-0 md:mt-[28px]" style={{ position: 'relative', zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: 'cascade-in 500ms ease 300ms forwards' } : phase === 'exit' ? { animation: 'cascade-out 333ms ease forwards' } : {}) }}>
           <button
             onClick={onRestart}
             className="hover:opacity-90 transition-opacity h-[42px] md:h-[52px] w-[160px] md:w-[200px] text-[14px] md:text-[20px]"

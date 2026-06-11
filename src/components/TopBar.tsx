@@ -11,7 +11,8 @@ export function TopBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 md:px-10 md:py-10 bg-[#0A0A0A]/80 backdrop-blur-md md:bg-transparent md:backdrop-blur-none"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 md:px-10 md:py-10 md:bg-transparent"
+      style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.8), rgba(10,10,10,0))' }}
     >
       {/* Back button */}
       <button

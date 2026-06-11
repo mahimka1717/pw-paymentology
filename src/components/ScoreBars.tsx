@@ -17,7 +17,7 @@ const MAX_ABS = 12; // max possible absolute value across all tracks
 
 export function ScoreBars({ totalScore, lastDelta }: Props) {
   return (
-    <div className="flex items-center justify-between w-full" style={{ gap: '12px' }}>
+    <div className="flex items-center justify-between w-full gap-[8px] md:gap-[12px]">
       {pillars.map(({ key, label }) => {
         const Icon = scoreIcons[key];
         const rawValue = Number(totalScore[key]);
@@ -31,16 +31,15 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
         return (
           <div key={key} className="flex flex-col items-center flex-1 gap-1.5 min-w-0">
             <div
-              className="relative w-full"
+              className="relative w-full h-[30px] md:h-[40px]"
               style={{
-                height: '40px',
                 borderRadius: '20px',
                 background: 'linear-gradient(to right, #FFA0E6, #A586FF, #AAFF6E)',
               }}
             >
               <div
                 className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-700 ease-out"
-                style={{ left: `${positionPct}%` }}
+                style={{ left: `clamp(13px, ${positionPct}%, calc(100% - 13px))` }}
               >
                 {delta !== null && delta !== 0 && (
                   <span
@@ -56,7 +55,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                     {delta > 0 ? `+${delta}` : delta}
                   </span>
                 )}
-                <div className="relative w-[34px] h-[34px]">
+                <div className="relative w-[26px] h-[26px] md:w-[34px] md:h-[34px]">
                   {delta !== null && delta !== 0 &&
                     Array.from({ length: Math.abs(delta) }).map((_, i) => (
                       <div
@@ -69,7 +68,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                       />
                     ))
                   }
-                  <div className="relative z-10 w-[34px] h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
+                  <div className="relative z-10 w-[26px] h-[26px] md:w-[34px] md:h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
                     <span
                       className="grid place-items-center leading-none"
                       style={key === 'trust' ? { transform: 'translate(1px, 1px)' } : undefined}
@@ -81,12 +80,10 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
               </div>
             </div>
             <span
-              className="tracking-[0.04em]"
+              className="tracking-[0.04em] text-[9px] leading-[11px] md:text-[10px] md:leading-[12px]"
               style={{
                 fontFamily: "'PP Monument Normal', sans-serif",
                 fontWeight: 400,
-                fontSize: '10px',
-                lineHeight: '12px',
                 color: '#FFFFFF',
               }}
             >

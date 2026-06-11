@@ -6,6 +6,7 @@ import { TrackIntroScreen } from './TrackIntroScreen';
 import { GameScreen } from './GameScreen';
 import { ResultScreen } from './ResultScreen';
 import { TopBar } from './TopBar';
+import { smoothScrollTo } from '../utils/smoothScroll';
 
 export type Phase = 'enter' | 'idle' | 'exit';
 
@@ -22,6 +23,7 @@ export default function App() {
 
   const triggerTransition = useCallback((action: () => void) => {
     setPhase('exit');
+    smoothScrollTo(0, 1200);
     setTimeout(() => {
       action();
       setPhase('enter');
@@ -120,7 +122,7 @@ export default function App() {
             width: '100vw',
             height: '56.25vw',
             transformOrigin: '65% 65%',
-            transition: 'transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 700ms ease-in-out',
+            transition: 'transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 700ms ease-in-out',
             opacity: buildingScreen ? 1 : 0,
             transform: buildingTransform,
           }}

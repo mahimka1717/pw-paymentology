@@ -26,7 +26,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     <div className="h-full flex flex-col rounded-[20px] md:rounded-[32px] pt-[20px] pr-[16px] pb-[20px] pl-[16px] md:pt-[46px] md:pr-[60px] md:pb-[20px] md:pl-[36px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: 'linear-gradient(to bottom, #FFFFFF, #A3A3EC, #E4C3FF)' }}>
       {/* Scenario header — single line */}
       <div className="mb-[24px] md:mb-[50px] flex items-baseline flex-wrap gap-[16px] md:gap-[50px]">
-        <h2 className="whitespace-nowrap uppercase text-[16px] leading-[20px] md:text-[20px] md:leading-[24px]" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
+        <h2 className="uppercase text-[16px] leading-[20px] md:text-[20px] md:leading-[24px]" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
         <p className="mb-[0] text-[12px] leading-[15px] md:text-[15px] md:leading-[18px]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
@@ -43,7 +43,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
               {showFeedback && selectedOption === index && (
                 <div
                   className="absolute z-40 pointer-events-none md:hidden left-1/2 -translate-x-1/2"
-                  style={{ bottom: 'calc(100% + 4px)' }}
+                  style={{ bottom: 'calc(100% + 8px)' }}
                 >
                   <div className="pointer-events-auto">
                     <FeedbackPopup

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface Props {
   title: string;
   description: string;
@@ -11,11 +13,14 @@ interface Props {
 }
 
 export function OptionCard({ title, description, selected, disabled, accentColor, accentTextColor, onSelect, animDelay = 0 }: Props) {
+  const [animDone, setAnimDone] = useState(false);
+
   return (
     <button
       onClick={onSelect}
       disabled={disabled}
-      className={`relative flex min-h-[80px] md:min-h-[174px] flex-col text-left py-[14px] px-[14px] md:py-[25px] md:px-[20px] rounded-[12px] md:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-all duration-200 ${
+      onAnimationEnd={() => setAnimDone(true)}
+      className={`relative flex min-h-[80px] md:min-h-[174px] flex-col text-left py-[14px] px-[14px] md:py-[25px] md:px-[20px] rounded-[12px] md:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-[box-shadow,opacity] duration-200 ${
         selected
           ? 'shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)]'
           : disabled
@@ -24,8 +29,9 @@ export function OptionCard({ title, description, selected, disabled, accentColor
       }`}
       style={{
         ...(selected ? { background: accentColor } : undefined),
-        opacity: 0,
-        animation: `option-card-in 450ms cubic-bezier(0.22,1,0.36,1) ${animDelay}ms forwards`,
+        ...(animDone
+          ? {}
+          : { opacity: 0, animation: `option-card-in 450ms cubic-bezier(0.22,1,0.36,1) ${animDelay}ms forwards` }),
       }}
     >
       <h4

@@ -69,7 +69,10 @@ export function TrackSelectScreen({ phase, onSelect }: Props) {
             {isDropdownOpen && (
               <div
                 className="absolute top-full z-20 -mt-6 w-full overflow-hidden rounded-b-2xl pt-9 pb-3"
-                style={{ background: 'linear-gradient(to bottom, #BF97FF, #9475C600)' }}
+                style={{ background: window.innerWidth < 768
+                  ? 'linear-gradient(to bottom, #BF97FF, rgba(148, 117, 198, 0.5))'
+                  : 'linear-gradient(to bottom, #BF97FF, #9475C600)'
+                }}
                 role="listbox"
               >
                 {tracks.map((track) => (
