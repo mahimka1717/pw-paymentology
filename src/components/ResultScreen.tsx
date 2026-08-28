@@ -206,11 +206,11 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
           <div className="mt-4 flex justify-center lg:absolute lg:bottom-[78px] lg:left-0 lg:mt-0 lg:justify-start" style={{ zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: 'cascade-in 500ms ease 300ms forwards' } : phase === 'exit' ? { animation: 'cascade-out 333ms ease forwards' } : {}) }}>
             <button
               onClick={onRestart}
-              className="group flex h-[66px] w-[212px] items-center justify-center gap-6 rounded-[33px] border-4 border-white bg-transparent text-[22px] text-white transition-all active:scale-[1.2] active:!bg-[#773cf5] md:text-[24px]"
-              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, lineHeight: 1 }}
+              className="group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[33px] border-2 border-white bg-transparent px-[20px] text-[16px] font-normal text-white transition-all active:scale-[1.2] active:!bg-[#773cf5] md:h-[66px] md:w-[212px] md:text-[24px] md:font-semibold"
+              style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1 }}
             >
               Play Again
-              <svg className="h-6 w-6 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg className="h-6 w-6 shrink-0 stroke-[2px] transition-transform duration-200 ease-out group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
               </svg>

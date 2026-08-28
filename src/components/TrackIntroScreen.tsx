@@ -16,7 +16,7 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 
 export function TrackIntroScreen({ phase, track, onStart }: Props) {
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:overflow-x-visible">
       <div className="w-full max-w-[87.50vw]">
         <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] flex flex-col">
           <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase text-white" style={cascade(phase, 0, 4)}>
@@ -28,23 +28,24 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
             ))}
           </div>
           <div className="flex-1 lg:hidden" />
-          <div className="lg:hidden my-0 overflow-hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 300ms forwards' } : { animation: 'city-out 333ms ease 100ms forwards' }}>
+          <div className={`relative my-0 w-[120vw] -translate-x-1/2 overflow-hidden lg:hidden ${track.id === 'telco' ? 'left-[calc(50%-20px)]' : track.id === 'digital-banks' || track.id === 'banks' || track.id === 'remittance' ? 'left-[calc(50%-10px)]' : 'left-1/2'}`}>
             <img
               src={`/img/buildings/building${tracks.findIndex(t => t.id === track.id)}.png`}
               alt=""
-              className="w-full h-auto object-contain scale-[1.4] -translate-x-[10%] -translate-y-[10%]"
+              className="w-full h-auto object-contain"
+              style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 300ms forwards' } : { animation: 'city-out 333ms ease 100ms forwards' }}
               draggable={false}
             />
           </div>
-          <div className="flex justify-start" style={cascade(phase, 3, 4)}>
+          <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase, 3, 4)}>
             <button
               onClick={onStart}
-              className="group flex h-[66px] w-[212px] items-center justify-center gap-6 rounded-[33px] border-4 border-[#773cf5] bg-transparent text-[22px] text-[#773cf5] transition-all active:!border-white active:!bg-transparent active:!text-white md:text-[24px]"
-              style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1, fontWeight: 600 }}
+              className="group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[29px] border-2 border-white bg-transparent px-[25px] text-[16px] font-normal text-white transition-all active:!border-white active:!bg-transparent active:!text-white md:h-[66px] md:w-[212px] md:gap-6 md:rounded-[33px] md:border-4 md:border-[#773cf5] md:px-0 md:text-[24px] md:font-semibold md:text-[#773cf5]"
+              style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1 }}
             >
               Let's go
-              <svg className="h-6 w-6 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-[10px]" viewBox="0 0 26 24" fill="none" aria-hidden="true">
-                <path d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+              <svg className="h-[22px] w-[22px] shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-[10px] md:h-6 md:w-6" viewBox="0 0 26 24" fill="none" aria-hidden="true">
+                <path className="stroke-[2px] md:stroke-[4px]" d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>

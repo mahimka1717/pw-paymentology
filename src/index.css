@@ -97,6 +97,11 @@ body[data-screen='result']::before {
     --topbar-padding-y: clamp(20px, calc(11.5385vh - 68.6154px), 56px);
     --topbar-h: calc(3rem + var(--topbar-padding-y) + var(--topbar-padding-y));
   }
+
+  body[data-screen='result'] {
+    background-color: #783cff;
+    background-attachment: fixed;
+  }
 }
 
 h1,
