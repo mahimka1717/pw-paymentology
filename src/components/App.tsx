@@ -13,6 +13,15 @@ export type Phase = 'enter' | 'idle' | 'exit';
 export default function App() {
   const game = useGameState();
   const [phase, setPhase] = useState<Phase>('enter');
+  const [hoveredTrackId, setHoveredTrackId] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.body.dataset.screen = game.screen;
+
+    return () => {
+      delete document.body.dataset.screen;
+    };
+  }, [game.screen]);
 
   useEffect(() => {
     if (phase === 'enter') {
@@ -33,7 +42,14 @@ export default function App() {
   function renderScreen() {
     switch (game.screen) {
       case 'select':
-        return <TrackSelectScreen phase={phase} onSelect={(id) => triggerTransition(() => game.selectTrack(id))} />;
+        return (
+          <TrackSelectScreen
+            phase={phase}
+            hoveredTrackId={hoveredTrackId}
+            onHoverTrack={setHoveredTrackId}
+            onSelect={(id) => triggerTransition(() => game.selectTrack(id))}
+          />
+        );
 
       case 'intro':
         return (
@@ -78,41 +94,19 @@ export default function App() {
     }
   }
 
-  const cityVisible = game.screen === 'select' && phase !== 'exit';
   const buildingScreen = game.screen === 'intro' || (game.screen === 'game' && phase !== 'exit');
   const buildingIndex = game.trackId ? tracks.findIndex(t => t.id === game.trackId) : 0;
   const buildingTransform = (game.screen === 'intro' && phase !== 'exit')
     ? 'scale(1)'
     : (game.screen === 'intro' && phase === 'exit') || game.screen === 'game'
-      ? 'translate(calc(-25vw - 400px), 100px) scale(0.667)'
+      ? 'translate(calc(-180px - 25vw), 40px) scale(0.71)'
       : game.screen === 'result'
-        ? 'translate(calc(-25vw - 400px), 100px) scale(0.667)'
+        ? 'translate(calc(-180px - 25vw), 40px) scale(0.71)'
         : 'scale(0.6)';
 
   return (
     <>
       <TopBar />
-
-      {/* City background — behind all screens */}
-      <div className="fixed inset-0 hidden lg:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
-        <div
-          className="city transition-all duration-700 ease-in-out"
-          style={{
-            width: '58.65vw',
-            height: '58.65vw',
-            transformOrigin: 'center center',
-            opacity: cityVisible ? 1 : 0,
-            transform: cityVisible ? 'translate(250px, 100px) scale(1)' : 'translate(250px, 100px) scale(1.4)',
-          }}
-        >
-          <img
-            src="/img/city.png"
-            alt=""
-            className="w-full h-full object-contain"
-            draggable={false}
-          />
-        </div>
-      </div>
 
       {/* Building background — behind all screens, visible on intro */}
       <div className="fixed inset-0 hidden lg:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
@@ -128,10 +122,10 @@ export default function App() {
           }}
         >
           <img
-            src={`/img/building${buildingIndex}.png`}
+            src={`/img/buildings/building${buildingIndex}.png`}
             alt=""
             className="w-full h-full object-contain"
-            style={{ transform: 'translateX(200px)' }}
+            style={{ transform: 'translateX(100px)' }}
             draggable={false}
           />
         </div>

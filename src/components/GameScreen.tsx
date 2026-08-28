@@ -94,12 +94,12 @@ export function GameScreen({
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-start lg:items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10">
-      <div className="w-full max-w-[83.33vw]">
-        <div className="flex flex-col lg:flex-row lg:gap-6 lg:items-stretch lg:h-[750px]">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-start justify-center px-4 md:px-6 pb-4 md:pb-10">
+      <div className="w-full max-w-[87.5vw]">
+        <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
-          <aside className="hidden lg:block w-4/12 min-[1024px]:max-[1260px]:w-[26%] flex-shrink-0">
+          <aside className="hidden flex-shrink-0 lg:block lg:w-[41%]">
             <TrackSidebar phase={phase} track={track} />
           </aside>
 
@@ -115,8 +115,8 @@ export function GameScreen({
             {/* Mobile track title */}
             <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>
               <h2
-                className="text-[15px] leading-[20px] md:text-[28px] md:leading-[34px] font-bold uppercase"
-                style={{ color: theme.accent, fontFamily: "'PP Monument Wide', sans-serif" }}
+                className="text-[15px] leading-[20px] md:text-[40px] md:leading-[48px] font-bold uppercase"
+                style={{ color: `#fff`, fontFamily: "'PP Monument Wide', sans-serif" }}
               >
                 {track.name}
               </h2>
@@ -139,7 +139,7 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — space always reserved */}
-            <div ref={buttonsAreaRef} className="relative mt-[16px] lg:mt-[28px] h-[42px] md:h-[52px] flex flex-row items-center justify-center gap-3 md:gap-4">
+            <div ref={buttonsAreaRef} className="relative mt-[16px] lg:mt-[28px] h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
@@ -165,10 +165,10 @@ export function GameScreen({
                         style={{ position: 'absolute', top: '8px', right: '8px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
                       >
                         <svg width="10" height="10" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
+                          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
                         </svg>
                       </button>
-                      <p className="text-[12px] leading-[16px] md:text-[17px] md:leading-[22px]" style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, color: '#3E4D9C' }}>
+                      <p className="text-[12px] leading-[18px] md:text-[17px] md:leading-[24px]" style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, color: '#3E4D9C' }}>
                         {scenario.insight}
                       </p>
                       {/* Triangle pointer — bottom 1/3 */}
@@ -208,7 +208,7 @@ export function GameScreen({
                         >
                           <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
                             <div className="scale-50 origin-top-left lg:scale-100">
-                              <DidYouKnowMascot accent={theme.accent} />
+                              <DidYouKnowMascot />
                             </div>
                           </div>
                         </div>
@@ -234,17 +234,17 @@ export function GameScreen({
                               style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
                             >
                               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="5" strokeLinecap="butt"/>
+                                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
                               </svg>
                             </button>
-                            <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 400, fontSize: '20px', lineHeight: '24px', color: '#3E4D9C' }}>
+                            <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, fontSize: '20px', lineHeight: '26px', color: '#3E4D9C' }}>
                               {scenario.insight}
                             </p>
                             {/* Triangle pointer — right side */}
                             <div style={{
                               position: 'absolute',
                               right: '-14px',
-                              bottom: '30px',
+                              bottom: '50px',
                               width: 0,
                               height: 0,
                               borderTop: '8px solid transparent',
@@ -266,13 +266,13 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] text-[14px] h-[42px] md:text-[20px] md:h-[52px]"
+                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] text-[14px] h-[48px] md:text-[20px]"
                       style={{
-                        fontFamily: "'PP Monument Wide', sans-serif",
+                        fontFamily: "'Inter', sans-serif",
                         fontWeight: 400,
                         lineHeight: '24px',
                         color: '#FFFFFF',
-                        background: '#15154A',
+                        background: '#703ff6',
                         width: 'auto',
                         paddingLeft: '20px',
                         paddingRight: '20px',
@@ -288,16 +288,15 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="transition-colors hover:!bg-white text-[14px] h-[42px] md:text-[20px] md:h-[52px] md:w-[130px]"
+                    className="group flex h-[48px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:text-[20px]"
                     style={{
-                      fontFamily: "'PP Monument Wide', sans-serif",
-                      fontWeight: 900,
+                      fontFamily: "'Inter', sans-serif",
+                      fontWeight: 400,
                       lineHeight: '24px',
-                      color: '#000000',
-                      background: '#D8ACFF',
-                      width: '100px',
+                      color: '#FFFFFF',
+                      background: 'transparent',
                       borderRadius: '26px',
-                      border: 'none',
+                      border: '2px solid #FFFFFF',
                       cursor: 'pointer',
                       ...(buttonsExiting
                         ? { animation: 'fade-out 250ms ease forwards' }
@@ -305,6 +304,9 @@ export function GameScreen({
                     }}
                   >
                     Next
+                    <svg className="h-6 w-6 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-[10px]" viewBox="0 0 26 24" fill="none" aria-hidden="true">
+                      <path d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </button>
                 </>
               )}

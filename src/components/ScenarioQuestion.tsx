@@ -17,21 +17,35 @@ interface Props {
 }
 
 export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onChoose }: Props) {
+  const questionParagraphs = scenario.description.split(/\n\s*\n/);
+
   const getPopupX = (idx: number): CSSProperties => {
-    if (idx === 0) return { left: 'calc((100% - 40px) / 3 - 15px)' };
-    if (idx === 1) return { right: '50%' };
-    return { right: 'calc((100% - 40px) / 3 - 15px)' };
+    if (idx === 0) return { left: 0 };
+    if (idx === 1) return { left: '50%', transform: 'translateX(-50%)' };
+    return { right: 0 };
   };
   return (
-    <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] pt-[20px] pr-[16px] pb-[20px] pl-[16px] md:pt-[40px] md:pr-[32px] md:pb-[40px] md:pl-[32px] lg:pt-[46px] lg:pr-[60px] lg:pb-[20px] lg:pl-[36px] min-[1024px]:max-[1260px]:pr-[36px] min-[1024px]:max-[1260px]:pl-[36px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: 'linear-gradient(to bottom, #FFFFFF, #A3A3EC, #E4C3FF)' }}>
+    <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] pt-[20px] pr-[52px] pb-[20px] pl-[48px] md:pt-[40px] md:pb-[40px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       {/* Scenario header — single line */}
-      <div className="mb-[24px] lg:mb-[50px] min-[1024px]:max-[1260px]:mb-[40px] flex items-baseline flex-wrap gap-[16px] md:gap-[24px] lg:gap-[50px] min-[1024px]:max-[1260px]:gap-[24px]">
-        <h2 className="uppercase text-[16px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#15154A', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
+      <div className="mb-[12px] pl-[20px] flex items-baseline flex-wrap gap-[12px]">
+        <h2 className="uppercase text-[16px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
-        <p className="mb-[0] text-[12px] leading-[15px] md:text-[15px] md:leading-[19px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px]" style={{ color: '#15154A', fontFamily: "'PP Monument Wide'", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
-          {scenario.description}
-        </p>
+        <div className="flex max-w-[625px] flex-col gap-[19px]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
+          {questionParagraphs.map((paragraph, index) => {
+            const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
+
+            return (
+              <p
+                key={index}
+                className={isEmphasizedLastParagraph ? 'pt-[30px] text-[20px] leading-[24px]' : 'text-[16px] leading-[19px]'}
+                style={{ fontWeight: isEmphasizedLastParagraph ? 500 : 400 }}
+              >
+                {paragraph}
+              </p>
+            );
+          })}
+        </div>
       </div>
 
       {/* Option cards */}
@@ -43,11 +57,12 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
               {showFeedback && selectedOption === index && (
                 <div
                   className="absolute z-40 pointer-events-none lg:hidden left-0 w-full"
-                  style={{ bottom: 'calc(100% + 8px)' }}
+                  style={{ bottom: 'calc(100% + 15px)' }}
                 >
                   <div className="pointer-events-auto">
                     <FeedbackPopup
                       feedback={scenario.options[selectedOption].feedback}
+                      optionIndex={selectedOption}
                       onClose={onCloseFeedback}
                     />
                   </div>
@@ -75,11 +90,12 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         {showFeedback && selectedOption !== null && (
           <div
             className="absolute z-40 pointer-events-none hidden lg:block"
-            style={{ bottom: 'calc(100% - 15px)', ...getPopupX(selectedOption) }}
+            style={{ bottom: 'calc(100% + 15px)', ...getPopupX(selectedOption) }}
           >
             <div className="pointer-events-auto">
               <FeedbackPopup
                 feedback={scenario.options[selectedOption].feedback}
+                optionIndex={selectedOption}
                 onClose={onCloseFeedback}
               />
             </div>
@@ -94,7 +110,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
               key={i}
               className={`h-2 w-2 rounded-full transition-colors ${
                 i <= scenarioIndex
-                  ? 'bg-[#3E4D9C]'
+                  ? 'bg-[#CCB0F9]'
                   : 'bg-white'
               }`}
             />

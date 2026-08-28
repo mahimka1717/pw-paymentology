@@ -7,27 +7,16 @@ interface Props {
   track: Track;
 }
 
-const trackTitleColor: Record<string, string> = {
-  government: '#AAFF6E',
-  telco: '#F0FF55',
-  fintech: '#FF9966',
-  remittance: '#A586FF',
-  'digital-banks': '#FFA0E6',
-  banks: '#3E4D9C',
-};
-
 export function TrackSidebar({ phase, track }: Props) {
-  const titleColor = trackTitleColor[track.id] ?? '#FFFFFF';
-
   const h2Style: CSSProperties = phase === 'enter'
-    ? { color: titleColor, opacity: 0, animation: 'cascade-in 500ms ease forwards' }
+    ? { color: '#FFFFFF', opacity: 0, animation: 'cascade-in 500ms ease forwards' }
     : phase === 'exit'
-      ? { color: titleColor, animation: 'cascade-out 333ms ease forwards' }
-      : { color: titleColor };
+      ? { color: '#FFFFFF', animation: 'cascade-out 333ms ease forwards' }
+      : { color: '#FFFFFF' };
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      <h2 className="w-full text-left text-xl md:text-2xl font-bold uppercase min-[1024px]:max-[1260px]:text-[22px] min-[1024px]:max-[1260px]:leading-[26px]" style={h2Style}>
+      <h2 className="w-full text-left text-xl font-bold uppercase md:text-2xl lg:text-[30px] lg:leading-[36px]" style={h2Style}>
         {track.name}
       </h2>
     </div>

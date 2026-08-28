@@ -40,15 +40,70 @@
   box-sizing: border-box;
 }
 
+.mascot-leg path {
+  fill: #151547;
+}
+
 body {
   font-family: 'PP Monument Wide', sans-serif;
   color: #fff;
   --topbar-h: 3.75rem;
+  min-height: 100vh;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+body[data-screen='select'] {
+  background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
+}
+
+body[data-screen='select']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: url('/newbg/trackSelectScreen.png') top center / cover no-repeat;
+  opacity: 0;
+}
+
+body[data-screen='intro'] {
+  background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
+}
+
+body[data-screen='intro']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: url('/newbg/trackIntroScreen.png') top center / cover no-repeat;
+  opacity: 0;
+}
+
+body[data-screen='game'] {
+  background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
+}
+
+body[data-screen='result'] {
+  background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
+}
+
+body[data-screen='result']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: url('/newbg/resultScreen.png') top center / cover no-repeat;
+  opacity: 0;
+}
+
+#root {
+  opacity: 1;
 }
 
 @media (min-width: 1024px) {
   body {
-    --topbar-h: 7.5rem;
+    --topbar-h: 10rem;
   }
 }
 
@@ -61,10 +116,22 @@ h6 {
   font-family: 'PP Monument Extended', sans-serif;
 }
 
-.dropdown-track-item:hover {
-  color: #d2affe;
-  font-family: 'PP Monument Extended', sans-serif;
+.dropdown-track-item {
+  color: #fff;
+  font-family: 'PP Monument Wide', sans-serif;
+  font-size: 20px;
   font-weight: 900;
+  line-height: 1.4;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.dropdown-track-item:hover,
+.dropdown-track-item:focus-visible,
+.dropdown-track-item.is-highlighted {
+  color: #d2affe;
+  transform: translateX(6px);
 }
 
 ::-webkit-scrollbar {

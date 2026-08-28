@@ -1,8 +1,8 @@
 export const trackTheme: Record<string, { accent: string; accentText: string }> = {
-  government:     { accent: '#AAFF6E', accentText: '#000000' },
-  telco:          { accent: '#F0FF55', accentText: '#000000' },
-  fintech:        { accent: '#FF9966', accentText: '#000000' },
-  remittance:     { accent: '#A586FF', accentText: '#000000' },
-  'digital-banks':{ accent: '#FFA0E6', accentText: '#000000' },
-  banks:          { accent: '#3E4D9C', accentText: '#FFFFFF' },
+  government:     { accent: '#aaff6d', accentText: '#000000' },
+  telco:          { accent: '#ffe65f', accentText: '#000000' },
+  fintech:        { accent: '#d2afff', accentText: '#000000' },
+  remittance:     { accent: '#783cff', accentText: '#000000' },
+  'digital-banks':{ accent: '#fe7dff', accentText: '#000000' },
+  banks:          { accent: '#3e4e9c', accentText: '#FFFFFF' },
 };

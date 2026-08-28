@@ -17,7 +17,7 @@ const MAX_ABS = 12; // max possible absolute value across all tracks
 
 export function ScoreBars({ totalScore, lastDelta }: Props) {
   return (
-    <div className="flex items-center justify-between w-full gap-[8px] md:gap-[12px]">
+    <div className="flex items-center justify-between w-full gap-[8px] md:gap-[18px]">
       {pillars.map(({ key, label }) => {
         const Icon = scoreIcons[key];
         const rawValue = Number(totalScore[key]);
@@ -34,7 +34,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
               className="relative w-full h-[30px] md:h-[40px]"
               style={{
                 borderRadius: '20px',
-                background: 'linear-gradient(to right, #FFA0E6, #A586FF, #AAFF6E)',
+                background: 'linear-gradient(to right, #ED83F8, #A187F8)',
               }}
             >
               <div
@@ -44,7 +44,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                 {delta !== null && delta !== 0 && (
                   <span
                     key={`${key}-${value}`}
-                    className="score-delta-pop absolute left-1/2 -translate-x-1/2 text-[11px] font-bold leading-none pointer-events-none"
+                    className="score-delta-pop hidden absolute left-1/2 -translate-x-1/2 text-[11px] font-bold leading-none pointer-events-none"
                     style={{
                       bottom: '100%',
                       marginBottom: '2px',
@@ -62,7 +62,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                         key={`ripple-${key}-${value}-${i}`}
                         className="score-ripple absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full pointer-events-none"
                         style={{
-                          backgroundColor: delta > 0 ? '#AAFF6E' : '#FFA0E6',
+                          backgroundColor: '#703ff5',
                           animationDelay: `${i * 0.42}s`,
                         }}
                       />
@@ -83,7 +83,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
               </div>
             </div>
             <span
-              className="tracking-[0.04em] text-[9px] leading-[11px] md:text-[10px] md:leading-[12px]"
+              className="translate-y-[4px] tracking-[0.04em] text-[9px] leading-[11px] md:text-[10px] md:leading-[12px]"
               style={{
                 fontFamily: "'PP Monument Normal', sans-serif",
                 fontWeight: 400,

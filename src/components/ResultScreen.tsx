@@ -20,14 +20,14 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 }
 
 const outcomeImages: Record<Outcome, string> = {
-  'Built to Scale': '/img/result0.jpg',
-  'Fast but Fragile': '/img/result1.jpg',
-  'Trusted Operator': '/img/result2.jpg',
-  'Stuck in Neutral': '/img/result3.jpg',
+  'Built to Scale': '/img/result/result0.jpg',
+  'Fast but Fragile': '/img/result/result1.jpg',
+  'Trusted Operator': '/img/result/result2.jpg',
+  'Stuck in Neutral': '/img/result/result3.jpg',
 };
 
 const styleDescriptions: Record<Style, string> = {
-  'Consistent Aggressive': 'You backed yourself early and kept pushing. The fact that trust and growth moved together under that kind of pace says something - you have good instincts for knowing when the model can take the pressure.',
+  'Consistent Aggressive': 'You backed yourself early and kept pushing. The fact that trust and growth moved together under that kind of pace says something. You have good instincts for knowing when the model can take the pressure.',
   'Consistent Cautious': 'You earned this the patient way. Every move was considered before it was made, and the outcome reflects that discipline. Where others hoped the foundations would hold, you made sure they would.',
   'Situational': 'You knew which moments to push and which to protect. Not every opportunity was worth chasing, and you seemed to know the difference. That kind of read is harder to teach than most people admit.',
 };
@@ -70,12 +70,12 @@ function StyleIcon({ style }: { style: Style }) {
 export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10">
-      <div className="w-full max-w-[83.33vw] flex flex-col gap-[16px] lg:gap-0">
+      <div className="w-full max-w-[87.50vw] flex flex-col gap-[16px] lg:gap-0">
 
         {/* Part 1 — Outcome box */}
-        <div className="flex flex-col lg:flex-row rounded-[16px] overflow-hidden" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
+        <div className="flex flex-col overflow-hidden rounded-[16px] lg:mr-[70px] lg:flex-row" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
           {/* Left — image */}
-          <div className="flex-shrink-0 w-full lg:w-[42.67%]">
+          <div className="flex-shrink-0 w-full lg:w-[43%]">
             <img
               src={outcomeImages[outcome]}
               alt={outcome}
@@ -84,14 +84,14 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
           </div>
           {/* Right — text */}
           <div
-            className="flex flex-col justify-center text-white p-[24px_20px_30px_20px] lg:p-[110px_120px_200px_60px]"
+            className="flex flex-col justify-center text-white p-[24px_20px_30px_20px] lg:p-[100px_120px_160px_60px]"
             style={{
               flex: 1,
-              background: 'linear-gradient(to right, #3D4B98, #000000)',
+              background: '#703ff5',
             }}
           >
             <h1
-              className="text-[20px] leading-[26px] md:text-[40px] md:leading-[48px]"
+              className="text-[20px] leading-[26px] uppercase md:text-[40px] md:leading-[48px]"
               style={{
                 fontFamily: "'PP Monument Extended'",
                 fontWeight: 900,
@@ -100,9 +100,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
               {outcome}
             </h1>
             <p
-              className="text-[13px] leading-[17px] md:text-[20px] md:leading-[24px] mt-[16px] md:mt-[70px]"
+              className="text-[13px] leading-[17px] md:text-[30px] md:leading-[36px] mt-[16px] md:mt-[56px]"
               style={{
-                fontFamily: "'PP Monument Wide'",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: 400,
               }}
             >
@@ -112,9 +112,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
         </div>
 
         {/* Part 2 — Decision Style card */}
-        <div className="flex justify-end relative mb-0 lg:mb-[-70px]" style={cascade(phase, 1)}>
+        <div className="relative mb-0 flex flex-col lg:mb-[-100px] lg:flex-row lg:justify-end" style={cascade(phase, 1)}>
           <div
-            className="relative w-full lg:w-[720px] translate-y-0 lg:translate-x-[50px] lg:-translate-y-[70px]"
+            className="relative w-full lg:w-[720px] translate-y-0 lg:translate-x-[-17px] lg:-translate-y-[78px]"
           >
             {/* Style icon circle — desktop */}
             <div
@@ -123,7 +123,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 width: '120px',
                 height: '120px',
                 borderRadius: '50%',
-                backgroundColor: '#A586FF',
+                backgroundColor: '#ccb0f9',
                 top: '20px',
                 left: '-96px',
                 transformOrigin: 'center center',
@@ -169,17 +169,20 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 </div>
               </div>
               <p
+                className="uppercase"
                 style={{
+                  color: '#703ff5',
                   fontFamily: "'PP Monument Wide'",
-                  fontWeight: 400,
-                  fontSize: '10px',
-                  lineHeight: '12px',
+                  fontWeight: 900,
+                  fontSize: '14px',
+                  lineHeight: '16px',
+                  letterSpacing: '3px',
                 }}
               >
                 Your Decision Style
               </p>
               <h2
-                className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] mt-[16px] md:mt-[29px]"
+                className="mt-[16px] text-[22px] leading-[28px] uppercase md:mt-[18px] md:text-[30px] md:leading-[36px]"
                 style={{
                   fontFamily: "'PP Monument Extended'",
                   fontWeight: 900,
@@ -188,9 +191,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 {style}
               </h2>
               <p
-                className="text-[13px] leading-[16px] md:text-[15px] md:leading-[18px] mt-[20px] md:mt-[40px]"
+                className="text-[13px] leading-[16px] md:text-[17px] md:leading-[22px] mt-[20px] md:mt-[30px]"
                 style={{
-                  fontFamily: "'PP Monument Wide'",
+                  fontFamily: "'Inter', sans-serif",
                   fontWeight: 400,
                 }}
               >
@@ -198,26 +201,21 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Restart */}
-        <div className="flex justify-center mt-0 lg:mt-[28px]" style={{ position: 'relative', zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: 'cascade-in 500ms ease 300ms forwards' } : phase === 'exit' ? { animation: 'cascade-out 333ms ease forwards' } : {}) }}>
-          <button
-            onClick={onRestart}
-            className="hover:opacity-90 transition-opacity h-[42px] md:h-[52px] w-[160px] md:w-[200px] text-[14px] md:text-[20px]"
-            style={{
-              fontFamily: "'PP Monument Wide', sans-serif",
-              fontWeight: 900,
-              lineHeight: '24px',
-              color: '#FFFFFF',
-              background: '#3D4B98',
-              borderRadius: '26px',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Play Again
-          </button>
+          {/* Restart */}
+          <div className="mt-4 flex justify-center lg:absolute lg:bottom-[78px] lg:left-0 lg:mt-0 lg:justify-start" style={{ zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: 'cascade-in 500ms ease 300ms forwards' } : phase === 'exit' ? { animation: 'cascade-out 333ms ease forwards' } : {}) }}>
+            <button
+              onClick={onRestart}
+              className="group flex h-[66px] w-[212px] items-center justify-center gap-6 rounded-[33px] border-4 border-white bg-transparent text-[22px] text-white transition-all active:scale-[1.2] active:!bg-[#773cf5] md:text-[24px]"
+              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, lineHeight: 1 }}
+            >
+              Play Again
+              <svg className="h-6 w-6 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

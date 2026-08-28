@@ -11,7 +11,7 @@ export function TopBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 lg:px-10 lg:py-10 lg:bg-transparent"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 lg:px-14 lg:py-14 lg:bg-transparent"
       style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.8), rgba(10,10,10,0))' }}
     >
       {/* Back button */}
@@ -24,7 +24,7 @@ export function TopBar() {
         onClick={() => { window.location.href = '/'; }}
       >
         <svg
-          className="w-7 h-7 lg:w-10 lg:h-10"
+          className="w-7 h-7 lg:w-12 lg:h-12"
           viewBox="0 0 49 49"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -55,6 +55,7 @@ export function TopBar() {
 
       {/* Logo link */}
       <a
+        className="invisible"
         href="https://www.paymentology.com"
         target="_blank"
         rel="noopener noreferrer"
