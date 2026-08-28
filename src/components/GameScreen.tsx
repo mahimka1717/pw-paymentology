@@ -139,7 +139,7 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — space always reserved */}
-            <div ref={buttonsAreaRef} className="relative mt-[16px] lg:mt-[28px] h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
+            <div ref={buttonsAreaRef} className="relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
@@ -266,7 +266,7 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] text-[14px] h-[48px] md:text-[20px]"
+                      className="h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px]"
                       style={{
                         fontFamily: "'Inter', sans-serif",
                         fontWeight: 400,
@@ -288,7 +288,7 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="group flex h-[48px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:text-[20px]"
+                    className="group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px]"
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 400,

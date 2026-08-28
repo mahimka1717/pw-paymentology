@@ -41,7 +41,7 @@ export function OptionCard({ title, description, selected, disabled, onSelect, a
       </h4>
       <p
         style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400 }}
-        className={`text-[16px] leading-[19px] transition-colors duration-200 ${selected ? 'text-white' : disabled ? 'text-[#4B5563]' : 'text-[#4B5563] group-hover:text-white'}`}
+        className={`text-[14px] leading-[16px] transition-colors duration-200 md:text-[16px] md:leading-[19px] ${selected ? 'text-white' : disabled ? 'text-[#4B5563]' : 'text-[#4B5563] group-hover:text-white'}`}
       >
         {description}
       </p>

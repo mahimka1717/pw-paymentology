@@ -25,9 +25,9 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     return { right: 0 };
   };
   return (
-    <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] pt-[20px] pr-[52px] pb-[20px] pl-[48px] md:pt-[40px] md:pb-[40px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
+    <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       {/* Scenario header — single line */}
-      <div className="mb-[12px] pl-[20px] flex flex-col gap-[12px]">
+      <div className="mb-[12px] flex flex-col gap-[12px] md:pl-[20px]">
         <h2 className="uppercase text-[16px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
@@ -38,7 +38,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
             return (
               <p
                 key={index}
-                className={isEmphasizedLastParagraph ? 'pt-[30px] text-[20px] leading-[24px]' : 'text-[16px] leading-[19px]'}
+                className={isEmphasizedLastParagraph ? 'pt-[10px] text-[16px] leading-[20px] md:pt-[30px] md:text-[20px] md:leading-[24px]' : 'text-[14px] leading-[16px] md:text-[16px] md:leading-[19px]'}
                 style={{ fontWeight: isEmphasizedLastParagraph ? 500 : 400 }}
               >
                 {paragraph}
