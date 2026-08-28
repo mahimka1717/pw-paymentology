@@ -44,11 +44,11 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch px-6 pt-0 pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:items-center lg:pb-10">
       <div
         className="city fixed left-1/2 top-1/2 z-20 hidden transition-all duration-700 ease-in-out lg:block"
         style={{
-          width: '900px',
+          width: 'clamp(380px, calc(71.6253vw - 353.358px), 900px)',
           transformOrigin: 'center center',
           opacity: phase === 'exit' ? 0 : 1,
           transform: phase === 'exit'
@@ -64,9 +64,9 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
         />
       </div>
 
-      <div className="mx-auto mt-[65px] flex w-full max-w-[87.50vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <div className="w-full lg:w-1/2 md:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
-          <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
+      <div className="mx-auto flex w-full max-w-[87.50vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
+        <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] flex-1 lg:flex-none flex flex-col lg:block">
+          <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             Issuer's Playbook
           </h1>
           <p className="text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
@@ -75,10 +75,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             growth, and expansion. Every move shapes the outcome.
           </p>
           <div className="flex-1 lg:hidden" />
-          <div ref={dropdownRef} className="relative z-30 w-full max-w-[320px]" style={cascade(phase, 2, 4)}>
+          <div ref={dropdownRef} className="relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
             <button
               type="button"
-              className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[20px] text-black outline-none transition-colors"
+              className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-colors md:text-[20px]"
               style={{ fontFamily: "'Inter', sans-serif" }}
               onClick={() => setIsDropdownOpen((prev) => !prev)}
               aria-haspopup="listbox"
@@ -87,12 +87,13 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               {selectedTrackName}
             </button>
             <span
-              className={`pointer-events-none absolute right-7 top-1/2 z-30 h-0 w-0 -translate-y-1/2 border-l-[9px] border-r-[9px] border-t-[12px] border-l-transparent border-r-transparent border-t-black ${isDropdownOpen ? 'rotate-180' : 'rotate-0'}`}
+              className="track-select-arrow pointer-events-none absolute right-7 top-1/2 z-30 h-0 w-0 border-l-[9px] border-r-[9px] border-t-[12px] border-l-transparent border-r-transparent border-t-black"
+              data-open={isDropdownOpen}
               aria-hidden="true"
             />
             {isDropdownOpen && (
               <div
-                className="absolute top-[calc(100%+10px)] z-20 w-full overflow-hidden rounded-[24px] py-3"
+                className="absolute bottom-[calc(100%+10px)] z-20 w-full overflow-hidden rounded-[24px] py-3 lg:bottom-auto lg:top-[calc(100%+10px)]"
                 style={{ background: '#703ff5' }}
                 role="listbox"
               >
@@ -113,7 +114,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               </div>
             )}
           </div>
-          <div className="lg:hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 450ms forwards' } : { animation: 'city-out 333ms ease forwards' }}>
+          <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'mobile-city-in 500ms ease 450ms forwards' } : { animation: 'mobile-city-out 333ms ease forwards' }}>
             <InteractiveCity
               hoveredTrackId={hoveredTrackId}
               onHoverTrack={onHoverTrack}
@@ -121,7 +122,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               className="w-full"
             />
           </div>
-          <div className="flex-1 lg:hidden" />
+          <div className="order-3 flex-1 lg:hidden" />
         </div>
 
         <div className="w-full lg:w-1/2">

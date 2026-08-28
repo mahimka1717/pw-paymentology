@@ -58,15 +58,6 @@ body[data-screen='select'] {
   background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
 }
 
-body[data-screen='select']::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: url('/newbg/trackSelectScreen.png') top center / cover no-repeat;
-  opacity: 0;
-}
-
 body[data-screen='intro'] {
   background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
 }
@@ -103,7 +94,8 @@ body[data-screen='result']::before {
 
 @media (min-width: 1024px) {
   body {
-    --topbar-h: 10rem;
+    --topbar-padding-y: clamp(20px, calc(11.5385vh - 68.6154px), 56px);
+    --topbar-h: calc(3rem + var(--topbar-padding-y) + var(--topbar-padding-y));
   }
 }
 
@@ -132,6 +124,24 @@ h6 {
 .dropdown-track-item.is-highlighted {
   color: #d2affe;
   transform: translateX(6px);
+}
+
+.track-select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.track-select-arrow[data-open='true'] {
+  transform: translateY(calc(-50% + 1px));
+}
+
+@media (min-width: 1024px) {
+  .track-select-arrow {
+    transform: translateY(calc(-50% + 1px));
+  }
+
+  .track-select-arrow[data-open='true'] {
+    transform: translateY(-50%) rotate(180deg);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -255,6 +265,28 @@ h6 {
 @keyframes city-out {
   from { opacity: 1; transform: scale(1); }
   to   { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes mobile-city-in {
+  from { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  to   { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes mobile-city-out {
+  from { opacity: 1; transform: translateX(-50%) scale(1); }
+  to   { opacity: 0; transform: translateX(-50%) scale(0.8); }
+}
+
+@media (min-width: 768px) {
+  @keyframes mobile-city-in {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes mobile-city-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.8); }
+  }
 }
 
 @keyframes fade-in-only {

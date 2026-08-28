@@ -27,7 +27,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
   return (
     <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] pt-[20px] pr-[52px] pb-[20px] pl-[48px] md:pt-[40px] md:pb-[40px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       {/* Scenario header — single line */}
-      <div className="mb-[12px] pl-[20px] flex items-baseline flex-wrap gap-[12px]">
+      <div className="mb-[12px] pl-[20px] flex flex-col gap-[12px]">
         <h2 className="uppercase text-[16px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>

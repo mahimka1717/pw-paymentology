@@ -94,9 +94,9 @@ export function GameScreen({
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-start justify-center px-4 md:px-6 pb-4 md:pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10">
       <div className="w-full max-w-[87.5vw]">
-        <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
+        <div className="flex flex-col lg:h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
           <aside className="hidden flex-shrink-0 lg:block lg:w-[41%]">

@@ -18,7 +18,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-6 pt-0 pb-10">
       <div className="w-full max-w-[87.50vw]">
-        <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] lg:min-h-[844px] flex flex-col">
+        <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] flex flex-col">
           <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase text-white" style={cascade(phase, 0, 4)}>
             {track.name}
           </h1>
