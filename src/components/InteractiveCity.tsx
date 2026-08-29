@@ -22,6 +22,13 @@ const imageWidth = 2670;
 const imageHeight = 2508;
 const calloutWidth = 900;
 const calloutHeight = calloutWidth * imageHeight / imageWidth;
+const calloutOrder = ['government', 'fintech', 'banks', 'remittance', 'digital-banks', 'telco'];
+
+function calloutDelay(trackId: string, step: 'dot' | 'line' | 'label') {
+  const order = calloutOrder.indexOf(trackId);
+  const stepDelay = step === 'dot' ? 0 : step === 'line' ? 150 : 500;
+  return `${500 + order * 50 + stepDelay}ms`;
+}
 
 const cityTracks: CityTrack[] = [
   { id: 'fintech', name: 'Fintech', image: 'fintech', bounds: [759, 336, 1171, 1303], anchor: [319, 275.5], endpoint: [72.5, 275.5], mobileEndpoint: [319, 90] },
@@ -35,13 +42,14 @@ const cityTracks: CityTrack[] = [
 export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, className = '' }: Props) {
   return (
     <div
+      data-interactive-city
       className={`relative aspect-[2670/2508] select-none ${className}`}
       style={{ isolation: 'auto', containerType: 'inline-size' }}
     >
       <img
         src="/img/city/city.png"
         alt="Choose a Paymentology track from the interactive city"
-        className="absolute inset-0 h-full w-full object-contain"
+        className="city-base-enter absolute inset-0 h-full w-full object-contain"
         draggable={false}
       />
 
@@ -104,17 +112,22 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               onBlur={() => onHoverTrack(null)}
               onClick={() => onSelectTrack(track.id)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') onSelectTrack(track.id);
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectTrack(track.id);
+                }
               }}
             >
               <line
-                className="lg:hidden"
+                className="city-callout-line lg:hidden"
                 x1={mobileAnchor[0]}
                 y1={mobileAnchor[1]}
                 x2={track.mobileEndpoint[0]}
                 y2={track.mobileEndpoint[1]}
                 stroke={color}
                 strokeWidth="1"
+                pathLength="1"
+                style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
               <line
                 className="lg:hidden"
@@ -127,13 +140,15 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                 pointerEvents="stroke"
               />
               <line
-                className="hidden lg:block"
+                className="city-callout-line hidden lg:block"
                 x1={track.anchor[0]}
                 y1={track.anchor[1]}
                 x2={track.endpoint[0]}
                 y2={track.endpoint[1]}
                 stroke={color}
                 strokeWidth="1"
+                pathLength="1"
+                style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
               <line
                 className="hidden lg:block"
@@ -145,8 +160,8 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                 strokeWidth="21"
                 pointerEvents="stroke"
               />
-              <circle className="lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" fill={color} />
-              <circle className="hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="14" fill={color} />
+              <circle className="city-callout-dot lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" fill={color} style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
+              <circle className="city-callout-dot hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="14" fill={color} style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
             </g>
           );
         })}
@@ -160,8 +175,9 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
           <div key={`${track.id}-callout-label`}>
             <button
               type="button"
-              className="absolute z-30 whitespace-nowrap border-0 text-white outline-none transition-colors lg:hidden"
+              className="city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none transition-colors lg:hidden"
               style={{
+                animationDelay: calloutDelay(track.id, 'label'),
                 left: `${track.mobileEndpoint[0] / calloutWidth * 100}%`,
                 top: `${track.mobileEndpoint[1] / calloutHeight * 100}%`,
                 transform: track.id === 'fintech'
@@ -191,8 +207,9 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
             </button>
             <button
               type="button"
-              className="absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none transition-colors lg:block"
+              className="city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none transition-colors lg:block"
               style={{
+                animationDelay: calloutDelay(track.id, 'label'),
                 left: `${track.endpoint[0] / calloutWidth * 100}%`,
                 top: `${track.endpoint[1] / calloutHeight * 100}%`,
                 transform: labelOnRight ? 'translateY(-50%)' : 'translate(-100%, -50%)',

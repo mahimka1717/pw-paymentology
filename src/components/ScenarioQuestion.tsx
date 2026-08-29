@@ -19,6 +19,18 @@ interface Props {
 export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onChoose }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
 
+  const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+
+    const options = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[data-option-card]:not(:disabled)'));
+    const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement);
+    if (currentIndex === -1 || options.length === 0) return;
+
+    event.preventDefault();
+    const direction = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 1;
+    options[(currentIndex + direction + options.length) % options.length].focus();
+  };
+
   const getPopupX = (idx: number): CSSProperties => {
     if (idx === 0) return { left: 0 };
     if (idx === 1) return { left: '50%', transform: 'translateX(-50%)' };
@@ -50,7 +62,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Option cards */}
       <div className="relative flex-[3] min-h-0">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]" onKeyDown={handleOptionKeyDown}>
           {scenario.options.map((option, index) => (
             <div key={option.id} className="relative h-full">
               {/* Mobile/tablet feedback — above selected card */}

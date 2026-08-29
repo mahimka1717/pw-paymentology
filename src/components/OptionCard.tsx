@@ -17,6 +17,7 @@ export function OptionCard({ title, description, selected, disabled, onSelect, a
 
   return (
     <button
+      data-option-card
       onClick={onSelect}
       disabled={disabled}
       onAnimationEnd={() => setAnimDone(true)}
