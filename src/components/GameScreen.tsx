@@ -96,7 +96,7 @@ export function GameScreen({
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10">
       <div className="w-full max-w-[87.5vw]">
-        <div className="flex flex-col lg:h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] lg:flex-row lg:items-stretch lg:gap-6">
+        <div className="flex flex-col lg:h-[clamp(650px,calc(100vh-var(--topbar-h)-2.5rem),750px)] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
           <aside className="hidden flex-shrink-0 lg:block lg:w-[calc(31%_+_10%_*_clamp(0,(100vh_-_800px)_/_280px,1))]">
@@ -104,7 +104,38 @@ export function GameScreen({
           </aside>
 
           {/* Right col — 8/12 */}
-          <main className="flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0">
+          <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_87.5vw_+_574px))]">
+            {showInsight && (
+              <div className="pointer-events-none absolute bottom-0 left-[var(--insight-anchor-x)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
+                <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
+                  <DidYouKnowMascot />
+                </div>
+              </div>
+            )}
+            {showInsight && !isClosingInsight && (
+              <div
+                ref={insightPopupRef}
+                className="absolute bottom-[20px] left-[calc(var(--insight-anchor-x)-574px)] z-40 hidden w-[500px] rounded-[16px] bg-white p-[40px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] lg:block"
+                style={{ animation: 'slide-in-from-right 0.4s cubic-bezier(0.22,1,0.36,1) forwards' }}
+              >
+                <button
+                  onClick={handleCloseInsight}
+                  className="close-btn-spin"
+                  style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
+                  </svg>
+                </button>
+                <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, fontSize: '20px', lineHeight: '26px', color: '#3E4D9C' }}>
+                  {scenario.insight}
+                </p>
+                <div
+                  className="absolute bottom-[50px] right-[-14px] h-0 w-0 border-y-[8px] border-l-[14px] border-y-transparent border-l-white"
+                />
+              </div>
+            )}
+
             <div style={cascade(phase, 0)}>
               <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
             </div>
@@ -142,6 +173,19 @@ export function GameScreen({
             <div ref={buttonsAreaRef} className="relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
+                  {showInsight && (
+                    <div
+                      ref={mascotRef}
+                      className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[75px] w-[54px] -translate-x-1/2 overflow-hidden lg:hidden"
+                    >
+                      <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
+                        <div className="scale-50 origin-top-left lg:scale-100">
+                          <DidYouKnowMascot />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Mobile insight popup */}
                   {showInsight && (
                     <div
@@ -191,71 +235,6 @@ export function GameScreen({
                     ? { animation: 'fade-out 250ms ease forwards' }
                     : { opacity: 0, animation: 'fade-in-only 500ms ease forwards' }
                   }>
-                    {showInsight && (
-                      <>
-                        {/* Mascot */}
-                        <div
-                          ref={mascotRef}
-                          className="absolute z-40"
-                          style={{
-                            bottom: 'calc(100% + 2px)',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: window.innerWidth >= 1024 ? '108px' : '54px',
-                            height: window.innerWidth >= 1024 ? '150px' : '75px',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                            <div className="scale-50 origin-top-left lg:scale-100">
-                              <DidYouKnowMascot />
-                            </div>
-                          </div>
-                        </div>
-                        {/* Insight text popup — desktop: left of mascot; mobile: above mascot */}
-                        {!isClosingInsight && <>
-                          {/* Desktop popup */}
-                          <div
-                            ref={insightPopupRef}
-                            className="absolute slide-in-from-right z-40 hidden lg:block"
-                            style={{
-                              bottom: 'calc(100% + 20px)',
-                              right: 'calc(50% + 74px)',
-                              width: '500px',
-                              background: '#FFFFFF',
-                              borderRadius: '16px',
-                              padding: '40px',
-                              boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
-                            }}
-                          >
-                            <button
-                              onClick={handleCloseInsight}
-                              className="close-btn-spin"
-                              style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
-                            >
-                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
-                              </svg>
-                            </button>
-                            <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, fontSize: '20px', lineHeight: '26px', color: '#3E4D9C' }}>
-                              {scenario.insight}
-                            </p>
-                            {/* Triangle pointer — right side */}
-                            <div style={{
-                              position: 'absolute',
-                              right: '-14px',
-                              bottom: '50px',
-                              width: 0,
-                              height: 0,
-                              borderTop: '8px solid transparent',
-                              borderBottom: '8px solid transparent',
-                              borderLeft: '14px solid #FFFFFF',
-                            }} />
-                          </div>
-                          {/* Mobile popup — above mascot, centered on screen */}
-                        </>}
-                      </>
-                    )}
                     <button
                       ref={insightToggleRef}
                       onClick={() => {
