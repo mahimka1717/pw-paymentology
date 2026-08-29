@@ -115,7 +115,7 @@ export function GameScreen({
             {/* Mobile track title */}
             <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>
               <h2
-                className="text-[15px] leading-[20px] md:text-[40px] md:leading-[48px] font-bold uppercase"
+                className="text-[18px] leading-[20px] md:text-[40px] md:leading-[48px] font-bold uppercase"
                 style={{ color: `#fff`, fontFamily: "'PP Monument Wide', sans-serif" }}
               >
                 {track.name}

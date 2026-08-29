@@ -35,7 +35,7 @@ export function OptionCard({ title, description, selected, disabled, onSelect, a
       }}
     >
       <h4
-        className={`mb-[10px] lg:mb-[20px] uppercase text-[14px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px] transition-colors duration-200 ${selected ? 'text-[#CCB0F9]' : disabled ? 'text-[#703ff5]' : 'text-[#703ff5] group-hover:text-[#CCB0F9]'}`}
+        className={`mb-[10px] lg:mb-[20px] uppercase text-[12px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px] transition-colors duration-200 ${selected ? 'text-[#CCB0F9]' : disabled ? 'text-[#703ff5]' : 'text-[#703ff5] group-hover:text-[#CCB0F9]'}`}
         style={{ fontFamily: "'PP Monument Extended'", fontWeight: 900 }}
       >
         {title}

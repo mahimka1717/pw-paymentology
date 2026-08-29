@@ -1,13 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function TopBar() {
   const [backHovered, setBackHovered] = useState(false);
   const [backPressed, setBackPressed] = useState(false);
+  const [touchLabelOpen, setTouchLabelOpen] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
   const [logoPressed, setLogoPressed] = useState(false);
+  const backControlRef = useRef<HTMLDivElement>(null);
+  const lastPointerTypeRef = useRef('mouse');
 
   const backColor = backPressed ? '#A586FF' : 'white';
   const logoFill = logoPressed ? '#A586FF' : logoHovered ? '#D2AFFE' : 'white';
+  const showBackLabel = backHovered || touchLabelOpen;
+
+  useEffect(() => {
+    if (!touchLabelOpen) return;
+
+    const timeout = setTimeout(() => setTouchLabelOpen(false), 15000);
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!backControlRef.current?.contains(event.target as Node)) {
+        setTouchLabelOpen(false);
+      }
+    };
+    const closeOnScroll = () => setTouchLabelOpen(false);
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    window.addEventListener('scroll', closeOnScroll, { passive: true, capture: true });
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      window.removeEventListener('scroll', closeOnScroll, true);
+    };
+  }, [touchLabelOpen]);
+
+  const navigateBack = () => {
+    window.location.href = '/';
+  };
+
+  const handleBackClick = () => {
+    const isTouchInteraction = lastPointerTypeRef.current !== 'mouse'
+      || window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+    if (isTouchInteraction) {
+      setTouchLabelOpen((open) => !open);
+      return;
+    }
+
+    navigateBack();
+  };
 
   return (
     <div
@@ -15,43 +55,63 @@ export function TopBar() {
       style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.8), rgba(10,10,10,0))' }}
     >
       {/* Back button */}
-      <button
+      <div
+        ref={backControlRef}
         className="flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer"
-        onMouseEnter={() => setBackHovered(true)}
-        onMouseLeave={() => { setBackHovered(false); setBackPressed(false); }}
-        onMouseDown={() => setBackPressed(true)}
-        onMouseUp={() => setBackPressed(false)}
-        onClick={() => { window.location.href = '/'; }}
+        onPointerEnter={(event) => {
+          if (event.pointerType === 'mouse') setBackHovered(true);
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === 'mouse') setBackHovered(false);
+          setBackPressed(false);
+        }}
       >
-        <svg
-          className="w-7 h-7 lg:w-12 lg:h-12"
-          viewBox="0 0 49 49"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <button
+          type="button"
+          className="border-0 bg-transparent p-0"
+          aria-label="Show return link"
+          aria-expanded={touchLabelOpen}
+          onPointerDown={(event) => {
+            lastPointerTypeRef.current = event.pointerType;
+            if (event.pointerType !== 'mouse') setBackHovered(false);
+            setBackPressed(true);
+          }}
+          onPointerUp={() => setBackPressed(false)}
+          onPointerCancel={() => setBackPressed(false)}
+          onClick={handleBackClick}
         >
-          <circle cx="24.3" cy="24.3" r="21.8" stroke={backColor} strokeWidth="5" />
-          <circle
-            cx="24.3"
-            cy="24.3"
-            r="4.94"
-            fill={backColor}
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              transform: backHovered ? 'scale(3.24)' : 'scale(1)',
-              transition: 'transform 0.25s ease',
-            }}
-          />
-        </svg>
-        {backHovered && (
-          <span
-            className="text-sm whitespace-nowrap animate-fade-in"
+          <svg
+            className="block h-7 w-7 lg:h-12 lg:w-12"
+            viewBox="0 0 49 49"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="24.3" cy="24.3" r="21.8" stroke={backColor} strokeWidth="5" />
+            <circle
+              cx="24.3"
+              cy="24.3"
+              r="4.94"
+              fill={backColor}
+              style={{
+                transformBox: 'fill-box',
+                transformOrigin: 'center',
+                transform: showBackLabel ? 'scale(3.24)' : 'scale(1)',
+                transition: 'transform 0.25s ease',
+              }}
+            />
+          </svg>
+        </button>
+        {showBackLabel && (
+          <button
+            type="button"
+            className="animate-fade-in whitespace-nowrap border-0 bg-transparent p-0 text-sm"
             style={{ color: backColor, fontWeight: 900 }}
+            onClick={navigateBack}
           >
             Return to The Issuer Academy
-          </span>
+          </button>
         )}
-      </button>
+      </div>
 
       {/* Logo link */}
       <a
