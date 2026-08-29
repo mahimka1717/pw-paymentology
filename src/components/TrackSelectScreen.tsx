@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
 import { InteractiveCity } from './InteractiveCity';
+import { animationMs } from '../utils/animationTiming';
 
 import type { Phase } from './App';
 import type { CSSProperties, KeyboardEvent } from 'react';
@@ -14,8 +15,8 @@ interface Props {
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
-  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
-  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
+  return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
@@ -87,8 +88,9 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:items-center lg:pb-10">
       <div
-        className="city fixed left-1/2 top-1/2 z-20 hidden transition-all duration-700 ease-in-out lg:block"
+        className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
         style={{
+          transitionDuration: animationMs(700),
           width: 'clamp(380px, calc(71.6253vw - 353.358px), 900px)',
           transformOrigin: 'center center',
           opacity: phase === 'exit' ? 0 : 1,
@@ -160,7 +162,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               </div>
             )}
           </div>
-          <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: 'mobile-city-out 333ms ease forwards' } : {}}>
+          <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}}>
             <InteractiveCity
               hoveredTrackId={hoveredTrackId}
               onHoverTrack={onHoverTrack}

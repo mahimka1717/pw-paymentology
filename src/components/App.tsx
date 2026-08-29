@@ -7,6 +7,7 @@ import { GameScreen } from './GameScreen';
 import { ResultScreen } from './ResultScreen';
 import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
+import { animationMs, scaledMs } from '../utils/animationTiming';
 
 export type Phase = 'enter' | 'idle' | 'exit';
 
@@ -25,18 +26,18 @@ export default function App() {
 
   useEffect(() => {
     if (phase === 'enter') {
-      const t = setTimeout(() => setPhase('idle'), 850);
+      const t = setTimeout(() => setPhase('idle'), scaledMs(850));
       return () => clearTimeout(t);
     }
   }, [phase]);
 
   const triggerTransition = useCallback((action: () => void, delay = 550) => {
     setPhase('exit');
-    smoothScrollTo(0, 1200);
+    smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
       action();
       setPhase('enter');
-    }, delay);
+    }, scaledMs(delay));
   }, []);
 
   function renderScreen() {
@@ -104,7 +105,7 @@ export default function App() {
   const buildingIndex = game.trackId ? tracks.findIndex(t => t.id === game.trackId) : 0;
   const buildingOnIntroOrGame = game.screen === 'intro' || game.screen === 'game';
   const buildingAtIntroPosition = game.screen === 'intro' && phase !== 'exit';
-  const buildingMoveDelay = game.screen === 'intro' && phase === 'exit' ? '200ms' : '0ms';
+  const buildingMoveDelay = animationMs(game.screen === 'intro' && phase === 'exit' ? 200 : 0);
   const introBuildingOffset = game.trackId === 'telco' || game.trackId === 'government' || game.trackId === 'digital-banks' || game.trackId === 'banks' ? 200 : 100;
   const buildingTransform = game.screen === 'intro' && phase !== 'exit'
     ? 'scale(1)'
@@ -126,7 +127,7 @@ export default function App() {
             width: buildingOnIntroOrGame ? 'min(100vw, 177.7778vh)' : '100vw',
             height: buildingOnIntroOrGame ? 'min(56.25vw, 100vh)' : '56.25vw',
             transformOrigin: '65% 65%',
-            transition: `transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}, opacity 700ms ease-in-out`,
+            transition: `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
             opacity: buildingScreen ? 1 : 0,
             transform: buildingTransform,
           }}
@@ -138,7 +139,7 @@ export default function App() {
             style={{
               transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
               transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                ? `transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
+                ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
                 : undefined,
             }}
             draggable={false}

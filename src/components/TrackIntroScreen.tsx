@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Track, tracks } from '../data/tracks';
 import type { Phase } from './App';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   phase: Phase;
@@ -10,8 +11,8 @@ interface Props {
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
-  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
-  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
+  return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
 export function TrackIntroScreen({ phase, track, onStart }: Props) {
@@ -36,7 +37,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
               src={`/img/buildings/building${tracks.findIndex(t => t.id === track.id)}.png`}
               alt=""
               className="w-full h-auto object-contain"
-              style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: 'city-in 500ms ease 300ms forwards' } : { animation: 'city-out 333ms ease 100ms forwards' }}
+              style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
               draggable={false}
             />
           </div>

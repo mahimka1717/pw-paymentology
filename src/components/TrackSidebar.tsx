@@ -1,6 +1,7 @@
 import { Track } from '../data/tracks';
 import type { Phase } from './App';
 import type { CSSProperties } from 'react';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   phase: Phase;
@@ -9,7 +10,7 @@ interface Props {
 
 export function TrackSidebar({ phase, track }: Props) {
   const h2Style: CSSProperties = phase === 'exit'
-      ? { color: '#FFFFFF', animation: 'cascade-out 333ms ease forwards' }
+      ? { color: '#FFFFFF', animation: `cascade-out ${animationMs(333)} ease forwards` }
       : { color: '#FFFFFF' };
 
   return (

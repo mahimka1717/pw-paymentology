@@ -127,6 +127,25 @@ body[data-screen='result']::before {
   }
 }
 
+@media (min-width: 1024px) and (max-height: 800px) {
+  body[data-screen='game'] .game-option-title {
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  body[data-screen='game'] .game-option-copy {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1260px) and (max-height: 800px) {
+  body[data-screen='game'] .game-option-title {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
+
 h1,
 h2,
 h3,
@@ -226,7 +245,7 @@ h6 {
 }
 
 .slide-up-reveal {
-  animation: slide-up-reveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: slide-up-reveal var(--animation-450ms, 450ms) cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes slide-down-hide {
@@ -235,7 +254,7 @@ h6 {
 }
 
 .slide-down-hide {
-  animation: slide-down-hide 0.35s cubic-bezier(0.55, 0, 0.78, 0) forwards;
+  animation: slide-down-hide var(--animation-350ms, 350ms) cubic-bezier(0.55, 0, 0.78, 0) forwards;
 }
 
 @keyframes slide-in-from-right {
@@ -257,7 +276,7 @@ h6 {
 
 .slide-in-from-right {
   opacity: 0;
-  animation: slide-in-from-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: slide-in-from-right var(--animation-400ms, 400ms) cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes slide-down-in {
@@ -318,25 +337,25 @@ h6 {
 .city-base-enter {
   opacity: 0;
   transform-origin: center;
-  animation: city-base-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) 250ms forwards;
+  animation: city-base-enter var(--animation-500ms, 500ms) cubic-bezier(0.22, 1, 0.36, 1) var(--animation-250ms, 250ms) forwards;
 }
 
 .city-callout-dot {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: city-callout-dot-enter 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: city-callout-dot-enter var(--animation-260ms, 260ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .city-callout-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: city-callout-line-enter 380ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: city-callout-line-enter var(--animation-380ms, 380ms) cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .city-callout-label {
   opacity: 0;
-  animation: city-callout-label-enter 280ms ease-out forwards;
+  animation: city-callout-label-enter var(--animation-280ms, 280ms) ease-out forwards;
 }
 
 @keyframes mobile-city-in {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   title: string;
@@ -29,20 +30,20 @@ export function OptionCard({ title, description, selected, disabled, onSelect, a
             : 'bg-white hover:bg-[#151547] hover:shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)] cursor-pointer'
       }`}
       style={{
-        ...(animDone
+        ...(animDone || selected || disabled
           ? {}
-          : { opacity: 0, animation: `option-card-in 450ms cubic-bezier(0.22,1,0.36,1) ${animDelay}ms forwards` }),
+          : { opacity: 0, animation: `option-card-in ${animationMs(450)} cubic-bezier(0.22,1,0.36,1) ${animationMs(animDelay)} forwards` }),
       }}
     >
       <h4
-        className={`mb-[10px] lg:mb-[20px] uppercase text-[12px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px] transition-colors duration-200 ${selected ? 'text-[#CCB0F9]' : disabled ? 'text-[#703ff5]' : 'text-[#703ff5] group-hover:text-[#CCB0F9]'}`}
+        className={`game-option-title mb-[10px] lg:mb-[20px] uppercase text-[12px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px] transition-colors duration-200 ${selected ? 'text-[#CCB0F9]' : disabled ? 'text-[#703ff5]' : 'text-[#703ff5] group-hover:text-[#CCB0F9]'}`}
         style={{ fontFamily: "'PP Monument Extended'", fontWeight: 900 }}
       >
         {title}
       </h4>
       <p
         style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400 }}
-        className={`text-[14px] leading-[16px] transition-colors duration-200 md:text-[16px] md:leading-[19px] ${selected ? 'text-white' : disabled ? 'text-[#4B5563]' : 'text-[#4B5563] group-hover:text-white'}`}
+        className={`game-option-copy text-[14px] leading-[16px] transition-colors duration-200 md:text-[16px] md:leading-[19px] ${selected ? 'text-white' : disabled ? 'text-[#4B5563]' : 'text-[#4B5563] group-hover:text-white'}`}
       >
         {description}
       </p>

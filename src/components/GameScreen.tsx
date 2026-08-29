@@ -8,6 +8,7 @@ import { DidYouKnowMascot } from './DidYouKnowMascot';
 import { trackTheme } from '../data/theme';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
+import { animationMs, scaledMs } from '../utils/animationTiming';
 
 interface Props {
   phase: Phase;
@@ -24,8 +25,8 @@ interface Props {
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
-  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
-  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
+  return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
 export function GameScreen({
@@ -54,7 +55,7 @@ export function GameScreen({
     setTimeout(() => {
       setShowInsight(false);
       setIsClosingInsight(false);
-    }, 350);
+    }, scaledMs(350));
   };
 
   useEffect(() => {
@@ -75,20 +76,20 @@ export function GameScreen({
     setShowInsight(false);
     setTimeout(() => {
       if (window.innerWidth < 768) {
-        smoothScrollTo(document.documentElement.scrollHeight, 1200);
+        smoothScrollTo(document.documentElement.scrollHeight, scaledMs(1200));
       }
-    }, 100);
+    }, scaledMs(100));
   };
 
   const handleNext = () => {
     setButtonsExiting(true);
-    smoothScrollTo(0, 1200);
+    smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
       setButtonsExiting(false);
       setShowFeedback(false);
       setShowInsight(false);
       onNext();
-    }, 250);
+    }, scaledMs(250));
   };
 
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
@@ -116,7 +117,7 @@ export function GameScreen({
               <div
                 ref={insightPopupRef}
                 className="absolute bottom-[20px] left-[calc(var(--insight-anchor-x)-574px)] z-40 hidden w-[500px] rounded-[16px] bg-white p-[40px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] lg:block"
-                style={{ animation: 'slide-in-from-right 0.4s cubic-bezier(0.22,1,0.36,1) forwards' }}
+                style={{ animation: `slide-in-from-right ${animationMs(400)} cubic-bezier(0.22,1,0.36,1) forwards` }}
               >
                 <button
                   onClick={handleCloseInsight}
@@ -199,8 +200,8 @@ export function GameScreen({
                         borderRadius: '12px',
                         boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
                         animation: isClosingInsight
-                          ? 'slide-up-out 0.3s ease forwards'
-                          : 'slide-down-in 0.4s cubic-bezier(0.22,1,0.36,1) forwards',
+                          ? `slide-up-out ${animationMs(300)} ease forwards`
+                          : `slide-down-in ${animationMs(400)} cubic-bezier(0.22,1,0.36,1) forwards`,
                       }}
                     >
                       <button
@@ -232,8 +233,8 @@ export function GameScreen({
 
                   {/* Did you know mascot + button */}
                   <div className="relative" style={buttonsExiting
-                    ? { animation: 'fade-out 250ms ease forwards' }
-                    : { opacity: 0, animation: 'fade-in-only 500ms ease forwards' }
+                    ? { animation: `fade-out ${animationMs(250)} ease forwards` }
+                    : { opacity: 0, animation: `fade-in-only ${animationMs(500)} ease forwards` }
                   }>
                     <button
                       ref={insightToggleRef}
@@ -278,8 +279,8 @@ export function GameScreen({
                       border: '2px solid #FFFFFF',
                       cursor: 'pointer',
                       ...(buttonsExiting
-                        ? { animation: 'fade-out 250ms ease forwards' }
-                        : { opacity: 0, animation: 'fade-in-only 500ms ease 50ms forwards' }),
+                        ? { animation: `fade-out ${animationMs(250)} ease forwards` }
+                        : { opacity: 0, animation: `fade-in-only ${animationMs(500)} ease ${animationMs(50)} forwards` }),
                     }}
                   >
                     Next

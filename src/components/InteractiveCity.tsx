@@ -1,4 +1,5 @@
 import { trackTheme } from '../data/theme';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   hoveredTrackId: string | null;
@@ -27,7 +28,7 @@ const calloutOrder = ['government', 'fintech', 'banks', 'remittance', 'digital-b
 function calloutDelay(trackId: string, step: 'dot' | 'line' | 'label') {
   const order = calloutOrder.indexOf(trackId);
   const stepDelay = step === 'dot' ? 0 : step === 'line' ? 150 : 500;
-  return `${500 + order * 50 + stepDelay}ms`;
+  return animationMs(500 + order * 50 + stepDelay);
 }
 
 const cityTracks: CityTrack[] = [

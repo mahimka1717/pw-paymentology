@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { Scenario, Score } from '../data/tracks';
 import { OptionCard } from './OptionCard';
 import { FeedbackPopup } from './FeedbackPopup';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   scenario: Scenario;
@@ -56,10 +57,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     <div className="h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       {/* Scenario header — single line */}
       <div className="mb-[12px] flex flex-col gap-[12px] md:pl-[20px]">
-        <h2 className="uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
+        <h2 className="uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }}>
           {scenario.title}
         </h2>
-        <div className="flex flex-col gap-[19px]" style={{ maxWidth: questionMaxWidth, color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
+        <div className="flex flex-col gap-[19px]" style={{ maxWidth: questionMaxWidth, color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }}>
           {questionParagraphs.map((paragraph, index) => {
             const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
 

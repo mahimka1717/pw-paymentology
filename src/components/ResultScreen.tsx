@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { Score } from '../data/tracks';
 import { outcomeDescriptions, Outcome, Style } from '../data/scoring';
 import type { Phase } from './App';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   phase: Phase;
@@ -15,8 +16,8 @@ interface Props {
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
-  if (phase === 'enter') return { opacity: 0, animation: `cascade-in 500ms ease ${index * 150}ms forwards` };
-  return { animation: `cascade-out 333ms ease ${(total - 1 - index) * 100}ms forwards` };
+  if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
+  return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
 const outcomeImages: Record<Outcome, string> = {
@@ -128,9 +129,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                 left: '-96px',
                 transformOrigin: 'center center',
                 ...(phase === 'enter'
-                  ? { opacity: 0, animation: 'scale-in 500ms ease 300ms forwards' }
+                  ? { opacity: 0, animation: `scale-in ${animationMs(500)} ease ${animationMs(300)} forwards` }
                   : phase === 'exit'
-                    ? { animation: 'cascade-out 333ms ease forwards' }
+                    ? { animation: `cascade-out ${animationMs(333)} ease forwards` }
                     : {}),
               }}
             >
@@ -158,9 +159,9 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                   right: '-10px',
                   transformOrigin: 'center center',
                   ...(phase === 'enter'
-                    ? { opacity: 0, animation: 'scale-in 500ms ease 300ms forwards' }
+                    ? { opacity: 0, animation: `scale-in ${animationMs(500)} ease ${animationMs(300)} forwards` }
                     : phase === 'exit'
-                      ? { animation: 'cascade-out 333ms ease forwards' }
+                      ? { animation: `cascade-out ${animationMs(333)} ease forwards` }
                       : {}),
                 }}
               >
@@ -203,7 +204,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
           </div>
 
           {/* Restart */}
-          <div className="mt-4 flex justify-center lg:absolute lg:bottom-[78px] lg:left-0 lg:mt-0 lg:justify-start" style={{ zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: 'cascade-in 500ms ease 300ms forwards' } : phase === 'exit' ? { animation: 'cascade-out 333ms ease forwards' } : {}) }}>
+          <div className="mt-4 flex justify-center lg:absolute lg:bottom-[78px] lg:left-0 lg:mt-0 lg:justify-start" style={{ zIndex: 10, ...(phase === 'enter' ? { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : phase === 'exit' ? { animation: `cascade-out ${animationMs(333)} ease forwards` } : {}) }}>
             <button
               onClick={onRestart}
               className="group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[33px] border-2 border-white bg-transparent px-[20px] text-[16px] font-normal text-white transition-all active:scale-[1.2] active:!bg-[#773cf5] md:h-[66px] md:w-[212px] md:text-[24px] md:font-semibold"
