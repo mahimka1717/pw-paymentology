@@ -19,7 +19,10 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:overflow-x-visible">
       <div className="w-full max-w-[87.50vw]">
         <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] flex flex-col">
-          <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[30px] md:mb-[50px] text-left uppercase text-white" style={cascade(phase, 0, 4)}>
+          <h1 className="text-[22px] leading-[28px] font-bold mb-[30px] text-left uppercase text-white md:text-[30px] md:leading-[36px] md:mb-[50px] lg:hidden" style={cascade(phase, 0, 4)}>
+            {track.name}
+          </h1>
+          <h1 className="mb-[50px] hidden text-left text-[30px] font-bold uppercase leading-[36px] text-white lg:block" style={phase === 'exit' ? {} : cascade(phase, 0, 4)}>
             {track.name}
           </h1>
           <div className="max-w-[620px] text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 lg:mb-[92px] text-white flex flex-col gap-4" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>

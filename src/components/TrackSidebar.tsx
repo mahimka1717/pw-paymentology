@@ -8,9 +8,7 @@ interface Props {
 }
 
 export function TrackSidebar({ phase, track }: Props) {
-  const h2Style: CSSProperties = phase === 'enter'
-    ? { color: '#FFFFFF', opacity: 0, animation: 'cascade-in 500ms ease forwards' }
-    : phase === 'exit'
+  const h2Style: CSSProperties = phase === 'exit'
       ? { color: '#FFFFFF', animation: 'cascade-out 333ms ease forwards' }
       : { color: '#FFFFFF' };
 
