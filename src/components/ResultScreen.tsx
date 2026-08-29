@@ -91,7 +91,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
             }}
           >
             <h1
-              className="text-[20px] leading-[26px] uppercase md:text-[40px] md:leading-[48px]"
+              className="text-[20px] leading-[26px] uppercase md:text-[40px] md:leading-[48px] lg:text-[clamp(30px,calc(3.5714vh_+_1.4286px),40px)] lg:leading-[clamp(36px,calc(4.2857vh_+_1.7143px),48px)]"
               style={{
                 fontFamily: "'PP Monument Extended'",
                 fontWeight: 900,
@@ -100,7 +100,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
               {outcome}
             </h1>
             <p
-              className="text-[13px] leading-[17px] md:text-[30px] md:leading-[36px] mt-[16px] md:mt-[56px]"
+              className="text-[13px] leading-[17px] md:text-[30px] md:leading-[36px] lg:text-[clamp(20px,calc(3.5714vh_-_8.5714px),30px)] lg:leading-[clamp(24px,calc(4.2857vh_-_10.2857px),36px)] mt-[16px] md:mt-[56px]"
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 400,

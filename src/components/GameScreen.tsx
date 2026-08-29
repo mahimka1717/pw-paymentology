@@ -99,7 +99,7 @@ export function GameScreen({
         <div className="flex flex-col lg:h-[min(750px,calc(100vh-var(--topbar-h)-2.5rem))] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
-          <aside className="hidden flex-shrink-0 lg:block lg:w-[41%]">
+          <aside className="hidden flex-shrink-0 lg:block lg:w-[calc(31%_+_10%_*_clamp(0,(100vh_-_800px)_/_280px,1))]">
             <TrackSidebar phase={phase} track={track} />
           </aside>
 
@@ -110,7 +110,7 @@ export function GameScreen({
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
-            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
+            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[clamp(40px,calc(50vh_-_360px),90px)]" />
 
             {/* Mobile track title */}
             <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>

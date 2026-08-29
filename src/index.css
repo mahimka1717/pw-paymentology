@@ -108,6 +108,14 @@ body[data-screen='result']::before {
 }
 
 @media (min-width: 1024px) {
+  html:has(body[data-screen='result']) {
+    scrollbar-width: none;
+  }
+
+  html:has(body[data-screen='result'])::-webkit-scrollbar {
+    display: none;
+  }
+
   body {
     --topbar-padding-y: clamp(20px, calc(11.5385vh - 68.6154px), 56px);
     --topbar-h: calc(3rem + var(--topbar-padding-y) + var(--topbar-padding-y));

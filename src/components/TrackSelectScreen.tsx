@@ -93,8 +93,8 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
           transformOrigin: 'center center',
           opacity: phase === 'exit' ? 0 : 1,
           transform: phase === 'exit'
-            ? 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1.4)'
-            : 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1)',
+            ? 'translate(calc(-50% + 242px), calc(-50% + clamp(95px, calc(16.6667vh - 35px), 145px))) scale(1.4)'
+            : 'translate(calc(-50% + 242px), calc(-50% + clamp(95px, calc(16.6667vh - 35px), 145px))) scale(1)',
         }}
       >
         <InteractiveCity

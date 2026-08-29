@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Scenario, Score } from '../data/tracks';
 import { OptionCard } from './OptionCard';
@@ -16,8 +17,23 @@ interface Props {
   onNext: () => void;
 }
 
+function getQuestionMaxWidth() {
+  if (window.innerWidth < 1024) return '85%';
+
+  const percentage = 100 - (window.innerHeight - 800) * 25 / 280;
+  return `${Math.min(100, Math.max(75, percentage))}%`;
+}
+
 export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onChoose }: Props) {
+  const [questionMaxWidth, setQuestionMaxWidth] = useState(getQuestionMaxWidth);
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
+
+  useEffect(() => {
+    const updateQuestionMaxWidth = () => setQuestionMaxWidth(getQuestionMaxWidth());
+
+    window.addEventListener('resize', updateQuestionMaxWidth);
+    return () => window.removeEventListener('resize', updateQuestionMaxWidth);
+  }, []);
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
@@ -43,14 +59,14 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         <h2 className="uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px] min-[1024px]:max-[1260px]:text-[19px] min-[1024px]:max-[1260px]:leading-[23px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: 'text-slide-in 400ms ease forwards' }}>
           {scenario.title}
         </h2>
-        <div className="flex max-w-[625px] flex-col gap-[19px]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
+        <div className="flex flex-col gap-[19px]" style={{ maxWidth: questionMaxWidth, color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: 'text-slide-in 400ms ease 100ms forwards' }}>
           {questionParagraphs.map((paragraph, index) => {
             const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
 
             return (
               <p
                 key={index}
-                className={isEmphasizedLastParagraph ? 'pt-[10px] text-[16px] leading-[20px] md:pt-[30px] md:text-[20px] md:leading-[24px]' : 'text-[14px] leading-[16px] md:text-[16px] md:leading-[19px]'}
+                className={isEmphasizedLastParagraph ? 'pt-[clamp(0px,calc(10.7143vh_-_85.714px),30px)] text-[16px] leading-[20px] md:text-[20px] md:leading-[24px]' : 'text-[14px] leading-[16px] md:text-[16px] md:leading-[19px]'}
                 style={{ fontWeight: isEmphasizedLastParagraph ? 500 : 400 }}
               >
                 {paragraph}
