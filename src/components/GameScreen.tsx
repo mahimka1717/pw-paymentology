@@ -231,7 +231,12 @@ export function GameScreen({
                       >
                         <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
                           <div className="scale-50 origin-top-left lg:scale-100">
-                            <DidYouKnowMascot />
+                            <div className="md:hidden">
+                              <DidYouKnowMascot />
+                            </div>
+                            <div className="hidden md:block lg:hidden">
+                              <DidYouKnowMascot dark />
+                            </div>
                           </div>
                         </div>
                       </div>

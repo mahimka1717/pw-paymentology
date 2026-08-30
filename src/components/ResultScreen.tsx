@@ -80,7 +80,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
             <img
               src={outcomeImages[outcome]}
               alt={outcome}
-              className="w-full h-[180px] lg:h-full object-cover"
+              className="h-[180px] w-full object-cover md:h-[260px] lg:h-full"
             />
           </div>
           {/* Right — text */}
@@ -101,7 +101,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
               {outcome}
             </h1>
             <p
-              className="text-[13px] leading-[17px] md:text-[30px] md:leading-[36px] lg:text-[clamp(20px,calc(3.5714vh_-_8.5714px),30px)] lg:leading-[clamp(24px,calc(4.2857vh_-_10.2857px),36px)] mt-[16px] md:mt-[56px]"
+              className="mt-[16px] text-[13px] leading-[17px] md:mt-[30px] md:text-[24px] md:leading-[30px] lg:mt-[56px] lg:text-[clamp(20px,calc(3.5714vh_-_8.5714px),30px)] lg:leading-[clamp(24px,calc(4.2857vh_-_10.2857px),36px)]"
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 400,
