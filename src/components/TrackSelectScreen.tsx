@@ -122,7 +122,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             <button
               ref={selectButtonRef}
               type="button"
-              className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-colors md:text-[20px]"
+              className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-[background-color,box-shadow,transform] duration-200 hover:scale-[1.025] hover:bg-[#D2AFFE] hover:shadow-[0_8px_24px_rgba(21,21,74,0.28)] active:scale-[0.985] md:text-[20px]"
               style={{ fontFamily: "'Inter', sans-serif" }}
               onClick={() => setIsDropdownOpen((prev) => !prev)}
               onKeyDown={handleSelectKeyDown}
