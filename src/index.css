@@ -115,6 +115,23 @@ body[data-screen='result']::before {
 }
 
 @media (min-width: 1024px) {
+  body[data-screen='select'] {
+    overflow: hidden;
+  }
+
+  .track-select-stage {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 1920px;
+    height: 1080px;
+    min-height: 0;
+    padding-top: 160px;
+    overflow: visible;
+    transform: translate(-50%, -50%) scale(var(--track-select-scale));
+    transform-origin: center;
+  }
+
   html:has(body[data-screen='result']) {
     scrollbar-width: none;
   }

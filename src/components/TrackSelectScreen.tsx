@@ -22,8 +22,24 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
+  const [desktopScale, setDesktopScale] = useState(1);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const updateDesktopScale = () => {
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      setDesktopScale(scale);
+      document.documentElement.style.setProperty('--track-select-scale', String(scale));
+    };
+
+    updateDesktopScale();
+    window.addEventListener('resize', updateDesktopScale);
+    return () => {
+      window.removeEventListener('resize', updateDesktopScale);
+      document.documentElement.style.removeProperty('--track-select-scale');
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -86,17 +102,20 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:items-center lg:pb-10">
+    <div
+      className="track-select-stage min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:items-center lg:pb-10"
+      style={{ '--track-select-scale': desktopScale } as CSSProperties}
+    >
       <div
         className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
         style={{
           transitionDuration: animationMs(700),
-          width: 'clamp(380px, calc(71.6253vw - 353.358px), 900px)',
+          width: '900px',
           transformOrigin: 'center center',
           opacity: phase === 'exit' ? 0 : 1,
           transform: phase === 'exit'
-            ? 'translate(calc(-50% + 242px), calc(-50% + clamp(95px, calc(16.6667vh - 35px), 145px))) scale(1.4)'
-            : 'translate(calc(-50% + 242px), calc(-50% + clamp(95px, calc(16.6667vh - 35px), 145px))) scale(1)',
+            ? 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1.4)'
+            : 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1)',
         }}
       >
         <InteractiveCity
@@ -107,8 +126,8 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
         />
       </div>
 
-      <div className="mx-auto flex w-full max-w-[87.50vw] flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[clamp(550px,calc(100vh-var(--topbar-h)-2.5rem),750px)] flex-1 lg:flex-none flex flex-col lg:block">
+      <div className="mx-auto flex w-full max-w-[87.50vw] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
+        <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             Issuer's Playbook
           </h1>
