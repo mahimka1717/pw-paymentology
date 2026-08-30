@@ -83,6 +83,11 @@ export default function App() {
             onHoverTrack={setHoveredTrackId}
             onSelect={(id) => {
               trackEvent('track_selected', { track_id: id });
+              const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
+              if (selectedBuildingIndex >= 0) {
+                const buildingImage = new Image();
+                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}.png`;
+              }
               triggerTransition(() => {
                 setHoveredTrackId(null);
                 game.selectTrack(id);
@@ -181,18 +186,21 @@ export default function App() {
               transform: buildingTransform,
             }}
           >
-            <img
-              src={`/img/buildings/building${buildingIndex}.png`}
-              alt=""
-              className="w-full h-full object-contain"
-              style={{
-                transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
-                transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                  ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
-                  : undefined,
-              }}
-              draggable={false}
-            />
+            {game.trackId && buildingIndex >= 0 && (
+              <img
+                key={game.trackId}
+                src={`/img/buildings/building${buildingIndex}.png`}
+                alt=""
+                className="w-full h-full object-contain"
+                style={{
+                  transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
+                  transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
+                    ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
+                    : undefined,
+                }}
+                draggable={false}
+              />
+            )}
           </div>
         </div>
 

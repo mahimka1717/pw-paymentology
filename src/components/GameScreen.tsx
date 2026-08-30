@@ -136,7 +136,7 @@ export function GameScreen({
           {/* Right col — 8/12 */}
           <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_1106px))]">
             {showInsight && (
-              <div className="pointer-events-none absolute bottom-0 left-[var(--insight-anchor-x)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
+              <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
                 <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
                   <DidYouKnowMascot />
                 </div>
@@ -145,7 +145,7 @@ export function GameScreen({
             {showInsight && !isClosingInsight && (
               <div
                 ref={insightPopupRef}
-                className="absolute bottom-[20px] left-[calc(var(--insight-anchor-x)-574px)] z-40 hidden w-[500px] rounded-[16px] bg-white p-[40px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] lg:block"
+                className="absolute bottom-[20px] left-[calc(var(--insight-anchor-x)-604px)] z-40 hidden w-[500px] rounded-[16px] bg-white p-[40px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] lg:block"
                 style={{ animation: `slide-in-from-right ${animationMs(400)} cubic-bezier(0.22,1,0.36,1) forwards` }}
               >
                 <button
