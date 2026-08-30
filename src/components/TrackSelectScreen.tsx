@@ -22,24 +22,8 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
-  const [desktopScale, setDesktopScale] = useState(1);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    const updateDesktopScale = () => {
-      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-      setDesktopScale(scale);
-      document.documentElement.style.setProperty('--track-select-scale', String(scale));
-    };
-
-    updateDesktopScale();
-    window.addEventListener('resize', updateDesktopScale);
-    return () => {
-      window.removeEventListener('resize', updateDesktopScale);
-      document.documentElement.style.removeProperty('--track-select-scale');
-    };
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -102,10 +86,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   };
 
   return (
-    <div
-      className="track-select-stage min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:items-center lg:pb-10"
-      style={{ '--track-select-scale': desktopScale } as CSSProperties}
-    >
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:min-h-[920px] lg:items-center lg:pb-10">
       <div
         className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
         style={{

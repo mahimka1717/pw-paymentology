@@ -158,45 +158,47 @@ export default function App() {
   const buildingTransform = game.screen === 'intro' && phase !== 'exit'
     ? 'scale(1)'
     : (game.screen === 'intro' && phase === 'exit') || game.screen === 'game'
-      ? 'translate(calc(-180px - 25vw), 40px) scale(0.71)'
+      ? 'translate(-660px, 40px) scale(0.71)'
       : game.screen === 'result'
-        ? 'translate(calc(-180px - 25vw), 40px) scale(0.71)'
+        ? 'translate(-660px, 40px) scale(0.71)'
         : 'scale(0.6)';
 
   return (
     <>
       <TopBar />
 
-      {/* Building background — behind all screens, visible on intro */}
-      <div className="fixed inset-0 hidden lg:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
-        <div
-          className="building ease-in-out"
-          style={{
-            width: buildingOnIntroOrGame ? 'min(100vw, 177.7778vh)' : '100vw',
-            height: buildingOnIntroOrGame ? 'min(56.25vw, 100vh)' : '56.25vw',
-            transformOrigin: '65% 65%',
-            transition: `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
-            opacity: buildingScreen ? 1 : 0,
-            transform: buildingTransform,
-          }}
-        >
-          <img
-            src={`/img/buildings/building${buildingIndex}.png`}
-            alt=""
-            className="w-full h-full object-contain"
+      <div className="game-canvas">
+        {/* Building background — behind all screens, visible on intro */}
+        <div className="fixed inset-0 hidden lg:flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+          <div
+            className="building ease-in-out"
             style={{
-              transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
-              transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
-                : undefined,
+              width: '1920px',
+              height: '1080px',
+              transformOrigin: '65% 65%',
+              transition: `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
+              opacity: buildingScreen ? 1 : 0,
+              transform: buildingTransform,
             }}
-            draggable={false}
-          />
+          >
+            <img
+              src={`/img/buildings/building${buildingIndex}.png`}
+              alt=""
+              className="w-full h-full object-contain"
+              style={{
+                transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
+                transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
+                  ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
+                  : undefined,
+              }}
+              draggable={false}
+            />
+          </div>
         </div>
-      </div>
 
-      <div style={{ paddingTop: 'var(--topbar-h)', position: 'relative', zIndex: 1 }}>
-        {renderScreen()}
+        <div style={{ paddingTop: 'var(--topbar-h)', position: 'relative', zIndex: 1 }}>
+          {renderScreen()}
+        </div>
       </div>
     </>
   );

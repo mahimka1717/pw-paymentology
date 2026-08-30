@@ -124,17 +124,17 @@ export function GameScreen({
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10">
-      <div className="w-full max-w-[87.5vw]">
-        <div className="flex flex-col lg:h-[clamp(550px,calc(100vh-var(--topbar-h)-2.5rem),750px)] lg:flex-row lg:items-stretch lg:gap-6">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10 lg:min-h-[920px]">
+      <div className="w-full max-w-[87.5vw] lg:max-w-[1680px]">
+        <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
-          <aside className="hidden flex-shrink-0 lg:block lg:w-[calc(31%_+_10%_*_clamp(0,(100vh_-_800px)_/_280px,1))]">
+          <aside className="hidden flex-shrink-0 lg:block lg:w-[41%]">
             <TrackSidebar phase={phase} track={track} />
           </aside>
 
           {/* Right col — 8/12 */}
-          <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_87.5vw_+_574px))]">
+          <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_1106px))]">
             {showInsight && (
               <div className="pointer-events-none absolute bottom-0 left-[var(--insight-anchor-x)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
                 <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
@@ -173,7 +173,7 @@ export function GameScreen({
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
-            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[clamp(40px,calc(50vh_-_360px),90px)]" />
+            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
 
             {/* Mobile track title */}
             <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>

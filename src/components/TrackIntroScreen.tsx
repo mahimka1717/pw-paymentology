@@ -17,9 +17,9 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 
 export function TrackIntroScreen({ phase, track, onStart }: Props) {
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:overflow-x-visible">
-      <div className="w-full max-w-[87.50vw]">
-        <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[clamp(550px,calc(100vh-var(--topbar-h)-2.5rem),750px)] flex flex-col">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:min-h-[920px] lg:overflow-x-visible">
+      <div className="w-full max-w-[87.50vw] lg:max-w-[1680px]">
+        <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[750px] flex flex-col">
           <h1 className="text-[22px] leading-[28px] font-bold mb-[30px] text-left uppercase text-white md:text-[30px] md:leading-[36px] md:mb-[50px] lg:hidden" style={cascade(phase, 0, 4)}>
             {track.name}
           </h1>
