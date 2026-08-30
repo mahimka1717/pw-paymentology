@@ -13,12 +13,13 @@ interface Props {
   animDelay?: number;
 }
 
-export function OptionCard({ title, description, selected, disabled, onSelect, animDelay = 0 }: Props) {
+export function OptionCard({ title, description, optionId, selected, disabled, onSelect, animDelay = 0 }: Props) {
   const [animDone, setAnimDone] = useState(false);
 
   return (
     <button
       data-option-card
+      data-analytics-id={`scenario_option_${optionId.toLowerCase()}`}
       onClick={onSelect}
       onMouseDown={selected ? event => event.stopPropagation() : undefined}
       disabled={disabled}

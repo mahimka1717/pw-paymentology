@@ -46,6 +46,8 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
       >
         <button
           onClick={onClose}
+          data-analytics-id="feedback_close"
+          aria-label="Close feedback"
           className="close-btn-spin"
           style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
         >
@@ -54,7 +56,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
           </svg>
         </button>
         <p
-          className="text-[20px] leading-[24px]"
+          className="text-[18px] leading-[22px] md:text-[20px] md:leading-[24px]"
           style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, color: '#FFFFFF' }}
         >{feedback}</p>
         <div

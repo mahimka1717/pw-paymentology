@@ -9,6 +9,7 @@ import { trackTheme } from '../data/theme';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
 import { animationMs, scaledMs } from '../utils/animationTiming';
+import { trackEvent } from '../utils/analytics';
 
 interface Props {
   phase: Phase;
@@ -51,6 +52,11 @@ export function GameScreen({
   const buttonsAreaRef = useRef<HTMLDivElement>(null);
 
   const handleCloseInsight = () => {
+    trackEvent('insight_closed', {
+      track_id: track.id,
+      scenario_id: scenario.id,
+      scenario_number: scenarioIndex + 1,
+    });
     setIsClosingInsight(true);
     setTimeout(() => {
       setShowInsight(false);
@@ -71,6 +77,23 @@ export function GameScreen({
   }, [showInsight, isClosingInsight]);
 
   const handleChoose = (index: number, delta: Score, aggressive: boolean) => {
+    trackEvent('scenario_option_selected', {
+      track_id: track.id,
+      scenario_id: scenario.id,
+      scenario_number: scenarioIndex + 1,
+      option_id: scenario.options[index].id,
+      aggressive,
+      growth_delta: delta.growth,
+      trust_delta: delta.trust,
+      control_delta: delta.control,
+      momentum_delta: delta.momentum,
+    });
+    trackEvent('feedback_opened', {
+      track_id: track.id,
+      scenario_id: scenario.id,
+      scenario_number: scenarioIndex + 1,
+      method: 'automatic',
+    });
     onChoose(index, delta, aggressive);
     setShowFeedback(true);
     setShowInsight(false);
@@ -82,6 +105,12 @@ export function GameScreen({
   };
 
   const handleNext = () => {
+    trackEvent('scenario_advanced', {
+      track_id: track.id,
+      scenario_id: scenario.id,
+      scenario_number: scenarioIndex + 1,
+      completes_game: scenarioIndex === totalScenarios - 1,
+    });
     setButtonsExiting(true);
     smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
@@ -121,6 +150,8 @@ export function GameScreen({
               >
                 <button
                   onClick={handleCloseInsight}
+                  data-analytics-id="insight_close"
+                  aria-label="Close insight"
                   className="close-btn-spin"
                   style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
                 >
@@ -165,7 +196,15 @@ export function GameScreen({
                 accentTextColor={theme.accentText}
                 showFeedback={showFeedback}
                 onCloseFeedback={() => setShowFeedback(false)}
-                onToggleFeedback={() => setShowFeedback(current => !current)}
+                onToggleFeedback={() => {
+                  trackEvent(showFeedback ? 'feedback_closed' : 'feedback_opened', {
+                    track_id: track.id,
+                    scenario_id: scenario.id,
+                    scenario_number: scenarioIndex + 1,
+                    method: 'selected_option',
+                  });
+                  setShowFeedback(!showFeedback);
+                }}
                 onChoose={handleChoose}
                 onNext={handleNext}
               />
@@ -194,6 +233,8 @@ export function GameScreen({
                     >
                       <button
                         onClick={handleCloseInsight}
+                        data-analytics-id="insight_close"
+                        aria-label="Close insight"
                         className="close-btn-spin"
                         style={{ position: 'absolute', top: '8px', right: '8px', background: 'none', border: 'none', color: '#3E4D9C', cursor: 'pointer', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
                       >
@@ -231,12 +272,7 @@ export function GameScreen({
                       >
                         <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
                           <div className="scale-50 origin-top-left lg:scale-100">
-                            <div className="md:hidden">
-                              <DidYouKnowMascot />
-                            </div>
-                            <div className="hidden md:block lg:hidden">
-                              <DidYouKnowMascot dark />
-                            </div>
+                            <DidYouKnowMascot dark />
                           </div>
                         </div>
                       </div>
@@ -248,6 +284,11 @@ export function GameScreen({
                           handleCloseInsight();
                         } else {
                           setShowFeedback(false);
+                          trackEvent('insight_opened', {
+                            track_id: track.id,
+                            scenario_id: scenario.id,
+                            scenario_number: scenarioIndex + 1,
+                          });
                           setShowInsight(true);
                         }
                       }}

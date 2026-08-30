@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameState } from '../hooks/useGameState';
 import { tracks } from '../data/tracks';
 import { TrackSelectScreen } from './TrackSelectScreen';
@@ -8,6 +8,7 @@ import { ResultScreen } from './ResultScreen';
 import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
+import { trackEvent } from '../utils/analytics';
 
 export type Phase = 'enter' | 'idle' | 'exit';
 
@@ -15,6 +16,9 @@ export default function App() {
   const game = useGameState();
   const [phase, setPhase] = useState<Phase>('enter');
   const [hoveredTrackId, setHoveredTrackId] = useState<string | null>(null);
+  const gameStartedAt = useRef<number | null>(null);
+  const lastScreenView = useRef<string | null>(null);
+  const gameCompletionTracked = useRef(false);
 
   useEffect(() => {
     document.body.dataset.screen = game.screen;
@@ -23,6 +27,35 @@ export default function App() {
       delete document.body.dataset.screen;
     };
   }, [game.screen]);
+
+  useEffect(() => {
+    const screenViewKey = `${game.screen}:${game.trackId ?? ''}:${game.currentScenario?.id ?? ''}`;
+    if (lastScreenView.current !== screenViewKey) {
+      lastScreenView.current = screenViewKey;
+      trackEvent('game_screen_view', {
+        screen_name: game.screen,
+        track_id: game.trackId ?? undefined,
+        scenario_id: game.screen === 'game' ? game.currentScenario?.id : undefined,
+        scenario_number: game.screen === 'game' ? game.scenarioIndex + 1 : undefined,
+      });
+    }
+
+    if (game.screen === 'result' && game.result && !gameCompletionTracked.current) {
+      gameCompletionTracked.current = true;
+      trackEvent('game_completed', {
+        track_id: game.trackId ?? undefined,
+        outcome: game.result.outcome,
+        decision_style: game.result.style,
+        duration_seconds: gameStartedAt.current === null
+          ? undefined
+          : Math.round((Date.now() - gameStartedAt.current) / 1000),
+        growth_score: game.totalScore.growth,
+        trust_score: game.totalScore.trust,
+        control_score: game.totalScore.control,
+        momentum_score: game.totalScore.momentum,
+      });
+    }
+  }, [game.currentScenario?.id, game.scenarioIndex, game.screen, game.trackId]);
 
   useEffect(() => {
     if (phase === 'enter') {
@@ -48,10 +81,13 @@ export default function App() {
             phase={phase}
             hoveredTrackId={hoveredTrackId}
             onHoverTrack={setHoveredTrackId}
-            onSelect={(id) => triggerTransition(() => {
-              setHoveredTrackId(null);
-              game.selectTrack(id);
-            })}
+            onSelect={(id) => {
+              trackEvent('track_selected', { track_id: id });
+              triggerTransition(() => {
+                setHoveredTrackId(null);
+                game.selectTrack(id);
+              });
+            }}
           />
         );
 
@@ -60,7 +96,11 @@ export default function App() {
           <TrackIntroScreen
             phase={phase}
             track={game.currentTrack!}
-            onStart={() => triggerTransition(() => game.startGame(), 650)}
+            onStart={() => {
+              gameStartedAt.current = Date.now();
+              trackEvent('game_started', { track_id: game.trackId ?? undefined });
+              triggerTransition(() => game.startGame(), 650);
+            }}
           />
         );
 
@@ -92,10 +132,18 @@ export default function App() {
             normalized={game.result!.normalized}
             totalScore={game.totalScore}
             trackName={game.currentTrack!.name}
-            onRestart={() => triggerTransition(() => {
-              setHoveredTrackId(null);
-              game.restart();
-            })}
+            onRestart={() => {
+              trackEvent('game_restarted', {
+                track_id: game.trackId ?? undefined,
+                outcome: game.result?.outcome,
+              });
+              gameStartedAt.current = null;
+              gameCompletionTracked.current = false;
+              triggerTransition(() => {
+                setHoveredTrackId(null);
+                game.restart();
+              });
+            }}
           />
         );
     }
