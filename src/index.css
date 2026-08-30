@@ -59,11 +59,18 @@ button:focus-visible,
   fill: #151547;
 }
 
+html {
+  min-height: 100%;
+  background-color: #783cff;
+}
+
 body {
   font-family: 'PP Monument Wide', sans-serif;
   color: #fff;
   --topbar-h: 3.75rem;
   min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #783cff;
   background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;

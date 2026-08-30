@@ -165,6 +165,7 @@ export function GameScreen({
                 accentTextColor={theme.accentText}
                 showFeedback={showFeedback}
                 onCloseFeedback={() => setShowFeedback(false)}
+                onToggleFeedback={() => setShowFeedback(current => !current)}
                 onChoose={handleChoose}
                 onNext={handleNext}
               />
@@ -174,19 +175,6 @@ export function GameScreen({
             <div ref={buttonsAreaRef} className="relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
-                  {showInsight && (
-                    <div
-                      ref={mascotRef}
-                      className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[75px] w-[54px] -translate-x-1/2 overflow-hidden lg:hidden"
-                    >
-                      <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                        <div className="scale-50 origin-top-left lg:scale-100">
-                          <DidYouKnowMascot />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
                   {/* Mobile insight popup */}
                   {showInsight && (
                     <div
@@ -236,6 +224,18 @@ export function GameScreen({
                     ? { animation: `fade-out ${animationMs(250)} ease forwards` }
                     : { opacity: 0, animation: `fade-in-only ${animationMs(500)} ease forwards` }
                   }>
+                    {showInsight && (
+                      <div
+                        ref={mascotRef}
+                        className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[75px] w-[54px] -translate-x-1/2 overflow-hidden lg:hidden"
+                      >
+                        <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
+                          <div className="scale-50 origin-top-left lg:scale-100">
+                            <DidYouKnowMascot />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <button
                       ref={insightToggleRef}
                       onClick={() => {

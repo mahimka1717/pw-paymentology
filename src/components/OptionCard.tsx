@@ -20,6 +20,7 @@ export function OptionCard({ title, description, selected, disabled, onSelect, a
     <button
       data-option-card
       onClick={onSelect}
+      onMouseDown={selected ? event => event.stopPropagation() : undefined}
       disabled={disabled}
       onAnimationEnd={() => setAnimDone(true)}
       className={`group relative flex h-full w-full lg:min-h-[174px] flex-col text-left py-[14px] px-[14px] lg:py-[25px] lg:px-[20px] rounded-[12px] lg:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-[background-color,box-shadow,opacity] duration-200 ${

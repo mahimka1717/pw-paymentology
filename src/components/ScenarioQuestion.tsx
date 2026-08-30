@@ -14,6 +14,7 @@ interface Props {
   accentTextColor: string;
   showFeedback: boolean;
   onCloseFeedback: () => void;
+  onToggleFeedback: () => void;
   onChoose: (index: number, delta: Score, aggressive: boolean) => void;
   onNext: () => void;
 }
@@ -25,7 +26,7 @@ function getQuestionMaxWidth() {
   return `${Math.min(100, Math.max(75, percentage))}%`;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onChoose }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onToggleFeedback, onChoose }: Props) {
   const [questionMaxWidth, setQuestionMaxWidth] = useState(getQuestionMaxWidth);
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
 
@@ -109,6 +110,8 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 onSelect={() => {
                   if (selectedOption === null) {
                     onChoose(index, option.score, option.aggressive ?? false);
+                  } else if (selectedOption === index) {
+                    onToggleFeedback();
                   }
                 }}
               />
