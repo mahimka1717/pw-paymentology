@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building 3</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        background: #783cff;
+        overflow: hidden;
+      }
+
+      .scene {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        flex: none;
+      }
+
+      .building {
+        display: block;
+        width: 1920px;
+        height: 1080px;
+      }
+
+      .globe {
+        position: absolute;
+        top: 106px;
+        left: 1044px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <img class="building" src="/img/buildings/building3.png" alt="Building 3" />
+      <canvas class="globe" width="140" height="140" aria-label="Rotating globe"></canvas>
+    </div>
+
+    <script>
+      const globe = document.querySelector('.globe');
+      const context = globe.getContext('2d');
+      const sprite = new Image();
+      const columns = 5;
+      const frameCount = 25;
+      const frameDuration = 1000 / 12;
+      const sourceFrameWidth = 1536 / columns;
+      const sourceFrameHeight = 1024 / columns;
+      const sourceGlobeSize = 184;
+      const frameCenters = [
+        [177.5, 105], [164.5, 105], [152, 105], [141.5, 104], [131, 104],
+        [177.5, 110], [164.5, 110], [152.5, 109.5], [141.5, 107.5], [132, 107.5],
+        [177.5, 108.5], [164.5, 108.5], [152, 108.5], [141, 108.5], [131, 110.5],
+        [177.5, 110], [164.5, 110.5], [152, 110], [141, 110.5], [131, 110.5],
+        [176, 110], [164, 110.5], [152, 110], [141, 110], [130.5, 110],
+      ];
+      let lastFrameTime = 0;
+      let frame = 0;
+
+      function drawFrame() {
+        const column = frame % columns;
+        const row = Math.floor(frame / columns);
+        const [centerX, centerY] = frameCenters[frame];
+
+        context.clearRect(0, 0, globe.width, globe.height);
+        context.drawImage(
+          sprite,
+          column * sourceFrameWidth + centerX - sourceGlobeSize / 2,
+          row * sourceFrameHeight + centerY - sourceGlobeSize / 2,
+          sourceGlobeSize,
+          sourceGlobeSize,
+          0,
+          0,
+          globe.width,
+          globe.height,
+        );
+      }
+
+      function animate(time) {
+        if (time - lastFrameTime >= frameDuration) {
+          frame = (frame + 1) % frameCount;
+          lastFrameTime = time;
+          drawFrame();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      sprite.addEventListener('load', () => {
+        drawFrame();
+        requestAnimationFrame(animate);
+      });
+      sprite.src = '/globe.png';
+    </script>
+  </body>
+</html>
