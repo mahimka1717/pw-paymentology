@@ -84,30 +84,12 @@ body[data-screen='intro'] {
   background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
 }
 
-body[data-screen='intro']::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: url('/newbg/trackIntroScreen.png') top center / cover no-repeat;
-  opacity: 0;
-}
-
 body[data-screen='game'] {
   background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
 }
 
 body[data-screen='result'] {
   background-image: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
-}
-
-body[data-screen='result']::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: url('/newbg/resultScreen.png') top center / cover no-repeat;
-  opacity: 0;
 }
 
 #root {
