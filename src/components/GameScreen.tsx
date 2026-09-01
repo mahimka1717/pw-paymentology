@@ -45,6 +45,7 @@ export function GameScreen({
   onNext,
 }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showScoreDelta, setShowScoreDelta] = useState(false);
   const [showInsight, setShowInsight] = useState(false);
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
@@ -98,6 +99,7 @@ export function GameScreen({
     });
     onChoose(index, delta, aggressive);
     setShowFeedback(true);
+    setShowScoreDelta(true);
     setShowInsight(false);
     setTimeout(() => {
       if (window.innerWidth < 768) {
@@ -125,6 +127,7 @@ export function GameScreen({
 
   const handleResetOption = () => {
     setShowFeedback(false);
+    setShowScoreDelta(false);
     setShowInsight(false);
     setIsClosingInsight(false);
     onResetOption();
@@ -178,7 +181,7 @@ export function GameScreen({
             )}
 
             <div style={cascade(phase, 0)}>
-              <ScoreBars totalScore={totalScore} lastDelta={showFeedback ? lastDelta : null} />
+              <ScoreBars totalScore={totalScore} lastDelta={showFeedback && showScoreDelta ? lastDelta : null} />
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
@@ -204,7 +207,10 @@ export function GameScreen({
                 accentColor={theme.accent}
                 accentTextColor={theme.accentText}
                 showFeedback={showFeedback}
-                onCloseFeedback={() => setShowFeedback(false)}
+                onCloseFeedback={() => {
+                  setShowFeedback(false);
+                  setShowScoreDelta(false);
+                }}
                 onToggleFeedback={() => {
                   trackEvent(showFeedback ? 'feedback_closed' : 'feedback_opened', {
                     track_id: track.id,
@@ -213,6 +219,7 @@ export function GameScreen({
                     method: 'selected_option',
                   });
                   setShowFeedback(!showFeedback);
+                  setShowScoreDelta(false);
                 }}
                 onChoose={handleChoose}
                 onResetOption={handleResetOption}

@@ -43,7 +43,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     <div className="game-question-panel relative h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       <button
         type="button"
-        className="absolute right-[18px] top-[18px] z-30 grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-transparent text-white transition-opacity md:right-[24px] md:top-[24px]"
+        className="absolute right-[18px] top-[18px] z-30 grid h-10 w-10 place-items-center rounded-full border-2 border-current bg-transparent text-white transition-colors enabled:hover:text-[#D2AFFE] enabled:active:text-[#A586FF] md:right-[24px] md:top-[24px]"
         aria-label="Reset answer"
         disabled={selectedOption === null}
         style={{ opacity: selectedOption === null ? 0.35 : 1, cursor: selectedOption === null ? 'default' : 'pointer' }}

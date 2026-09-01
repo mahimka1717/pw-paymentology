@@ -173,13 +173,13 @@ export function TopBar() {
           onClick={handleHomeClick}
         >
           <svg
-            className="topbar-logo-icon h-7 w-7"
+            className="topbar-logo-icon h-[27px] w-[27px]"
             viewBox="0 0 38 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             style={{ color: logoFill, transition: 'color 0.15s ease' }}
           >
-            <path d="M5 18L19 5L33 18V35H23V24H15V35H5V18Z" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path className="topbar-logo-path" d="M5 18L19 5L33 18V35H23V24H15V35H5V18Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </a>
       </div>
