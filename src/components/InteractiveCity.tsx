@@ -26,6 +26,16 @@ const imageHeight = 2508;
 const calloutWidth = 900;
 const calloutHeight = calloutWidth * imageHeight / imageWidth;
 const calloutOrder = ['government', 'fintech', 'banks', 'remittance', 'digital-banks', 'telco'];
+const calloutBaseDelay = 500;
+const calloutStagger = 50;
+const calloutLabelDelay = 500;
+const calloutLabelDuration = 280;
+const calloutEntranceDuration = calloutBaseDelay
+  + (calloutOrder.length - 1) * calloutStagger
+  + calloutLabelDelay
+  + calloutLabelDuration;
+const calloutCycleStartDelay = 500;
+const calloutCycleDuration = 3300;
 const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
   left: `${13 + (index * 19) % 75}%`,
   top: `${31 + (index * 29) % 52}%`,
@@ -38,8 +48,8 @@ const ambientParticles = Array.from({ length: 34 }, (_, index) => ({
 
 function calloutDelay(trackId: string, step: 'dot' | 'line' | 'label') {
   const order = calloutOrder.indexOf(trackId);
-  const stepDelay = step === 'dot' ? 0 : step === 'line' ? 150 : 500;
-  return animationMs(500 + order * 50 + stepDelay);
+  const stepDelay = step === 'dot' ? 0 : step === 'line' ? 150 : calloutLabelDelay;
+  return animationMs(calloutBaseDelay + order * calloutStagger + stepDelay);
 }
 
 const cityTracks: CityTrack[] = [
@@ -62,7 +72,10 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
   useEffect(() => {
     if (!idleAnimationEnabled) return;
 
-    const timeout = window.setTimeout(() => setEntranceComplete(true), scaledMs(750));
+    const timeout = window.setTimeout(
+      () => setEntranceComplete(true),
+      scaledMs(calloutEntranceDuration + calloutCycleStartDelay),
+    );
     return () => window.clearTimeout(timeout);
   }, [idleAnimationEnabled]);
 
@@ -71,7 +84,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
 
     const interval = window.setInterval(() => {
       setIdleTrackIndex(current => (current + 1) % cityTracks.length);
-    }, scaledMs(1400));
+    }, scaledMs(calloutCycleDuration));
 
     return () => window.clearInterval(interval);
   }, [entranceComplete, hoveredTrackId, idleAnimationEnabled]);
@@ -133,7 +146,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               aria-hidden="true"
               className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${animatedTrackId === track.id ? 'is-awake' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''} ${hoveredTrackId === track.id ? 'is-hovered' : ''}`}
               style={{
-                opacity: ambientAnimationEnabled ? 0.24 : animatedTrackId === track.id ? 1 : 0,
+                opacity: ambientAnimationEnabled ? 0.24 : 0,
                 mixBlendMode: 'soft-light',
                 animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 850) : undefined,
               }}
@@ -215,9 +228,9 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                 pathLength="1"
                 style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
-              {(idleAnimationEnabled && active || ambientAnimationEnabled) && (
+              {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <line
-                  className={`city-callout-impulse lg:hidden ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
+                  className={`city-callout-impulse lg:hidden ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
                   x1={mobileAnchor[0]}
                   y1={mobileAnchor[1]}
                   x2={track.mobileEndpoint[0]}
@@ -249,9 +262,9 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                 pathLength="1"
                 style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
-              {(idleAnimationEnabled && active || ambientAnimationEnabled) && (
+              {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <line
-                  className={`city-callout-impulse hidden lg:block ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
+                  className={`city-callout-impulse hidden lg:block ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
                   x1={track.anchor[0]}
                   y1={track.anchor[1]}
                   x2={track.endpoint[0]}
@@ -272,12 +285,12 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                 strokeWidth="21"
                 pointerEvents="stroke"
               />
-              <circle className="city-callout-dot lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" fill={color} style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
-              <circle className="city-callout-dot hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="14" fill={color} style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
-              {(idleAnimationEnabled && active || ambientAnimationEnabled) && (
+              <circle className="city-callout-dot lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="12.5" fill={color} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
+              <circle className="city-callout-dot hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="12.5" fill={color} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
+              {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <>
-                  <circle className={`city-callout-pulse lg:hidden ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
-                  <circle className={`city-callout-pulse hidden lg:block ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={track.anchor[0]} cy={track.anchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
+                  <circle className={`city-callout-pulse lg:hidden ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
+                  <circle className={`city-callout-pulse hidden lg:block ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={track.anchor[0]} cy={track.anchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
                 </>
               )}
             </g>
@@ -286,16 +299,17 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
       </svg>
 
       {cityTracks.map((track) => {
-        const active = animatedTrackId === track.id;
+        const backgroundActive = animatedTrackId === track.id;
         const labelOnRight = track.endpoint[0] > track.anchor[0];
         const labelOnTop = track.mobileEndpoint[1] < track.anchor[1];
         return (
           <div key={`${track.id}-callout-label`}>
             <button
               type="button"
-              className="city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none transition-colors lg:hidden"
+              className={`city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none lg:hidden ${backgroundActive ? 'has-background' : ''}`}
               style={{
                 animationDelay: calloutDelay(track.id, 'label'),
+                '--callout-background': trackTheme[track.id].accent,
                 left: `${track.mobileEndpoint[0] / calloutWidth * 100}%`,
                 top: `${track.mobileEndpoint[1] / calloutHeight * 100}%`,
                 transform: track.id === 'fintech'
@@ -309,12 +323,11 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
                     : 'translate(-50%, 0)',
                 padding: '2.222cqw 3.333cqw',
                 borderRadius: '3.333cqw',
-                backgroundColor: active ? trackTheme[track.id].accent : 'transparent',
                 fontFamily: "'PP Monument Wide', sans-serif",
                 fontSize: '2.8cqw',
                 fontWeight: 900,
                 lineHeight: 1,
-              }}
+              } as React.CSSProperties}
               onPointerEnter={() => onHoverTrack(track.id)}
               onPointerLeave={() => onHoverTrack(null)}
               onFocus={() => onHoverTrack(track.id)}
@@ -325,20 +338,20 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
             </button>
             <button
               type="button"
-              className="city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none transition-colors lg:block"
+              className={`city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none lg:block ${backgroundActive ? 'has-background' : ''}`}
               style={{
                 animationDelay: calloutDelay(track.id, 'label'),
+                '--callout-background': trackTheme[track.id].accent,
                 left: `${track.endpoint[0] / calloutWidth * 100}%`,
                 top: `${track.endpoint[1] / calloutHeight * 100}%`,
                 transform: labelOnRight ? 'translateY(-50%)' : 'translate(-100%, -50%)',
                 padding: '2.222cqw 3.333cqw',
                 borderRadius: '3.333cqw',
-                backgroundColor: active ? trackTheme[track.id].accent : 'transparent',
                 fontFamily: "'PP Monument Wide', sans-serif",
                 fontSize: '2.222cqw',
                 fontWeight: 900,
                 lineHeight: 1,
-              }}
+              } as React.CSSProperties}
               onPointerEnter={() => onHoverTrack(track.id)}
               onPointerLeave={() => onHoverTrack(null)}
               onFocus={() => onHoverTrack(track.id)}

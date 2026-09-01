@@ -466,18 +466,34 @@ h6 {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: city-callout-dot-enter var(--animation-260ms, 260ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: city-callout-dot-enter var(--animation-420ms, 420ms) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .city-callout-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: city-callout-line-enter var(--animation-380ms, 380ms) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: city-callout-line-enter var(--animation-500ms, 500ms) cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .city-callout-label {
+  isolation: isolate;
   opacity: 0;
   animation: city-callout-label-enter var(--animation-280ms, 280ms) ease-out forwards;
+}
+
+.city-callout-label::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--callout-background);
+  content: '';
+  opacity: 0;
+  transition: opacity 600ms ease-in-out;
+}
+
+.city-callout-label.has-background::before {
+  opacity: 1 !important;
 }
 
 @keyframes city-district-awake {
@@ -487,9 +503,9 @@ h6 {
 }
 
 @keyframes city-callout-impulse {
-  from { stroke-dashoffset: 1.22; opacity: 0; }
+  from { stroke-dashoffset: 0; opacity: 0; }
   15% { opacity: 1; }
-  80%, 100% { stroke-dashoffset: -0.22; opacity: 0; }
+  80%, 100% { stroke-dashoffset: -0.82; opacity: 0; }
 }
 
 @keyframes city-callout-pulse {
@@ -570,11 +586,13 @@ h6 {
 
 .city-district-layer {
   transform-origin: center;
-  transition: opacity 350ms ease, filter 350ms ease, transform 350ms ease;
+  transition: opacity 600ms ease-in-out, filter 600ms ease-in-out, transform 600ms ease-in-out;
 }
 
 [data-interactive-city][data-animation-type='1'] .city-district-layer.is-awake {
-  animation: city-district-awake calc(1400ms * var(--animation-scale, 1)) ease-in-out both;
+  opacity: 0.72 !important;
+  filter: brightness(1.18) saturate(1.22) drop-shadow(0 0 11px rgba(255, 255, 255, 0.28));
+  transform: translateY(-2px);
 }
 
 [data-interactive-city][data-animation-type='1'] .city-district-layer.is-hovered {
@@ -615,9 +633,12 @@ h6 {
 
 .city-callout-impulse {
   opacity: 0;
-  stroke-dasharray: 0.18 0.82;
-  stroke-dashoffset: 1.22;
+  stroke-dasharray: 0.18 1.82;
+  stroke-dashoffset: 0;
   filter: drop-shadow(0 0 5px currentColor);
+}
+
+.city-callout-impulse.is-active {
   animation: city-callout-impulse calc(1150ms * var(--animation-scale, 1)) ease-in-out both;
 }
 
@@ -630,6 +651,9 @@ h6 {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
+}
+
+.city-callout-pulse.is-active {
   animation: city-callout-pulse calc(1150ms * var(--animation-scale, 1)) ease-out both;
 }
 

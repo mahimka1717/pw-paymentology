@@ -7,7 +7,7 @@ export const animationScale = Number.isFinite(parsedAnimationScale) && parsedAni
 
 document.documentElement.style.setProperty('--animation-scale', String(animationScale));
 
-for (const milliseconds of [250, 260, 280, 350, 380, 400, 450, 500]) {
+for (const milliseconds of [250, 260, 280, 350, 380, 400, 420, 450, 500]) {
   document.documentElement.style.setProperty(`--animation-${milliseconds}ms`, `${milliseconds * animationScale}ms`);
 }
 
