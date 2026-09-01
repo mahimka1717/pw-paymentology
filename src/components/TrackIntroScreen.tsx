@@ -23,10 +23,10 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           <h1 className="text-[22px] leading-[28px] font-bold mb-[30px] text-left uppercase text-white md:text-[30px] md:leading-[36px] md:mb-[50px] lg:hidden" style={cascade(phase, 0, 4)}>
             {track.name}
           </h1>
-          <h1 className="mb-[50px] hidden text-left text-[30px] font-bold uppercase leading-[36px] text-white lg:block" style={phase === 'exit' ? {} : cascade(phase, 0, 4)}>
+          <h1 className="track-intro-title mb-[50px] hidden text-left text-[30px] font-bold uppercase leading-[36px] text-white lg:block" style={phase === 'exit' ? {} : cascade(phase, 0, 4)}>
             {track.name}
           </h1>
-          <div className="max-w-[620px] text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 lg:mb-[92px] text-white flex flex-col gap-4" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
+          <div className="track-intro-copy max-w-[620px] text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 lg:mb-[92px] text-white flex flex-col gap-4" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
             {track.intro.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
@@ -44,7 +44,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase, 3, 4)}>
             <button
               onClick={onStart}
-              className="group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[29px] border-2 border-white bg-transparent px-[25px] text-[16px] font-normal text-white transition-all active:!border-white active:!bg-transparent active:!text-white md:h-[66px] md:w-[212px] md:gap-6 md:rounded-[33px] md:px-0 md:text-[24px] md:font-semibold"
+              className="track-intro-start group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[29px] border-2 border-white bg-transparent px-[25px] text-[16px] font-normal text-white transition-all active:!border-white active:!bg-transparent active:!text-white md:h-[66px] md:w-[212px] md:gap-6 md:rounded-[33px] md:px-0 md:text-[24px] md:font-semibold"
               style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1 }}
             >
               Let's go

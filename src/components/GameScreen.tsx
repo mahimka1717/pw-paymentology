@@ -129,7 +129,7 @@ export function GameScreen({
         <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
-          <aside className="hidden flex-shrink-0 lg:block lg:w-[41%]">
+          <aside className="game-sidebar hidden flex-shrink-0 lg:block lg:w-[41%]">
             <TrackSidebar phase={phase} track={track} />
           </aside>
 
@@ -159,7 +159,7 @@ export function GameScreen({
                     <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
                   </svg>
                 </button>
-                <p style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, fontSize: '20px', lineHeight: '26px', color: '#3E4D9C' }}>
+                <p className="insight-copy" style={{ fontFamily: "'PP Monument Normal', sans-serif", fontWeight: 600, fontSize: '20px', lineHeight: '26px', color: '#3E4D9C' }}>
                   {scenario.insight}
                 </p>
                 <div
@@ -173,7 +173,7 @@ export function GameScreen({
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
-            <div className="flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
+            <div className="game-question-spacer flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
 
             {/* Mobile track title */}
             <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>
@@ -211,7 +211,7 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — space always reserved */}
-            <div ref={buttonsAreaRef} className="relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
+            <div ref={buttonsAreaRef} className="game-actions-area relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
               {selectedOption !== null && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
@@ -292,7 +292,7 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px]"
+                      className="game-action-button h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px]"
                       style={{
                         fontFamily: "'Inter', sans-serif",
                         fontWeight: 400,
@@ -314,7 +314,7 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px]"
+                    className="game-action-button group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px]"
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 400,

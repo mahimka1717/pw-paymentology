@@ -56,7 +56,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
           </svg>
         </button>
         <p
-          className="text-[18px] leading-[22px] md:text-[20px] md:leading-[24px]"
+          className="feedback-copy text-[18px] leading-[22px] md:text-[20px] md:leading-[24px]"
           style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, color: '#FFFFFF' }}
         >{feedback}</p>
         <div

@@ -83,7 +83,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
               </div>
             </div>
             <span
-              className="translate-y-0 tracking-[0.04em] text-[9px] leading-[11px] md:translate-y-[4px] md:text-[10px] md:leading-[12px]"
+              className="score-bar-label translate-y-0 tracking-[0.04em] text-[9px] leading-[11px] md:translate-y-[4px] md:text-[10px] md:leading-[12px]"
               style={{
                 fontFamily: "'PP Monument Normal', sans-serif",
                 fontWeight: 400,

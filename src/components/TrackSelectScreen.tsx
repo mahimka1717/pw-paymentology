@@ -86,7 +86,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:min-h-[920px] lg:items-center lg:pb-10">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:min-h-[920px] lg:items-center lg:overflow-visible lg:pb-10">
       <div
         className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
         style={{
@@ -109,10 +109,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
 
       <div className="mx-auto flex w-full max-w-[87.50vw] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
-          <h1 className="text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
+          <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             Issuer's Playbook
           </h1>
-          <p className="text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
+          <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
             This scenario-based gameplay transforms the complexities of next-generation issuer processing
             into a fast, engaging experience. Choose your track and make pivotal decisions on launch, risk,
             growth, and expansion. Every move shapes the outcome.
@@ -122,7 +122,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             <button
               ref={selectButtonRef}
               type="button"
-              className="relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-[background-color,box-shadow,transform] duration-200 hover:scale-[1.025] hover:bg-[#D2AFFE] hover:shadow-[0_8px_24px_rgba(21,21,74,0.28)] active:scale-[0.985] md:text-[20px]"
+              className="track-select-control relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-[background-color,box-shadow,transform] duration-200 hover:scale-[1.025] hover:bg-[#D2AFFE] hover:shadow-[0_8px_24px_rgba(21,21,74,0.28)] active:scale-[0.985] md:text-[20px]"
               style={{ fontFamily: "'Inter', sans-serif" }}
               onClick={() => setIsDropdownOpen((prev) => !prev)}
               onKeyDown={handleSelectKeyDown}

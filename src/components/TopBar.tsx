@@ -68,7 +68,7 @@ export function TopBar() {
       >
         <button
           type="button"
-          className="border-0 bg-transparent p-0"
+          className="hidden border-0 bg-transparent p-0"
           aria-label="Show return link"
           aria-expanded={touchLabelOpen}
           onPointerDown={(event) => {

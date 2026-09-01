@@ -161,12 +161,12 @@ export default function App() {
   const buildingMoveDelay = animationMs(game.screen === 'intro' && phase === 'exit' ? 200 : 0);
   const introBuildingOffset = game.trackId === 'telco' || game.trackId === 'government' || game.trackId === 'digital-banks' || game.trackId === 'banks' ? 200 : 100;
   const buildingTransform = game.screen === 'intro' && phase !== 'exit'
-    ? 'scale(1)'
+    ? 'scale(var(--building-size, 1))'
     : (game.screen === 'intro' && phase === 'exit') || game.screen === 'game'
-      ? 'translate(-660px, 40px) scale(0.71)'
+      ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
       : game.screen === 'result'
-        ? 'translate(-660px, 40px) scale(0.71)'
-        : 'scale(0.6)';
+        ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
+        : 'scale(calc(0.6 * var(--building-size, 1)))';
 
   return (
     <>
