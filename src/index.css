@@ -97,6 +97,16 @@ body[data-screen='result'] {
 }
 
 @media (min-width: 1024px) {
+  .topbar-back-icon {
+    width: calc(40px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
+    height: calc(40px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
+  }
+
+  .topbar-logo-icon {
+    width: calc(38px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
+    height: calc(40px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
+  }
+
   body[data-screen='select'],
   body[data-screen='intro'],
   body[data-screen='game'],
@@ -215,8 +225,8 @@ body[data-screen='result'] {
   }
 
   body[data-screen='game'] .game-question-copy {
-    font-size: 20px;
-    line-height: 24px;
+    font-size: 21px;
+    line-height: 25px;
   }
 
   body[data-screen='game'] .game-question-emphasis {

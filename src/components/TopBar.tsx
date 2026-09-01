@@ -6,12 +6,16 @@ export function TopBar() {
   const [touchLabelOpen, setTouchLabelOpen] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
   const [logoPressed, setLogoPressed] = useState(false);
+  const [touchHomeLabelOpen, setTouchHomeLabelOpen] = useState(false);
   const backControlRef = useRef<HTMLDivElement>(null);
+  const homeControlRef = useRef<HTMLDivElement>(null);
   const lastPointerTypeRef = useRef('mouse');
+  const lastHomePointerTypeRef = useRef('mouse');
 
   const backColor = backPressed ? '#A586FF' : 'white';
   const logoFill = logoPressed ? '#A586FF' : logoHovered ? '#D2AFFE' : 'white';
   const showBackLabel = backHovered || touchLabelOpen;
+  const showHomeLabel = logoHovered || touchHomeLabelOpen;
 
   useEffect(() => {
     if (!touchLabelOpen) return;
@@ -33,9 +37,27 @@ export function TopBar() {
     };
   }, [touchLabelOpen]);
 
-  const navigateBack = () => {
-    window.location.href = '/';
-  };
+  useEffect(() => {
+    if (!touchHomeLabelOpen) return;
+
+    const timeout = setTimeout(() => setTouchHomeLabelOpen(false), 15000);
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!homeControlRef.current?.contains(event.target as Node)) {
+        setTouchHomeLabelOpen(false);
+      }
+    };
+    const closeOnScroll = () => setTouchHomeLabelOpen(false);
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    window.addEventListener('scroll', closeOnScroll, { passive: true, capture: true });
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      window.removeEventListener('scroll', closeOnScroll, true);
+    };
+  }, [touchHomeLabelOpen]);
+
+  const reloadPage = () => window.location.reload();
 
   const handleBackClick = () => {
     const isTouchInteraction = lastPointerTypeRef.current !== 'mouse'
@@ -46,7 +68,17 @@ export function TopBar() {
       return;
     }
 
-    navigateBack();
+    reloadPage();
+  };
+
+  const handleHomeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const isTouchInteraction = lastHomePointerTypeRef.current !== 'mouse'
+      || window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+    if (isTouchInteraction && !touchHomeLabelOpen) {
+      event.preventDefault();
+      setTouchHomeLabelOpen(true);
+    }
   };
 
   return (
@@ -69,7 +101,7 @@ export function TopBar() {
         <button
           type="button"
           className="border-0 bg-transparent p-0"
-          aria-label="Show return link"
+          aria-label="Play again"
           aria-expanded={touchLabelOpen}
           onPointerDown={(event) => {
             lastPointerTypeRef.current = event.pointerType;
@@ -81,24 +113,18 @@ export function TopBar() {
           onClick={handleBackClick}
         >
           <svg
-            className="block h-7 w-7 lg:h-12 lg:w-12"
+            className="topbar-back-icon block h-[22px] w-[22px]"
             viewBox="0 0 49 49"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="24.3" cy="24.3" r="21.8" stroke={backColor} strokeWidth="5" />
-            <circle
-              cx="24.3"
-              cy="24.3"
-              r="4.94"
-              fill={backColor}
-              style={{
-                transformBox: 'fill-box',
-                transformOrigin: 'center',
-                transform: showBackLabel ? 'scale(3.24)' : 'scale(1)',
-                transition: 'transform 0.25s ease',
-              }}
+            <path
+              d="M39.5 17.5A17 17 0 1 0 40.8 29"
+              stroke={backColor}
+              strokeWidth="4"
+              strokeLinecap="round"
             />
+            <path d="M39.5 8.5V17.5H30.5" stroke={backColor} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         {showBackLabel && (
@@ -106,33 +132,57 @@ export function TopBar() {
             type="button"
             className="animate-fade-in whitespace-nowrap border-0 bg-transparent p-0 text-sm"
             style={{ color: backColor, fontWeight: 900 }}
-            onClick={navigateBack}
+            onClick={reloadPage}
           >
-            Return to The Issuer Academy
+            Play again
           </button>
         )}
       </div>
 
-      {/* Logo link */}
-      <a
-        href="https://www.paymentology.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseEnter={() => setLogoHovered(true)}
-        onMouseLeave={() => { setLogoHovered(false); setLogoPressed(false); }}
-        onMouseDown={() => setLogoPressed(true)}
-        onMouseUp={() => setLogoPressed(false)}
+      {/* Home link */}
+      <div
+        ref={homeControlRef}
+        className="flex items-center gap-3"
+        onPointerEnter={(event) => {
+          if (event.pointerType === 'mouse') setLogoHovered(true);
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === 'mouse') setLogoHovered(false);
+          setLogoPressed(false);
+        }}
       >
-        <svg
-          className="w-7 h-7 lg:w-[38px] lg:h-10"
-          viewBox="0 0 61 64"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ fill: logoFill, transition: 'fill 0.15s ease' }}
+        {showHomeLabel && (
+          <span
+            className="animate-fade-in whitespace-nowrap text-sm"
+            style={{ color: logoFill, fontWeight: 900 }}
+          >
+            Return to The Issuer Academy
+          </span>
+        )}
+        <a
+          href="https://www.paymentology.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Return to The Issuer Academy"
+          onPointerDown={(event) => {
+            lastHomePointerTypeRef.current = event.pointerType;
+            setLogoPressed(true);
+          }}
+          onPointerUp={() => setLogoPressed(false)}
+          onPointerCancel={() => setLogoPressed(false)}
+          onClick={handleHomeClick}
         >
-          <path d="M58.15 0.0400085H31.03C29.8 0.0400085 28.64 0.510005 27.77 1.38L1.34 27.84C0.469996 28.71 0 29.87 0 31.06V61.29C0 62.05 0.430004 62.7 1.16 63.03C1.41 63.14 1.63 63.17 1.88 63.17C2.35 63.17 2.81999 62.99 3.17999 62.63L15.89 49.89H40.65C51.73 49.89 60.78 40.88 60.78 29.76V2.64001C60.78 1.19001 59.59 0 58.14 0V0.0400085H58.15ZM43.93 16.33C44.22 16.33 44.47 16.58 44.47 16.87V33.05C44.47 33.34 44.22 33.59 43.93 33.59H16.85C16.56 33.59 16.31 33.34 16.31 33.05V16.87C16.31 16.58 16.56 16.33 16.85 16.33H43.97H43.93Z" />
-        </svg>
-      </a>
+          <svg
+            className="topbar-logo-icon h-7 w-7"
+            viewBox="0 0 38 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ color: logoFill, transition: 'color 0.15s ease' }}
+          >
+            <path d="M5 18L19 5L33 18V35H23V24H15V35H5V18Z" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </div>
     </div>
   );
 }
