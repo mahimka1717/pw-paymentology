@@ -1,9 +1,9 @@
 const rawAnimationScale = new URLSearchParams(window.location.search).get('animationScale');
-const parsedAnimationScale = rawAnimationScale === null ? 2 : Number(rawAnimationScale);
+const parsedAnimationScale = rawAnimationScale === null ? 1 : Number(rawAnimationScale);
 
 export const animationScale = Number.isFinite(parsedAnimationScale) && parsedAnimationScale > 0
   ? parsedAnimationScale
-  : 2;
+  : 1;
 
 document.documentElement.style.setProperty('--animation-scale', String(animationScale));
 

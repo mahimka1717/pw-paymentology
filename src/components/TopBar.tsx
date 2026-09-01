@@ -68,7 +68,7 @@ export function TopBar() {
       >
         <button
           type="button"
-          className="hidden border-0 bg-transparent p-0"
+          className="border-0 bg-transparent p-0"
           aria-label="Show return link"
           aria-expanded={touchLabelOpen}
           onPointerDown={(event) => {
@@ -115,7 +115,6 @@ export function TopBar() {
 
       {/* Logo link */}
       <a
-        className="invisible"
         href="https://www.paymentology.com"
         target="_blank"
         rel="noopener noreferrer"
