@@ -68,7 +68,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
             height: 0,
             borderLeft: '7px solid transparent',
             borderRight: '7px solid transparent',
-            borderTop: '7px solid #ED84F8',
+            borderTop: '8px solid #ED84F8',
           }}
         />
       </div>
