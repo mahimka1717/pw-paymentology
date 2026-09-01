@@ -15,10 +15,11 @@ interface Props {
   onCloseFeedback: () => void;
   onToggleFeedback: () => void;
   onChoose: (index: number, delta: Score, aggressive: boolean) => void;
+  onResetOption: () => void;
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onToggleFeedback, onChoose }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -39,10 +40,24 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     return { right: 0 };
   };
   return (
-    <div className="game-question-panel h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
+    <div className="game-question-panel relative h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
+      <button
+        type="button"
+        className="absolute right-[18px] top-[18px] z-30 grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-transparent text-white transition-opacity md:right-[24px] md:top-[24px]"
+        aria-label="Reset answer"
+        disabled={selectedOption === null}
+        style={{ opacity: selectedOption === null ? 0.35 : 1, cursor: selectedOption === null ? 'default' : 'pointer' }}
+        onClick={onResetOption}
+      >
+        <svg className="h-5 w-5" viewBox="0 0 49 49" fill="none" aria-hidden="true">
+          <path d="M39.5 17.5A17 17 0 1 0 40.8 29" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+          <path d="M39.5 8.5V17.5H30.5" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
       {/* Scenario header — single line */}
       <div
-        className="mb-[12px] flex flex-col gap-[12px] transition-opacity duration-200 md:pl-[20px]"
+        className="mb-[12px] flex flex-col gap-[12px] pr-12 transition-opacity duration-200 md:pl-[20px] md:pr-14"
         style={{ opacity: showFeedback ? 0.5 : 1 }}
       >
         <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }}>

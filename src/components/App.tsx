@@ -121,6 +121,7 @@ export default function App() {
             lastDelta={game.lastDelta}
             selectedOption={game.selectedOption}
             onChoose={game.chooseOption}
+            onResetOption={game.resetOption}
             onNext={game.scenarioIndex === game.totalScenarios - 1
               ? () => triggerTransition(() => game.nextScenario())
               : game.nextScenario

@@ -21,6 +21,7 @@ interface Props {
   lastDelta: Score | null;
   selectedOption: number | null;
   onChoose: (index: number, delta: Score, aggressive: boolean) => void;
+  onResetOption: () => void;
   onNext: () => void;
 }
 
@@ -40,6 +41,7 @@ export function GameScreen({
   lastDelta,
   selectedOption,
   onChoose,
+  onResetOption,
   onNext,
 }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
@@ -119,6 +121,13 @@ export function GameScreen({
       setShowInsight(false);
       onNext();
     }, scaledMs(250));
+  };
+
+  const handleResetOption = () => {
+    setShowFeedback(false);
+    setShowInsight(false);
+    setIsClosingInsight(false);
+    onResetOption();
   };
 
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
@@ -206,6 +215,7 @@ export function GameScreen({
                   setShowFeedback(!showFeedback);
                 }}
                 onChoose={handleChoose}
+                onResetOption={handleResetOption}
                 onNext={handleNext}
               />
             </div>

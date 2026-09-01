@@ -21,6 +21,7 @@ type Action =
   | { type: 'SELECT_TRACK'; trackId: string }
   | { type: 'START_GAME' }
   | { type: 'CHOOSE_OPTION'; optionIndex: number; delta: Score; aggressive: boolean }
+  | { type: 'RESET_OPTION' }
   | { type: 'NEXT_SCENARIO' }
   | { type: 'DISMISS_FEEDBACK' }
   | { type: 'RESTART' };
@@ -58,6 +59,26 @@ function reducer(state: GameState, action: Action): GameState {
         showFeedback: true,
         selectedOption: action.optionIndex,
       };
+    case 'RESET_OPTION': {
+      if (state.selectedOption === null || state.lastDelta === null) return state;
+
+      const track = tracks.find(t => t.id === state.trackId);
+      const selectedOption = track?.scenarios[state.scenarioIndex]?.options[state.selectedOption];
+      return {
+        ...state,
+        totalScore: {
+          growth: state.totalScore.growth - state.lastDelta.growth,
+          trust: state.totalScore.trust - state.lastDelta.trust,
+          control: state.totalScore.control - state.lastDelta.control,
+          momentum: state.totalScore.momentum - state.lastDelta.momentum,
+        },
+        aggressiveCount: state.aggressiveCount - (selectedOption?.aggressive ? 1 : 0),
+        choices: state.choices.slice(0, -1),
+        lastDelta: null,
+        showFeedback: false,
+        selectedOption: null,
+      };
+    }
     case 'NEXT_SCENARIO': {
       const track = tracks.find(t => t.id === state.trackId)!;
       const nextIndex = state.scenarioIndex + 1;
@@ -92,6 +113,7 @@ export function useGameState() {
   const startGame = useCallback(() => dispatch({ type: 'START_GAME' }), []);
   const chooseOption = useCallback((optionIndex: number, delta: Score, aggressive: boolean) =>
     dispatch({ type: 'CHOOSE_OPTION', optionIndex, delta, aggressive }), []);
+  const resetOption = useCallback(() => dispatch({ type: 'RESET_OPTION' }), []);
   const nextScenario = useCallback(() => dispatch({ type: 'NEXT_SCENARIO' }), []);
   const restart = useCallback(() => dispatch({ type: 'RESTART' }), []);
 
@@ -110,6 +132,7 @@ export function useGameState() {
     selectTrack,
     startGame,
     chooseOption,
+    resetOption,
     nextScenario,
     restart,
   };
