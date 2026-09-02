@@ -49,6 +49,7 @@ export function GameScreen({
   const [showInsight, setShowInsight] = useState(false);
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
+  const [questionExiting, setQuestionExiting] = useState(false);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
@@ -109,6 +110,8 @@ export function GameScreen({
   };
 
   const handleNext = () => {
+    if (questionExiting) return;
+
     trackEvent('scenario_advanced', {
       track_id: track.id,
       scenario_id: scenario.id,
@@ -116,13 +119,15 @@ export function GameScreen({
       completes_game: scenarioIndex === totalScenarios - 1,
     });
     setButtonsExiting(true);
+    setQuestionExiting(true);
+    setShowFeedback(false);
+    setShowInsight(false);
     smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
       setButtonsExiting(false);
-      setShowFeedback(false);
-      setShowInsight(false);
+      setQuestionExiting(false);
       onNext();
-    }, scaledMs(250));
+    }, scaledMs(400));
   };
 
   const handleResetOption = () => {
@@ -206,6 +211,7 @@ export function GameScreen({
                 selectedOption={selectedOption}
                 accentColor={theme.accent}
                 accentTextColor={theme.accentText}
+                exiting={questionExiting}
                 showFeedback={showFeedback}
                 onCloseFeedback={() => {
                   setShowFeedback(false);

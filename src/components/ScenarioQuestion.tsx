@@ -11,6 +11,7 @@ interface Props {
   selectedOption: number | null;
   accentColor: string;
   accentTextColor: string;
+  exiting: boolean;
   showFeedback: boolean;
   onCloseFeedback: () => void;
   onToggleFeedback: () => void;
@@ -19,7 +20,7 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, exiting, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -58,7 +59,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
       {/* Scenario header — single line */}
       <div
         className="mb-[12px] flex flex-col gap-[12px] pr-12 transition-opacity duration-200 md:pl-[20px] md:pr-14"
-        style={{ opacity: showFeedback ? 0.5 : 1 }}
+        style={exiting
+          ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` }
+          : { opacity: showFeedback ? 0.5 : 1 }
+        }
       >
         <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }}>
           {scenario.title}
@@ -81,7 +85,13 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
       </div>
 
       {/* Option cards */}
-      <div className="relative flex-[3] min-h-0">
+      <div
+        className="relative flex-[3] min-h-0"
+        style={exiting
+          ? { animation: `question-content-out ${animationMs(350)} cubic-bezier(0.55,0,0.78,0) ${animationMs(50)} forwards` }
+          : undefined
+        }
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]" onKeyDown={handleOptionKeyDown}>
           {scenario.options.map((option, index) => (
             <div key={option.id} className="relative h-full">
