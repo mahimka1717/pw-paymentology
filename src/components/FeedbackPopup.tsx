@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 interface Props {
   feedback: string;
@@ -6,13 +6,49 @@ interface Props {
   onClose: () => void;
 }
 
+const pointerWidth = 14;
+const pointerInset = 65;
+
 export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [pointerColor, setPointerColor] = useState('#ED84F8');
   const pointerPosition = optionIndex === 0
-    ? { left: '65px' }
+    ? { left: `${pointerInset}px` }
     : optionIndex === 2
-      ? { right: '65px' }
+      ? { right: `${pointerInset}px` }
       : { left: '50%', transform: 'translateX(-50%)' };
+
+  useLayoutEffect(() => {
+    const updatePointerColor = () => {
+      const panel = panelRef.current;
+      if (!panel) return;
+
+      const width = panel.offsetWidth;
+      const height = panel.offsetHeight;
+      const pointerCenterX = optionIndex === 0
+        ? pointerInset + pointerWidth / 2
+        : optionIndex === 2
+          ? width - pointerInset - pointerWidth / 2
+          : width / 2;
+      const colorPositionAtPointerCenter = Math.max(0, Math.min(
+        1,
+        (pointerCenterX + height / 8) / (width * 2),
+      ));
+      const start = [237, 132, 248];
+      const end = [114, 64, 246];
+      const color = start.map((channel, index) => Math.round(
+        channel + (end[index] - channel) * colorPositionAtPointerCenter,
+      ));
+
+      setPointerColor(`rgb(${color.join(', ')})`);
+    };
+
+    updatePointerColor();
+    const observer = new ResizeObserver(updatePointerColor);
+    if (panelRef.current) observer.observe(panelRef.current);
+    return () => observer.disconnect();
+  }, [optionIndex]);
 
   useEffect(() => {
     const t = setTimeout(onClose, 15000);
@@ -36,6 +72,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
       style={{ position: 'relative', zIndex: 40 }}
     >
       <div
+        ref={panelRef}
         style={{
           background: 'linear-gradient(to top right, #ED84F8, #7240F6)',
           borderRadius: '16px',
@@ -64,11 +101,10 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
             position: 'absolute',
             bottom: '-7px',
             ...pointerPosition,
-            width: 0,
-            height: 0,
-            borderLeft: '7px solid transparent',
-            borderRight: '7px solid transparent',
-            borderTop: '8px solid #ED84F8',
+            width: `${pointerWidth}px`,
+            height: '8px',
+            background: pointerColor,
+            clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
           }}
         />
       </div>
