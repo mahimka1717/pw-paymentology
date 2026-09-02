@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { trackTheme } from '../data/theme';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { cityAnimationType } from '../utils/cityAnimation';
+import { AnimatedBillboard } from './AnimatedBillboard';
 
 interface Props {
   hoveredTrackId: string | null;
@@ -108,12 +109,38 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
         event.currentTarget.style.setProperty('--city-parallax-y', '0px');
       }}
     >
-      <img
-        src="/img/city/city.png"
-        alt="Choose a Paymentology track from the interactive city"
-        className="city-base-enter absolute inset-0 h-full w-full object-contain"
-        draggable={false}
-      />
+      <div className="city-base-enter absolute inset-0">
+        <img
+          src="/img/city/city.png"
+          alt="Choose a Paymentology track from the interactive city"
+          className="absolute inset-0 h-full w-full object-contain"
+          draggable={false}
+        />
+
+        <AnimatedBillboard
+          x={624}
+          y={1688}
+          width={32}
+          height={74}
+          referenceWidth={imageWidth}
+          referenceHeight={imageHeight}
+          distortion={{ rotate: 0, skewY: 22, origin: 'bottom center' }}
+          brightness={0.9}
+          saturation={0.95}
+        />
+        <AnimatedBillboard
+          x={2306}
+          y={1596}
+          width={38}
+          height={71}
+          referenceWidth={imageWidth}
+          referenceHeight={imageHeight}
+          distortion={{ rotate: 3, skewY: 16, origin: 'bottom center' }}
+          brightness={0.88}
+          saturation={0.92}
+          delay={4000}
+        />
+      </div>
 
       {ambientAnimationEnabled && (
         <div className="city-ambient-particles pointer-events-none absolute inset-0" aria-hidden="true">

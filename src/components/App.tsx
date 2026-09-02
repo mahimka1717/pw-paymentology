@@ -9,18 +9,8 @@ import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
-import { cityAnimationType } from '../utils/cityAnimation';
 
 export type Phase = 'enter' | 'idle' | 'exit';
-
-const buildingHitAreas = [
-  { left: 41, top: 9, width: 22, height: 88 },
-  { left: 29, top: 34, width: 49, height: 58 },
-  { left: 32, top: 32, width: 40, height: 56 },
-  { left: 40, top: 9, width: 28, height: 88 },
-  { left: 35, top: 14, width: 40, height: 82 },
-  { left: 34, top: 21, width: 42, height: 72 },
-];
 
 export default function App() {
   const game = useGameState();
@@ -29,8 +19,6 @@ export default function App() {
   const gameStartedAt = useRef<number | null>(null);
   const lastScreenView = useRef<string | null>(null);
   const gameCompletionTracked = useRef(false);
-  const buildingInteractionRef = useRef<HTMLDivElement>(null);
-  const buildingHitAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.dataset.screen = game.screen;
@@ -181,45 +169,6 @@ export default function App() {
         ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
         : 'scale(calc(0.6 * var(--building-size, 1)))';
 
-  useEffect(() => {
-    const interaction = buildingInteractionRef.current;
-    const hitArea = buildingHitAreaRef.current;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!buildingScreen || !interaction || !hitArea || cityAnimationType !== 1 || reducedMotion) return;
-
-    const handlePointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse') return;
-
-      const x = event.clientX / window.innerWidth - 0.5;
-      const y = event.clientY / window.innerHeight - 0.5;
-      interaction.style.setProperty('--building-parallax-x', `${x * 8}px`);
-      interaction.style.setProperty('--building-parallax-y', `${y * 8}px`);
-
-      const bounds = hitArea.getBoundingClientRect();
-      const hovered = event.clientX >= bounds.left
-        && event.clientX <= bounds.right
-        && event.clientY >= bounds.top
-        && event.clientY <= bounds.bottom;
-      interaction.classList.toggle('is-hovered', hovered);
-    };
-
-    const resetInteraction = () => {
-      interaction.style.setProperty('--building-parallax-x', '0px');
-      interaction.style.setProperty('--building-parallax-y', '0px');
-      interaction.classList.remove('is-hovered');
-    };
-
-    window.addEventListener('pointermove', handlePointerMove);
-    document.documentElement.addEventListener('mouseleave', resetInteraction);
-    return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      document.documentElement.removeEventListener('mouseleave', resetInteraction);
-      resetInteraction();
-    };
-  }, [buildingScreen, game.screen, game.trackId, phase]);
-
-  const buildingHitArea = buildingHitAreas[buildingIndex] ?? buildingHitAreas[0];
-
   return (
     <>
       <TopBar />
@@ -240,37 +189,21 @@ export default function App() {
           >
             {game.trackId && buildingIndex >= 0 && (
               <div
-                ref={buildingInteractionRef}
-                data-animation-type={cityAnimationType}
-                className="building-interaction h-full w-full"
+                className="relative h-full w-full"
+                style={{
+                  transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
+                  transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
+                    ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
+                    : undefined,
+                }}
               >
-                <div
-                  className="relative h-full w-full"
-                  style={{
-                    transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
-                    transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                      ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
-                      : undefined,
-                  }}
-                >
-                  <img
-                    key={game.trackId}
-                    src={`/img/buildings/building${buildingIndex}.png`}
-                    alt=""
-                    className="building-image h-full w-full object-contain"
-                    draggable={false}
-                  />
-                  <div
-                    ref={buildingHitAreaRef}
-                    className="pointer-events-none absolute"
-                    style={{
-                      left: `${buildingHitArea.left}%`,
-                      top: `${buildingHitArea.top}%`,
-                      width: `${buildingHitArea.width}%`,
-                      height: `${buildingHitArea.height}%`,
-                    }}
-                  />
-                </div>
+                <img
+                  key={game.trackId}
+                  src={`/img/buildings/building${buildingIndex}.png`}
+                  alt=""
+                  className="h-full w-full object-contain"
+                  draggable={false}
+                />
               </div>
             )}
           </div>

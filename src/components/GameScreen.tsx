@@ -111,15 +111,16 @@ export function GameScreen({
 
   const handleNext = () => {
     if (questionExiting) return;
+    const isLastScenario = scenarioIndex === totalScenarios - 1;
 
     trackEvent('scenario_advanced', {
       track_id: track.id,
       scenario_id: scenario.id,
       scenario_number: scenarioIndex + 1,
-      completes_game: scenarioIndex === totalScenarios - 1,
+      completes_game: isLastScenario,
     });
     setButtonsExiting(true);
-    setQuestionExiting(true);
+    setQuestionExiting(!isLastScenario);
     setShowFeedback(false);
     setShowInsight(false);
     smoothScrollTo(0, scaledMs(1200));
@@ -127,7 +128,7 @@ export function GameScreen({
       setButtonsExiting(false);
       setQuestionExiting(false);
       onNext();
-    }, scaledMs(400));
+    }, scaledMs(isLastScenario ? 250 : 400));
   };
 
   const handleResetOption = () => {

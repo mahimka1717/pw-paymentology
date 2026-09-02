@@ -64,10 +64,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
           : { opacity: showFeedback ? 0.5 : 1 }
         }
       >
-        <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }}>
+        <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
           {scenario.title}
         </h2>
-        <div className="game-question-copy-wrap flex max-w-[85%] flex-col gap-[19px] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }}>
+        <div className="game-question-copy-wrap flex max-w-[85%] flex-col gap-[19px] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
           {questionParagraphs.map((paragraph, index) => {
             const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
 
@@ -118,7 +118,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 disabled={selectedOption !== null && selectedOption !== index}
                 accentColor={accentColor}
                 accentTextColor={accentTextColor}
-                animDelay={200 + index * 100}
+                animDelay={(scenarioIndex === 0 ? 500 : 200) + index * 100}
                 onSelect={() => {
                   if (selectedOption === null) {
                     onChoose(index, option.score, option.aggressive ?? false);
