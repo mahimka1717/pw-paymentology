@@ -174,7 +174,7 @@ body {
   stroke-width: 3;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .topbar-back-icon {
     width: calc(40px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
     height: calc(40px * min(calc(100vw / 1920px), calc(100vh / 1080px)));
@@ -222,7 +222,7 @@ body {
 
 }
 
-@media (min-width: 1024px) and (max-height: 800px) {
+@media (min-width: 1025px) and (max-height: 800px) {
   .building {
     --building-size: 0.9;
     transform-origin: 55% 65% !important;
@@ -381,7 +381,7 @@ h6 {
   transform: translateY(calc(-50% + 1px));
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .track-select-arrow {
     transform: translateY(calc(-50% + 1px));
   }
@@ -610,6 +610,21 @@ h6 {
 
 .city-callout-label.has-background::before {
   opacity: 1 !important;
+}
+
+.selection-locked .city-callout-label::before {
+  opacity: 0 !important;
+  transition: none;
+}
+
+.selection-locked .city-callout-label.is-touch-selected::before {
+  opacity: 1 !important;
+}
+
+.selection-locked .city-callout-impulse,
+.selection-locked .city-callout-pulse {
+  animation: none !important;
+  opacity: 0;
 }
 
 @keyframes city-district-awake {

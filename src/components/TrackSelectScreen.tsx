@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
 import { InteractiveCity } from './InteractiveCity';
-import { animationMs } from '../utils/animationTiming';
+import { animationMs, scaledMs } from '../utils/animationTiming';
 
 import type { Phase } from './App';
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 
 interface Props {
   phase: Phase;
@@ -22,8 +22,10 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
+  const [touchSelectedTrackId, setTouchSelectedTrackId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);
+  const touchSelectionTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,10 +41,40 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
     };
   }, []);
 
-  const handleTrackSelect = (trackId: string, trackName: string) => {
+  useEffect(() => () => {
+    if (touchSelectionTimeoutRef.current !== null) {
+      window.clearTimeout(touchSelectionTimeoutRef.current);
+    }
+  }, []);
+
+  const handleTrackSelect = (trackId: string, trackName: string, pointerType?: string) => {
+    if (touchSelectedTrackId) return;
+
+    const isTouchInteraction = pointerType === 'touch'
+      || window.matchMedia('(hover: none), (pointer: coarse)').matches;
     setSelectedTrackName(trackName);
-    setIsDropdownOpen(false);
-    onSelect(trackId);
+
+    if (!isTouchInteraction) {
+      setIsDropdownOpen(false);
+      onSelect(trackId);
+      return;
+    }
+
+    onHoverTrack(null);
+    setTouchSelectedTrackId(trackId);
+    touchSelectionTimeoutRef.current = window.setTimeout(() => {
+      setIsDropdownOpen(false);
+      onSelect(trackId);
+    }, scaledMs(650));
+  };
+
+  const handleCitySelect = (trackId: string, pointerType?: string) => {
+    const track = tracks.find(candidate => candidate.id === trackId);
+    handleTrackSelect(trackId, track?.name ?? trackId, pointerType);
+  };
+
+  const handleDropdownSelect = (event: ReactMouseEvent<HTMLButtonElement>, trackId: string, trackName: string) => {
+    handleTrackSelect(trackId, trackName, (event.nativeEvent as PointerEvent).pointerType);
   };
 
   const focusTrackOption = (index: number) => {
@@ -101,8 +133,9 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
       >
         <InteractiveCity
           hoveredTrackId={hoveredTrackId}
+          selectedTrackId={touchSelectedTrackId}
           onHoverTrack={onHoverTrack}
-          onSelectTrack={onSelect}
+          onSelectTrack={handleCitySelect}
           className="w-full"
         />
       </div>
@@ -149,12 +182,12 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
                     type="button"
                     role="option"
                     aria-selected={selectedTrackName === track.name}
-                    className={`dropdown-track-item block w-full px-5 text-left text-white uppercase transition-colors ${hoveredTrackId === track.id ? 'is-highlighted' : ''}`}
+                    className={`dropdown-track-item block w-full px-5 text-left text-white uppercase transition-colors ${hoveredTrackId === track.id || touchSelectedTrackId === track.id ? 'is-highlighted' : ''}`}
                     onMouseEnter={() => onHoverTrack(track.id)}
                     onMouseLeave={() => onHoverTrack(null)}
                     onFocus={() => onHoverTrack(track.id)}
                     onBlur={() => onHoverTrack(null)}
-                    onClick={() => handleTrackSelect(track.id, track.name)}
+                    onClick={(event) => handleDropdownSelect(event, track.id, track.name)}
                   >
                     {track.name}
                   </button>
@@ -165,8 +198,9 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
           <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}}>
             <InteractiveCity
               hoveredTrackId={hoveredTrackId}
+              selectedTrackId={touchSelectedTrackId}
               onHoverTrack={onHoverTrack}
-              onSelectTrack={onSelect}
+              onSelectTrack={handleCitySelect}
               className="w-full"
             />
           </div>

@@ -26,7 +26,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
 
       const width = panel.offsetWidth;
       const height = panel.offsetHeight;
-      const desktop = window.matchMedia('(min-width: 1024px)').matches;
+      const desktop = window.matchMedia('(min-width: 1025px)').matches;
       const pointerCenterX = !desktop
         ? width / 2
         : optionIndex === 0

@@ -47,7 +47,7 @@ export function OptionCard({ title, description, optionId, selected, disabled, r
         style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         <h4
-          className={`game-option-title relative z-10 mb-[10px] lg:mb-[20px] uppercase text-[12px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1024px]:max-[1260px]:text-[14px] min-[1024px]:max-[1260px]:leading-[17px] ${resetting ? 'transition-colors duration-[350ms] ease-in-out' : ''} ${selected && !resetting ? 'text-[#CCB0F9]' : 'text-[#703ff5]'}`}
+          className={`game-option-title relative z-10 mb-[10px] lg:mb-[20px] uppercase text-[12px] leading-[17px] md:text-[17px] md:leading-[21px] lg:text-[15px] lg:leading-[18px] min-[1025px]:max-[1260px]:text-[14px] min-[1025px]:max-[1260px]:leading-[17px] ${resetting ? 'transition-colors duration-[350ms] ease-in-out' : ''} ${selected && !resetting ? 'text-[#CCB0F9]' : 'text-[#703ff5]'}`}
           style={{ fontFamily: "'PP Monument Extended'", fontWeight: 900 }}
         >
           {title}

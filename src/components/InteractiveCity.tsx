@@ -6,8 +6,9 @@ import { AnimatedBillboard } from './AnimatedBillboard';
 
 interface Props {
   hoveredTrackId: string | null;
+  selectedTrackId?: string | null;
   onHoverTrack: (trackId: string | null) => void;
-  onSelectTrack: (trackId: string) => void;
+  onSelectTrack: (trackId: string, pointerType?: string) => void;
   className?: string;
 }
 
@@ -62,13 +63,13 @@ const cityTracks: CityTrack[] = [
   { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 755] },
 ];
 
-export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, className = '' }: Props) {
+export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '' }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const idleAnimationEnabled = cityAnimationType === 1 && !reducedMotion;
   const ambientAnimationEnabled = cityAnimationType === 2 && !reducedMotion;
-  const animatedTrackId = hoveredTrackId ?? (idleAnimationEnabled && entranceComplete ? cityTracks[idleTrackIndex].id : null);
+  const animatedTrackId = selectedTrackId ?? hoveredTrackId ?? (idleAnimationEnabled && entranceComplete ? cityTracks[idleTrackIndex].id : null);
 
   useEffect(() => {
     if (!idleAnimationEnabled) return;
@@ -81,20 +82,20 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
   }, [idleAnimationEnabled]);
 
   useEffect(() => {
-    if (!idleAnimationEnabled || !entranceComplete || hoveredTrackId) return;
+    if (!idleAnimationEnabled || !entranceComplete || hoveredTrackId || selectedTrackId) return;
 
     const interval = window.setInterval(() => {
       setIdleTrackIndex(current => (current + 1) % cityTracks.length);
     }, scaledMs(calloutCycleDuration));
 
     return () => window.clearInterval(interval);
-  }, [entranceComplete, hoveredTrackId, idleAnimationEnabled]);
+  }, [entranceComplete, hoveredTrackId, idleAnimationEnabled, selectedTrackId]);
 
   return (
     <div
       data-interactive-city
       data-animation-type={cityAnimationType}
-      className={`city-parallax relative aspect-[2670/2508] select-none ${ambientAnimationEnabled ? 'city-ambient-active' : ''} ${hoveredTrackId ? 'has-hover' : ''} ${className}`}
+      className={`city-parallax relative aspect-[2670/2508] select-none ${ambientAnimationEnabled ? 'city-ambient-active' : ''} ${hoveredTrackId ? 'has-hover' : ''} ${selectedTrackId ? 'selection-locked' : ''} ${className}`}
       style={{ isolation: 'auto', containerType: 'inline-size' }}
       onPointerMove={event => {
         if (!idleAnimationEnabled || event.pointerType !== 'mouse') return;
@@ -188,7 +189,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               src={imageUrl}
               alt=""
               aria-hidden="true"
-              className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${animatedTrackId === track.id ? 'is-awake' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''} ${hoveredTrackId === track.id ? 'is-hovered' : ''}`}
+              className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${animatedTrackId === track.id ? 'is-awake' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''} ${hoveredTrackId === track.id || selectedTrackId === track.id ? 'is-hovered' : ''}`}
               style={{
                 opacity: ambientAnimationEnabled ? 0.24 : 0,
                 mixBlendMode: 'soft-light',
@@ -229,7 +230,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
             onPointerLeave={() => onHoverTrack(null)}
             onFocus={() => onHoverTrack(track.id)}
             onBlur={() => onHoverTrack(null)}
-            onClick={() => onSelectTrack(track.id)}
+            onClick={(event) => onSelectTrack(track.id, (event.nativeEvent as PointerEvent).pointerType)}
           />
         );
       })}
@@ -245,7 +246,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
           return (
             <g
               key={track.id}
-              className="pointer-events-auto cursor-pointer outline-none"
+              className={`pointer-events-auto cursor-pointer outline-none ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
               role="button"
               tabIndex={0}
               aria-label={`Highlight ${track.name}`}
@@ -253,11 +254,11 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               onPointerLeave={() => onHoverTrack(null)}
               onFocus={() => onHoverTrack(track.id)}
               onBlur={() => onHoverTrack(null)}
-              onClick={() => onSelectTrack(track.id)}
+              onClick={(event) => onSelectTrack(track.id, (event.nativeEvent as PointerEvent).pointerType)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
-                  onSelectTrack(track.id);
+                    onSelectTrack(track.id, 'keyboard');
                 }
               }}
             >
@@ -350,7 +351,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
           <div key={`${track.id}-callout-label`}>
             <button
               type="button"
-              className={`city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none lg:hidden ${backgroundActive ? 'has-background' : ''}`}
+              className={`city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none lg:hidden ${backgroundActive ? 'has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
               style={{
                 animationDelay: calloutDelay(track.id, 'label'),
                 '--callout-background': trackTheme[track.id].accent,
@@ -376,13 +377,13 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               onPointerLeave={() => onHoverTrack(null)}
               onFocus={() => onHoverTrack(track.id)}
               onBlur={() => onHoverTrack(null)}
-              onClick={() => onSelectTrack(track.id)}
+              onClick={(event) => onSelectTrack(track.id, (event.nativeEvent as PointerEvent).pointerType)}
             >
               {track.name.toUpperCase()}
             </button>
             <button
               type="button"
-              className={`city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none lg:block ${backgroundActive ? 'has-background' : ''}`}
+              className={`city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none lg:block ${backgroundActive ? 'has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
               style={{
                 animationDelay: calloutDelay(track.id, 'label'),
                 '--callout-background': trackTheme[track.id].accent,
@@ -400,7 +401,7 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
               onPointerLeave={() => onHoverTrack(null)}
               onFocus={() => onHoverTrack(track.id)}
               onBlur={() => onHoverTrack(null)}
-              onClick={() => onSelectTrack(track.id)}
+              onClick={(event) => onSelectTrack(track.id, (event.nativeEvent as PointerEvent).pointerType)}
             >
               {track.name.toUpperCase()}
             </button>
