@@ -50,6 +50,7 @@ export function GameScreen({
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
   const [questionExiting, setQuestionExiting] = useState(false);
+  const [resettingOption, setResettingOption] = useState(false);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
@@ -132,18 +133,35 @@ export function GameScreen({
   };
 
   const handleResetOption = () => {
-    setShowFeedback(false);
+    if (resettingOption) return;
+
+    setResettingOption(true);
+    setButtonsExiting(true);
     setShowScoreDelta(false);
-    setShowInsight(false);
-    setIsClosingInsight(false);
-    onResetOption();
+    if (showInsight) setIsClosingInsight(true);
+    setTimeout(() => {
+      onResetOption();
+      setShowFeedback(false);
+      setShowInsight(false);
+      setIsClosingInsight(false);
+      setButtonsExiting(false);
+      setResettingOption(false);
+    }, scaledMs(700));
   };
 
   const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
+  const displayedScore = resettingOption && lastDelta
+    ? {
+        growth: totalScore.growth - lastDelta.growth,
+        trust: totalScore.trust - lastDelta.trust,
+        control: totalScore.control - lastDelta.control,
+        momentum: totalScore.momentum - lastDelta.momentum,
+      }
+    : totalScore;
 
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10 lg:min-h-[920px]">
-      <div className="w-full max-w-[87.5vw] lg:max-w-[1680px]">
+      <div className="w-full max-w-[87.5vw] md:max-w-[672px] lg:max-w-[1680px]">
         <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
@@ -164,7 +182,7 @@ export function GameScreen({
               <div
                 ref={insightPopupRef}
                 className="absolute bottom-[20px] left-[calc(var(--insight-anchor-x)-604px)] z-40 hidden w-[500px] rounded-[16px] bg-white p-[40px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] lg:block"
-                style={{ animation: `slide-in-from-right ${animationMs(400)} cubic-bezier(0.22,1,0.36,1) forwards` }}
+                style={{ animation: `slide-in-from-right ${animationMs(500)} cubic-bezier(0.22,0.61,0.36,1) forwards` }}
               >
                 <button
                   onClick={handleCloseInsight}
@@ -187,7 +205,7 @@ export function GameScreen({
             )}
 
             <div style={cascade(phase, 0)}>
-              <ScoreBars totalScore={totalScore} lastDelta={showFeedback && showScoreDelta ? lastDelta : null} />
+              <ScoreBars totalScore={displayedScore} lastDelta={showFeedback && showScoreDelta ? lastDelta : null} />
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
@@ -213,12 +231,15 @@ export function GameScreen({
                 accentColor={theme.accent}
                 accentTextColor={theme.accentText}
                 exiting={questionExiting}
+                resettingOption={resettingOption}
                 showFeedback={showFeedback}
                 onCloseFeedback={() => {
+                  if (resettingOption) return;
                   setShowFeedback(false);
                   setShowScoreDelta(false);
                 }}
                 onToggleFeedback={() => {
+                  if (resettingOption) return;
                   trackEvent(showFeedback ? 'feedback_closed' : 'feedback_opened', {
                     track_id: track.id,
                     scenario_id: scenario.id,
@@ -252,7 +273,7 @@ export function GameScreen({
                         boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)',
                         animation: isClosingInsight
                           ? `slide-up-out ${animationMs(300)} ease forwards`
-                          : `slide-down-in ${animationMs(400)} cubic-bezier(0.22,1,0.36,1) forwards`,
+                          : `slide-down-in ${animationMs(500)} cubic-bezier(0.22,0.61,0.36,1) forwards`,
                       }}
                     >
                       <button

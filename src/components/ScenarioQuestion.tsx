@@ -12,6 +12,7 @@ interface Props {
   accentColor: string;
   accentTextColor: string;
   exiting: boolean;
+  resettingOption: boolean;
   showFeedback: boolean;
   onCloseFeedback: () => void;
   onToggleFeedback: () => void;
@@ -20,7 +21,7 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, exiting, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, exiting, resettingOption, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -44,13 +45,14 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     <div className="game-question-panel relative h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
       <button
         type="button"
-        className="absolute right-[18px] top-[18px] z-30 grid h-10 w-10 place-items-center rounded-full border-2 border-current bg-transparent text-white transition-colors enabled:hover:text-[#D2AFFE] enabled:active:text-[#A586FF] md:right-[24px] md:top-[24px]"
+        className="absolute right-[10px] top-[10px] z-30 grid h-8 w-8 place-items-center rounded-full border-2 border-current bg-transparent text-white transition-colors enabled:hover:text-[#D2AFFE] enabled:active:text-[#A586FF] md:right-[24px] md:top-[24px] md:h-10 md:w-10"
         aria-label="Reset answer"
-        disabled={selectedOption === null}
-        style={{ opacity: selectedOption === null ? 0.35 : 1, cursor: selectedOption === null ? 'default' : 'pointer' }}
+        disabled={selectedOption === null || resettingOption}
+        style={{ opacity: selectedOption === null || resettingOption ? 0.35 : 1, cursor: selectedOption === null || resettingOption ? 'default' : 'pointer' }}
+        onMouseDown={(event) => event.stopPropagation()}
         onClick={onResetOption}
       >
-        <svg className="h-5 w-5" viewBox="0 0 49 49" fill="none" aria-hidden="true">
+        <svg className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 49 49" fill="none" aria-hidden="true">
           <path d="M39.5 17.5A17 17 0 1 0 40.8 29" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
           <path d="M39.5 8.5V17.5H30.5" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -58,16 +60,16 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Scenario header — single line */}
       <div
-        className="mb-[12px] flex flex-col gap-[12px] pr-12 transition-opacity duration-200 md:pl-[20px] md:pr-14"
+        className="mb-[12px] flex flex-col gap-[12px] transition-opacity duration-200 md:pl-[20px] md:pr-14"
         style={exiting
           ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` }
-          : { opacity: showFeedback ? 0.5 : 1 }
+          : { opacity: showFeedback && !resettingOption ? 0.5 : 1 }
         }
       >
         <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
           {scenario.title}
         </h2>
-        <div className="game-question-copy-wrap flex max-w-[85%] flex-col gap-[19px] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
+        <div className="game-question-copy-wrap flex max-w-full flex-col gap-[19px] md:max-w-[85%] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
           {questionParagraphs.map((paragraph, index) => {
             const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
 
@@ -99,9 +101,12 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
               {showFeedback && selectedOption === index && (
                 <div
                   className="absolute z-40 pointer-events-none lg:hidden left-0 w-full"
-                  style={{ bottom: 'calc(100% + 15px)' }}
+                  style={{ bottom: 'calc(100% + 9px)' }}
                 >
-                  <div className="pointer-events-auto">
+                  <div
+                    className="pointer-events-auto"
+                    style={resettingOption ? { animation: `fade-out ${animationMs(250)} ease forwards` } : undefined}
+                  >
                     <FeedbackPopup
                       feedback={scenario.options[selectedOption].feedback}
                       optionIndex={selectedOption}
@@ -116,6 +121,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 description={option.description}
                 selected={selectedOption === index}
                 disabled={selectedOption !== null && selectedOption !== index}
+                resetting={resettingOption}
                 accentColor={accentColor}
                 accentTextColor={accentTextColor}
                 animDelay={(scenarioIndex === 0 ? 500 : 200) + index * 100}
@@ -136,7 +142,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
             className="absolute z-40 pointer-events-none hidden lg:block"
             style={{ bottom: 'calc(100% + 15px)', ...getPopupX(selectedOption) }}
           >
-            <div className="pointer-events-auto">
+            <div
+              className="pointer-events-auto"
+              style={resettingOption ? { animation: `fade-out ${animationMs(250)} ease forwards` } : undefined}
+            >
               <FeedbackPopup
                 feedback={scenario.options[selectedOption].feedback}
                 optionIndex={selectedOption}

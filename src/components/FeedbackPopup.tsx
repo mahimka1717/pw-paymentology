@@ -13,11 +13,11 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [pointerColor, setPointerColor] = useState('#ED84F8');
-  const pointerPosition = optionIndex === 0
-    ? { left: `${pointerInset}px` }
+  const pointerClassName = optionIndex === 0
+    ? 'left-1/2 -translate-x-1/2 lg:left-[65px] lg:translate-x-0'
     : optionIndex === 2
-      ? { right: `${pointerInset}px` }
-      : { left: '50%', transform: 'translateX(-50%)' };
+      ? 'left-1/2 -translate-x-1/2 lg:left-auto lg:right-[65px] lg:translate-x-0'
+      : 'left-1/2 -translate-x-1/2';
 
   useLayoutEffect(() => {
     const updatePointerColor = () => {
@@ -26,11 +26,14 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
 
       const width = panel.offsetWidth;
       const height = panel.offsetHeight;
-      const pointerCenterX = optionIndex === 0
-        ? pointerInset + pointerWidth / 2
-        : optionIndex === 2
-          ? width - pointerInset - pointerWidth / 2
-          : width / 2;
+      const desktop = window.matchMedia('(min-width: 1024px)').matches;
+      const pointerCenterX = !desktop
+        ? width / 2
+        : optionIndex === 0
+          ? pointerInset + pointerWidth / 2
+          : optionIndex === 2
+            ? width - pointerInset - pointerWidth / 2
+            : width / 2;
       const colorPositionAtPointerCenter = Math.max(0, Math.min(
         1,
         (pointerCenterX + height / 8) / (width * 2),
@@ -47,7 +50,11 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
     updatePointerColor();
     const observer = new ResizeObserver(updatePointerColor);
     if (panelRef.current) observer.observe(panelRef.current);
-    return () => observer.disconnect();
+    window.addEventListener('resize', updatePointerColor);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updatePointerColor);
+    };
   }, [optionIndex]);
 
   useEffect(() => {
@@ -85,22 +92,22 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
           onClick={onClose}
           data-analytics-id="feedback_close"
           aria-label="Close feedback"
-          className="close-btn-spin"
-          style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+          className="close-btn-spin !right-[6px] !top-[6px] md:!right-[12px] md:!top-[12px]"
+          style={{ position: 'absolute', background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="butt"/>
           </svg>
         </button>
         <p
-          className="feedback-copy text-[18px] leading-[22px] md:text-[20px] md:leading-[24px]"
+          className="feedback-copy text-[16px] leading-[20px] md:text-[20px] md:leading-[24px]"
           style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, color: '#FFFFFF' }}
         >{feedback}</p>
         <div
+          className={pointerClassName}
           style={{
             position: 'absolute',
             bottom: '-7px',
-            ...pointerPosition,
             width: `${pointerWidth}px`,
             height: '8px',
             background: pointerColor,

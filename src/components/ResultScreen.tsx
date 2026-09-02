@@ -71,7 +71,7 @@ function StyleIcon({ style }: { style: Style }) {
 export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10 lg:min-h-[920px]">
-      <div className="w-full max-w-[87.50vw] flex flex-col gap-[16px] lg:max-w-[1680px] lg:gap-0">
+      <div className="w-full max-w-[87.50vw] md:max-w-[672px] flex flex-col gap-[16px] lg:max-w-[1680px] lg:gap-0">
 
         {/* Part 1 — Outcome box */}
         <div className="flex flex-col overflow-hidden rounded-[16px] lg:mr-[70px] lg:flex-row" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>

@@ -1,85 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 export function TopBar() {
   const [backHovered, setBackHovered] = useState(false);
   const [backPressed, setBackPressed] = useState(false);
-  const [touchLabelOpen, setTouchLabelOpen] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
   const [logoPressed, setLogoPressed] = useState(false);
-  const [touchHomeLabelOpen, setTouchHomeLabelOpen] = useState(false);
-  const backControlRef = useRef<HTMLDivElement>(null);
-  const homeControlRef = useRef<HTMLDivElement>(null);
-  const lastPointerTypeRef = useRef('mouse');
-  const lastHomePointerTypeRef = useRef('mouse');
 
   const backColor = backPressed ? '#A586FF' : 'white';
   const logoFill = logoPressed ? '#A586FF' : logoHovered ? '#D2AFFE' : 'white';
-  const showBackLabel = backHovered || touchLabelOpen;
-  const showHomeLabel = logoHovered || touchHomeLabelOpen;
-
-  useEffect(() => {
-    if (!touchLabelOpen) return;
-
-    const timeout = setTimeout(() => setTouchLabelOpen(false), 15000);
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (!backControlRef.current?.contains(event.target as Node)) {
-        setTouchLabelOpen(false);
-      }
-    };
-    const closeOnScroll = () => setTouchLabelOpen(false);
-
-    document.addEventListener('pointerdown', closeOnOutsidePointer);
-    window.addEventListener('scroll', closeOnScroll, { passive: true, capture: true });
-    return () => {
-      clearTimeout(timeout);
-      document.removeEventListener('pointerdown', closeOnOutsidePointer);
-      window.removeEventListener('scroll', closeOnScroll, true);
-    };
-  }, [touchLabelOpen]);
-
-  useEffect(() => {
-    if (!touchHomeLabelOpen) return;
-
-    const timeout = setTimeout(() => setTouchHomeLabelOpen(false), 15000);
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (!homeControlRef.current?.contains(event.target as Node)) {
-        setTouchHomeLabelOpen(false);
-      }
-    };
-    const closeOnScroll = () => setTouchHomeLabelOpen(false);
-
-    document.addEventListener('pointerdown', closeOnOutsidePointer);
-    window.addEventListener('scroll', closeOnScroll, { passive: true, capture: true });
-    return () => {
-      clearTimeout(timeout);
-      document.removeEventListener('pointerdown', closeOnOutsidePointer);
-      window.removeEventListener('scroll', closeOnScroll, true);
-    };
-  }, [touchHomeLabelOpen]);
 
   const reloadPage = () => window.location.reload();
-
-  const handleBackClick = () => {
-    const isTouchInteraction = lastPointerTypeRef.current !== 'mouse'
-      || window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
-    if (isTouchInteraction) {
-      setTouchLabelOpen((open) => !open);
-      return;
-    }
-
-    reloadPage();
-  };
-
-  const handleHomeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const isTouchInteraction = lastHomePointerTypeRef.current !== 'mouse'
-      || window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
-    if (isTouchInteraction && !touchHomeLabelOpen) {
-      event.preventDefault();
-      setTouchHomeLabelOpen(true);
-    }
-  };
 
   return (
     <div
@@ -88,7 +18,6 @@ export function TopBar() {
     >
       {/* Back button */}
       <div
-        ref={backControlRef}
         className="flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer"
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setBackHovered(true);
@@ -102,15 +31,13 @@ export function TopBar() {
           type="button"
           className="border-0 bg-transparent p-0"
           aria-label="Play again"
-          aria-expanded={touchLabelOpen}
           onPointerDown={(event) => {
-            lastPointerTypeRef.current = event.pointerType;
             if (event.pointerType !== 'mouse') setBackHovered(false);
             setBackPressed(true);
           }}
           onPointerUp={() => setBackPressed(false)}
           onPointerCancel={() => setBackPressed(false)}
-          onClick={handleBackClick}
+          onClick={reloadPage}
         >
           <svg
             className="topbar-back-icon block h-[22px] w-[22px]"
@@ -127,7 +54,7 @@ export function TopBar() {
             <path d="M39.5 8.5V17.5H30.5" stroke={backColor} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        {showBackLabel && (
+        {backHovered && (
           <button
             type="button"
             className="animate-fade-in whitespace-nowrap border-0 bg-transparent p-0 text-sm"
@@ -141,7 +68,6 @@ export function TopBar() {
 
       {/* Home link */}
       <div
-        ref={homeControlRef}
         className="flex items-center gap-3"
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setLogoHovered(true);
@@ -151,7 +77,7 @@ export function TopBar() {
           setLogoPressed(false);
         }}
       >
-        {showHomeLabel && (
+        {logoHovered && (
           <span
             className="animate-fade-in whitespace-nowrap text-sm"
             style={{ color: logoFill, fontWeight: 900 }}
@@ -164,13 +90,11 @@ export function TopBar() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Return to The Issuer Academy"
-          onPointerDown={(event) => {
-            lastHomePointerTypeRef.current = event.pointerType;
+          onPointerDown={() => {
             setLogoPressed(true);
           }}
           onPointerUp={() => setLogoPressed(false)}
           onPointerCancel={() => setLogoPressed(false)}
-          onClick={handleHomeClick}
         >
           <svg
             className="topbar-logo-icon h-[27px] w-[27px]"

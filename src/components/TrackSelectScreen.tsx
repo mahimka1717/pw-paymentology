@@ -107,7 +107,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
         />
       </div>
 
-      <div className="mx-auto flex w-full max-w-[87.50vw] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
+      <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             Issuer's Playbook
