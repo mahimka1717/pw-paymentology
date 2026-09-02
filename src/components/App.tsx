@@ -9,8 +9,44 @@ import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
+import { trackTheme } from '../data/theme';
 
 export type Phase = 'enter' | 'idle' | 'exit';
+
+interface BuildingMaskPixels {
+  data: Uint8ClampedArray;
+  width: number;
+  height: number;
+}
+
+const buildingMaskCache = new Map<number, Promise<BuildingMaskPixels>>();
+
+function loadBuildingMaskPixels(buildingIndex: number) {
+  const cached = buildingMaskCache.get(buildingIndex);
+  if (cached) return cached;
+
+  const pending = new Promise<BuildingMaskPixels>((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(image.naturalWidth / 4);
+      canvas.height = Math.ceil(image.naturalHeight / 4);
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      if (!context) {
+        reject(new Error('Unable to read building mask'));
+        return;
+      }
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+      resolve({ data: pixels.data, width: pixels.width, height: pixels.height });
+    };
+    image.onerror = reject;
+    image.src = `/img/buildings/building${buildingIndex}_mask.png`;
+  });
+
+  buildingMaskCache.set(buildingIndex, pending);
+  return pending;
+}
 
 export default function App() {
   const game = useGameState();
@@ -19,6 +55,8 @@ export default function App() {
   const gameStartedAt = useRef<number | null>(null);
   const lastScreenView = useRef<string | null>(null);
   const gameCompletionTracked = useRef(false);
+  const buildingRef = useRef<HTMLDivElement>(null);
+  const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
 
   useEffect(() => {
     document.body.dataset.screen = game.screen;
@@ -73,6 +111,12 @@ export default function App() {
     }, scaledMs(delay));
   }, []);
 
+  const startGame = useCallback(() => {
+    gameStartedAt.current = Date.now();
+    trackEvent('game_started', { track_id: game.trackId ?? undefined });
+    triggerTransition(() => game.startGame(), 650);
+  }, [game.startGame, game.trackId, triggerTransition]);
+
   function renderScreen() {
     switch (game.screen) {
       case 'select':
@@ -87,6 +131,7 @@ export default function App() {
               if (selectedBuildingIndex >= 0) {
                 const buildingImage = new Image();
                 buildingImage.src = `/img/buildings/building${selectedBuildingIndex}.png`;
+                void loadBuildingMaskPixels(selectedBuildingIndex);
               }
               triggerTransition(() => {
                 setHoveredTrackId(null);
@@ -101,11 +146,7 @@ export default function App() {
           <TrackIntroScreen
             phase={phase}
             track={game.currentTrack!}
-            onStart={() => {
-              gameStartedAt.current = Date.now();
-              trackEvent('game_started', { track_id: game.trackId ?? undefined });
-              triggerTransition(() => game.startGame(), 650);
-            }}
+            onStart={startGame}
           />
         );
 
@@ -168,6 +209,60 @@ export default function App() {
       : game.screen === 'result'
         ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
         : 'scale(calc(0.6 * var(--building-size, 1)))';
+  const buildingAccent = game.trackId ? trackTheme[game.trackId]?.accent : '#FFFFFF';
+  const buildingMaskUrl = `/img/buildings/building${buildingIndex}_mask.png`;
+
+  useEffect(() => {
+    buildingMaskPixelsRef.current = null;
+    if (!buildingScreen || buildingIndex < 0) return;
+
+    let cancelled = false;
+    void loadBuildingMaskPixels(buildingIndex).then((pixels) => {
+      if (!cancelled) buildingMaskPixelsRef.current = pixels;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [buildingIndex, buildingMaskUrl, buildingScreen]);
+
+  useEffect(() => {
+    const building = buildingRef.current;
+    if (!buildingScreen || !building) return;
+
+    const isPointOnBuilding = (clientX: number, clientY: number) => {
+      const bounds = building.getBoundingClientRect();
+      const relativeX = (clientX - bounds.left) / bounds.width;
+      const relativeY = (clientY - bounds.top) / bounds.height;
+      const mask = buildingMaskPixelsRef.current;
+      const insideBounds = relativeX >= 0 && relativeX <= 1 && relativeY >= 0 && relativeY <= 1;
+      const pixelX = insideBounds && mask ? Math.min(mask.width - 1, Math.floor(relativeX * mask.width)) : 0;
+      const pixelY = insideBounds && mask ? Math.min(mask.height - 1, Math.floor(relativeY * mask.height)) : 0;
+      const alpha = mask ? mask.data[(pixelY * mask.width + pixelX) * 4 + 3] : 0;
+      return insideBounds && alpha > 16;
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse') return;
+      building.classList.toggle('is-hovered', isPointOnBuilding(event.clientX, event.clientY));
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (game.screen !== 'intro' || phase === 'exit') return;
+      if (isPointOnBuilding(event.clientX, event.clientY)) startGame();
+    };
+
+    const clearHover = () => building.classList.remove('is-hovered');
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('click', handleClick);
+    document.documentElement.addEventListener('mouseleave', clearHover);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('click', handleClick);
+      document.documentElement.removeEventListener('mouseleave', clearHover);
+      clearHover();
+    };
+  }, [buildingScreen, game.screen, game.trackId, phase, startGame]);
 
   return (
     <>
@@ -189,7 +284,8 @@ export default function App() {
           >
             {game.trackId && buildingIndex >= 0 && (
               <div
-                className="relative h-full w-full"
+                ref={buildingRef}
+                className="standalone-building relative h-full w-full"
                 style={{
                   transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
                   transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
@@ -204,6 +300,19 @@ export default function App() {
                   className="h-full w-full object-contain"
                   draggable={false}
                 />
+                <div
+                  aria-hidden="true"
+                  className="standalone-building-highlight pointer-events-none absolute inset-0 h-full w-full"
+                >
+                  <div
+                    className="standalone-building-highlight-mask h-full w-full"
+                    style={{
+                      backgroundColor: buildingAccent,
+                      WebkitMaskImage: `url(${buildingMaskUrl})`,
+                      maskImage: `url(${buildingMaskUrl})`,
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>

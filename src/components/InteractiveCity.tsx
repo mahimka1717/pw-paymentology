@@ -117,6 +117,23 @@ export function InteractiveCity({ hoveredTrackId, onHoverTrack, onSelectTrack, c
           draggable={false}
         />
 
+        <img
+          src="/img/city/car.png"
+          alt=""
+          aria-hidden="true"
+          className="city-car pointer-events-none absolute z-10 object-contain"
+          style={{
+            '--car-start-left': `${100 / imageWidth * 100}%`,
+            '--car-start-top': `${1540 / imageHeight * 100}%`,
+            '--car-end-left': `${1380 / imageWidth * 100}%`,
+            '--car-end-top': `${2085 / imageHeight * 100}%`,
+
+
+            width: `${147 / imageWidth * 100}%`,
+          } as React.CSSProperties}
+          draggable={false}
+        />
+
         <AnimatedBillboard
           x={624}
           y={1688}
