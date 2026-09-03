@@ -10,6 +10,7 @@ import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
 import { trackTheme } from '../data/theme';
+import { buildingNeonLayers } from '../data/buildingNeon';
 import { AnimatedBillboard } from './AnimatedBillboard';
 
 export type Phase = 'enter' | 'idle' | 'exit';
@@ -146,7 +147,9 @@ export default function App() {
               const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
               if (selectedBuildingIndex >= 0) {
                 const buildingImage = new Image();
-                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}.png`;
+                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}_ws.png`;
+                const buildingIcon = new Image();
+                buildingIcon.src = `/img/buildings/building${selectedBuildingIndex}_icon.png`;
                 void loadBuildingMaskPixels(selectedBuildingIndex);
               }
               triggerTransition(() => {
@@ -228,6 +231,7 @@ export default function App() {
   const buildingAccent = game.trackId ? trackTheme[game.trackId]?.accent : '#FFFFFF';
   const buildingMaskUrl = `/img/buildings/building${buildingIndex}_mask.png`;
   const standaloneBillboard = game.trackId ? standaloneBillboards[game.trackId] : undefined;
+  const buildingNeonLayer = buildingNeonLayers[buildingIndex];
 
   useEffect(() => {
     buildingMaskPixelsRef.current = null;
@@ -312,9 +316,23 @@ export default function App() {
               >
                 <img
                   key={game.trackId}
-                  src={`/img/buildings/building${buildingIndex}.png`}
+                  src={`/img/buildings/building${buildingIndex}_ws.png`}
                   alt=""
-                  className="h-full w-full object-contain"
+                  className="absolute inset-0 h-full w-full object-contain"
+                  draggable={false}
+                />
+                <img
+                  src={`/img/buildings/building${buildingIndex}_icon.png`}
+                  alt=""
+                  aria-hidden="true"
+                  className="standalone-building-neon pointer-events-none absolute object-contain"
+                  style={{
+                    '--building-neon-delay': animationMs(buildingIndex * 430),
+                    left: `${buildingNeonLayer.x / 1920 * 100}%`,
+                    top: `${buildingNeonLayer.y / 1080 * 100}%`,
+                    width: `${buildingNeonLayer.width / 1920 * 100}%`,
+                    height: buildingNeonLayer.height ? `${buildingNeonLayer.height / 1080 * 100}%` : undefined,
+                  } as React.CSSProperties}
                   draggable={false}
                 />
                 {standaloneBillboard && (

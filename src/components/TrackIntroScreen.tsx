@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Track, tracks } from '../data/tracks';
+import { buildingNeonLayers } from '../data/buildingNeon';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 
@@ -16,6 +17,9 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 }
 
 export function TrackIntroScreen({ phase, track, onStart }: Props) {
+  const buildingIndex = tracks.findIndex(t => t.id === track.id);
+  const buildingNeonLayer = buildingNeonLayers[buildingIndex];
+
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:min-h-[920px] lg:overflow-x-visible">
       <div className="w-full max-w-[87.50vw] md:max-w-[672px] lg:max-w-[1680px]">
@@ -33,13 +37,31 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           </div>
           <div className="flex-1 lg:hidden" />
           <div className={`relative my-0 w-[120vw] -translate-x-1/2 overflow-hidden lg:hidden ${track.id === 'telco' ? 'left-[calc(50%-20px)]' : track.id === 'digital-banks' || track.id === 'banks' || track.id === 'remittance' ? 'left-[calc(50%-10px)]' : 'left-1/2'}`}>
-            <img
-              src={`/img/buildings/building${tracks.findIndex(t => t.id === track.id)}.png`}
-              alt=""
-              className="w-full h-auto object-contain"
+            <div
+              className="relative aspect-[16/9] w-full"
               style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
-              draggable={false}
-            />
+            >
+              <img
+                src={`/img/buildings/building${buildingIndex}_ws.png`}
+                alt=""
+                className="absolute inset-0 h-full w-full object-contain"
+                draggable={false}
+              />
+              <img
+                src={`/img/buildings/building${buildingIndex}_icon.png`}
+                alt=""
+                aria-hidden="true"
+                className="standalone-building-neon pointer-events-none absolute object-contain"
+                style={{
+                  '--building-neon-delay': animationMs(buildingIndex * 430),
+                  left: `${buildingNeonLayer.x / 1920 * 100}%`,
+                  top: `${buildingNeonLayer.y / 1080 * 100}%`,
+                  width: `${buildingNeonLayer.width / 1920 * 100}%`,
+                  height: buildingNeonLayer.height ? `${buildingNeonLayer.height / 1080 * 100}%` : undefined,
+                } as CSSProperties}
+                draggable={false}
+              />
+            </div>
           </div>
           <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase, 3, 4)}>
             <button
