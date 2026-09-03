@@ -118,22 +118,40 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           draggable={false}
         />
 
-        <img
-          src="/img/city/car.png"
-          alt=""
+        <div
           aria-hidden="true"
-          className="city-car pointer-events-none absolute z-10 object-contain"
+          className="city-car pointer-events-none absolute z-10"
           style={{
             '--car-start-left': `${100 / imageWidth * 100}%`,
             '--car-start-top': `${1540 / imageHeight * 100}%`,
             '--car-end-left': `${1380 / imageWidth * 100}%`,
             '--car-end-top': `${2085 / imageHeight * 100}%`,
-
-
             width: `${147 / imageWidth * 100}%`,
+            aspectRatio: '922 / 655',
           } as React.CSSProperties}
-          draggable={false}
-        />
+        >
+          {[
+            ['01_drive_right.png', 1, 0, 0],
+            ['02_turn_rear_side.png', 0.86, 0.07, 0],
+            ['03_rear.png', 0.95, 0.025, -0.02],
+            ['04_drive_left.png', 0.87, 0.065, 0],
+            ['05_turn_front_side.png', 0.86, 0.07, -0.04],
+            ['06_front.png', 0.95, 0.025, -0.07],
+          ].map(([file, width, left, top], index) => (
+            <img
+              key={file}
+              src={`/img/city/car/${file}`}
+              alt=""
+              className={`city-car-frame city-car-frame-${index + 1} absolute object-contain`}
+              style={{
+                left: `${Number(left) * 100}%`,
+                top: `${Number(top) * 100}%`,
+                width: `${Number(width) * 100}%`,
+              }}
+              draggable={false}
+            />
+          ))}
+        </div>
 
         <AnimatedBillboard
           x={624}
