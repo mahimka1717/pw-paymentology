@@ -540,11 +540,11 @@ h6 {
     left: var(--car-start-left);
     top: var(--car-start-top);
   }
-  49.12%, 50% {
+  49.554%, 50% {
     left: var(--car-end-left);
     top: var(--car-end-top);
   }
-  99.12%, 100% {
+  99.554%, 100% {
     left: var(--car-start-left);
     top: var(--car-start-top);
   }
@@ -553,45 +553,45 @@ h6 {
 .city-car {
   left: var(--car-start-left);
   top: var(--car-start-top);
-  animation: city-car-drive calc(20360ms * var(--animation-scale, 1)) linear calc(750ms * var(--animation-scale, 1)) infinite;
+  animation: city-car-drive calc(20180ms * var(--animation-scale, 1)) linear calc(750ms * var(--animation-scale, 1)) infinite;
 }
 
 .city-car-frame {
   opacity: 0;
-  animation-duration: calc(20360ms * var(--animation-scale, 1));
+  animation-duration: calc(20180ms * var(--animation-scale, 1));
   animation-timing-function: step-end;
   animation-delay: calc(750ms * var(--animation-scale, 1));
   animation-iteration-count: infinite;
 }
 
 @keyframes city-car-frame-1 {
-  0%, 49.11%, 99.71%, 100% { opacity: 1; }
-  49.12%, 99.7% { opacity: 0; }
+  0%, 49.553%, 99.852%, 100% { opacity: 1; }
+  49.554%, 99.851% { opacity: 0; }
 }
 
 @keyframes city-car-frame-2 {
-  0%, 49.41%, 100% { opacity: 0; }
-  49.12%, 49.4% { opacity: 1; }
+  0%, 49.702%, 100% { opacity: 0; }
+  49.554%, 49.701% { opacity: 1; }
 }
 
 @keyframes city-car-frame-3 {
-  0%, 49.71%, 100% { opacity: 0; }
-  49.41%, 49.7% { opacity: 1; }
+  0%, 49.851%, 100% { opacity: 0; }
+  49.703%, 49.85% { opacity: 1; }
 }
 
 @keyframes city-car-frame-4 {
-  0%, 49.71%, 99.12%, 100% { opacity: 0; }
-  49.72%, 99.11% { opacity: 1; }
+  0%, 49.851%, 99.554%, 100% { opacity: 0; }
+  49.852%, 99.553% { opacity: 1; }
 }
 
 @keyframes city-car-frame-5 {
-  0%, 99.41%, 100% { opacity: 0; }
-  99.12%, 99.4% { opacity: 1; }
+  0%, 99.702%, 100% { opacity: 0; }
+  99.554%, 99.701% { opacity: 1; }
 }
 
 @keyframes city-car-frame-6 {
-  0%, 99.71%, 100% { opacity: 0; }
-  99.41%, 99.7% { opacity: 1; }
+  0%, 99.851%, 100% { opacity: 0; }
+  99.703%, 99.85% { opacity: 1; }
 }
 
 .city-car-frame-1 { animation-name: city-car-frame-1; }
