@@ -75,7 +75,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
   return (
     <div
       ref={ref}
-      className="animate-fade-in"
+      className="feedback-bounce-in"
       style={{ position: 'relative', zIndex: 40 }}
     >
       <div

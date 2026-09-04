@@ -69,7 +69,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const idleAnimationEnabled = cityAnimationType === 1 && !reducedMotion;
   const ambientAnimationEnabled = cityAnimationType === 2 && !reducedMotion;
-  const animatedTrackId = selectedTrackId ?? hoveredTrackId ?? (idleAnimationEnabled && entranceComplete ? cityTracks[idleTrackIndex].id : null);
+  const interactiveTrackId = selectedTrackId ?? hoveredTrackId;
+  const idleTrackId = idleAnimationEnabled && entranceComplete && !interactiveTrackId ? cityTracks[idleTrackIndex].id : null;
 
   useEffect(() => {
     if (!idleAnimationEnabled) return;
@@ -207,7 +208,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
               src={imageUrl}
               alt=""
               aria-hidden="true"
-              className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${animatedTrackId === track.id ? 'is-awake' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''} ${hoveredTrackId === track.id || selectedTrackId === track.id ? 'is-hovered' : ''}`}
+              className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${ambientAnimationEnabled ? 'is-ambient' : ''} ${interactiveTrackId === track.id ? 'is-hovered' : ''}`}
               style={{
                 opacity: ambientAnimationEnabled ? 0.24 : 0,
                 mixBlendMode: 'soft-light',
@@ -258,8 +259,10 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
         viewBox={`0 0 ${calloutWidth} ${calloutHeight}`}
       >
         {cityTracks.map((track, index) => {
-          const active = animatedTrackId === track.id;
-          const color = active ? trackTheme[track.id].accent : '#FFFFFF';
+          const interactive = interactiveTrackId === track.id;
+          const dotActive = interactive || idleTrackId === track.id;
+          const calloutColor = interactive ? trackTheme[track.id].accent : '#FFFFFF';
+          const dotColor = dotActive ? trackTheme[track.id].accent : '#FFFFFF';
           const mobileAnchor = track.mobileAnchor ?? track.anchor;
           return (
             <g
@@ -281,27 +284,26 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
               }}
             >
               <line
-                className="city-callout-line lg:hidden"
+                className={`city-callout-line lg:hidden ${interactive ? 'is-visible' : ''}`}
                 x1={mobileAnchor[0]}
                 y1={mobileAnchor[1]}
                 x2={track.mobileEndpoint[0]}
                 y2={track.mobileEndpoint[1]}
-                stroke={color}
+                stroke={calloutColor}
                 strokeWidth="1"
                 pathLength="1"
-                style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
               {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <line
-                  className={`city-callout-impulse lg:hidden ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
+                  className={`city-callout-impulse lg:hidden ${idleAnimationEnabled && interactive ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
                   x1={mobileAnchor[0]}
                   y1={mobileAnchor[1]}
                   x2={track.mobileEndpoint[0]}
                   y2={track.mobileEndpoint[1]}
-                  stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color}
+                  stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : calloutColor}
                   strokeWidth="2"
                   pathLength="1"
-                  style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 1100) : undefined }}
+                  style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 1100) : idleAnimationEnabled && interactive ? animationMs(300) : undefined }}
                 />
               )}
               <line
@@ -315,27 +317,26 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
                 pointerEvents="stroke"
               />
               <line
-                className="city-callout-line hidden lg:block"
+                className={`city-callout-line hidden lg:block ${interactive ? 'is-visible' : ''}`}
                 x1={track.anchor[0]}
                 y1={track.anchor[1]}
                 x2={track.endpoint[0]}
                 y2={track.endpoint[1]}
-                stroke={color}
+                stroke={calloutColor}
                 strokeWidth="1"
                 pathLength="1"
-                style={{ animationDelay: calloutDelay(track.id, 'line') }}
               />
               {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <line
-                  className={`city-callout-impulse hidden lg:block ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
+                  className={`city-callout-impulse hidden lg:block ${idleAnimationEnabled && interactive ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`}
                   x1={track.anchor[0]}
                   y1={track.anchor[1]}
                   x2={track.endpoint[0]}
                   y2={track.endpoint[1]}
-                  stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color}
+                  stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : calloutColor}
                   strokeWidth="2"
                   pathLength="1"
-                  style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 1100) : undefined }}
+                  style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 1100) : idleAnimationEnabled && interactive ? animationMs(300) : undefined }}
                 />
               )}
               <line
@@ -348,12 +349,12 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
                 strokeWidth="21"
                 pointerEvents="stroke"
               />
-              <circle className="city-callout-dot lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="12.5" fill={color} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
-              <circle className="city-callout-dot hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="12.5" fill={color} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
+              <circle className="city-callout-dot lg:hidden" cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="12.5" fill={dotColor} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
+              <circle className="city-callout-dot hidden lg:block" cx={track.anchor[0]} cy={track.anchor[1]} r="12.5" fill={dotColor} stroke="#FFFFFF" strokeWidth="3" style={{ animationDelay: calloutDelay(track.id, 'dot') }} />
               {(idleAnimationEnabled || ambientAnimationEnabled) && (
                 <>
-                  <circle className={`city-callout-pulse lg:hidden ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
-                  <circle className={`city-callout-pulse hidden lg:block ${idleAnimationEnabled && active ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={track.anchor[0]} cy={track.anchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : color} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
+                  <circle className={`city-callout-pulse lg:hidden ${idleAnimationEnabled && dotActive ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={mobileAnchor[0]} cy={mobileAnchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : dotColor} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
+                  <circle className={`city-callout-pulse hidden lg:block ${idleAnimationEnabled && dotActive ? 'is-active' : ''} ${ambientAnimationEnabled ? 'is-ambient' : ''}`} cx={track.anchor[0]} cy={track.anchor[1]} r="14" stroke={ambientAnimationEnabled ? trackTheme[track.id].accent : dotColor} strokeWidth="3" fill="none" style={{ animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 700) : undefined }} />
                 </>
               )}
             </g>
@@ -362,16 +363,15 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
       </svg>
 
       {cityTracks.map((track) => {
-        const backgroundActive = animatedTrackId === track.id;
+        const interactive = interactiveTrackId === track.id;
         const labelOnRight = track.endpoint[0] > track.anchor[0];
         const labelOnTop = track.mobileEndpoint[1] < track.anchor[1];
         return (
           <div key={`${track.id}-callout-label`}>
             <button
               type="button"
-              className={`city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none lg:hidden ${backgroundActive ? 'has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
+              className={`city-callout-label absolute z-30 whitespace-nowrap border-0 text-white outline-none lg:hidden ${interactive ? 'is-visible has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
               style={{
-                animationDelay: calloutDelay(track.id, 'label'),
                 '--callout-background': trackTheme[track.id].accent,
                 left: `${track.mobileEndpoint[0] / calloutWidth * 100}%`,
                 top: `${track.mobileEndpoint[1] / calloutHeight * 100}%`,
@@ -401,9 +401,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
             </button>
             <button
               type="button"
-              className={`city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none lg:block ${backgroundActive ? 'has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
+              className={`city-callout-label absolute z-30 hidden whitespace-nowrap border-0 text-white outline-none lg:block ${interactive ? 'is-visible has-background' : ''} ${selectedTrackId === track.id ? 'is-touch-selected' : ''}`}
               style={{
-                animationDelay: calloutDelay(track.id, 'label'),
                 '--callout-background': trackTheme[track.id].accent,
                 left: `${track.endpoint[0] / calloutWidth * 100}%`,
                 top: `${track.endpoint[1] / calloutHeight * 100}%`,

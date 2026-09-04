@@ -60,10 +60,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Scenario header — single line */}
       <div
-        className="mb-[12px] flex flex-col gap-[12px] transition-opacity duration-200 md:pl-[20px] md:pr-14"
+        className={`mb-[12px] flex flex-col gap-[12px] transition-opacity duration-200 md:pl-[20px] md:pr-14 ${showFeedback && !resettingOption ? 'opacity-50 lg:opacity-0' : 'opacity-100'}`}
         style={exiting
           ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` }
-          : { opacity: showFeedback && !resettingOption ? 0.5 : 1 }
+          : undefined
         }
       >
         <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>

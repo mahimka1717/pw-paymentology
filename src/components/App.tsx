@@ -220,6 +220,10 @@ export default function App() {
   const buildingOnIntroOrGame = game.screen === 'intro' || game.screen === 'game';
   const buildingAtIntroPosition = game.screen === 'intro' && phase !== 'exit';
   const buildingMoveDelay = animationMs(game.screen === 'intro' && phase === 'exit' ? 200 : 0);
+  const buildingMoveDuration = animationMs(game.screen === 'intro' && phase === 'exit' || game.screen === 'game' ? 1000 : 800);
+  const buildingMoveEasing = game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
+    ? 'ease-in-out'
+    : 'cubic-bezier(0.22, 0.61, 0.36, 1)';
   const introBuildingOffset = game.trackId === 'telco' || game.trackId === 'government' || game.trackId === 'digital-banks' || game.trackId === 'banks' ? 200 : 100;
   const buildingTransform = game.screen === 'intro' && phase !== 'exit'
     ? 'scale(var(--building-size, 1))'
@@ -298,7 +302,7 @@ export default function App() {
               width: '1920px',
               height: '1080px',
               transformOrigin: '65% 65%',
-              transition: `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
+              transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
               opacity: buildingScreen ? 1 : 0,
               transform: buildingTransform,
             }}
@@ -310,7 +314,7 @@ export default function App() {
                 style={{
                   transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
                   transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                    ? `transform ${animationMs(800)} cubic-bezier(0.22, 0.61, 0.36, 1) ${buildingMoveDelay}`
+                    ? `transform ${buildingMoveDuration} ease-in-out ${buildingMoveDelay}`
                     : undefined,
                 }}
               >
