@@ -143,12 +143,13 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
-            Issuer's Playbook
+            THE ISSUER CHALLENGE
           </h1>
           <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
-            This scenario-based gameplay transforms the complexities of next-generation issuer processing
-            into a fast, engaging experience. Choose your track and make pivotal decisions on launch, risk,
-            growth, and expansion. Every move shapes the outcome.
+            Building a successful payment programme is all about the decisions you make.<br/>
+            Play your way through the decisions that shape a successful payment programme, from launch and growth to risk, innovation and scale.<br/>
+            The challenge? Build growth and momentum without losing trust and control.<br/>
+            Every decision shapes your outcome. At the end, discover what kind of programme you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
           <div ref={dropdownRef} className="relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
