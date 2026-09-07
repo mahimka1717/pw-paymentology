@@ -4,7 +4,6 @@ import { Track, Scenario, Score } from '../data/tracks';
 import { ScoreBars } from './ScoreBars';
 import { TrackSidebar } from './TrackSidebar';
 import { ScenarioQuestion } from './ScenarioQuestion';
-import { DidYouKnowMascot } from './DidYouKnowMascot';
 import { trackTheme } from '../data/theme';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
@@ -174,7 +173,7 @@ export function GameScreen({
             {showInsight && (
               <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
                 <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                  <DidYouKnowMascot />
+                  <img src="/mascot.webp" alt="" className="h-full w-full object-contain" draggable={false} />
                 </div>
               </div>
             )}
@@ -316,9 +315,7 @@ export function GameScreen({
                         className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[75px] w-[54px] -translate-x-1/2 overflow-hidden lg:hidden"
                       >
                         <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                          <div className="scale-50 origin-top-left lg:scale-100">
-                            <DidYouKnowMascot dark />
-                          </div>
+                          <img src="/mascot.webp" alt="" className="h-full w-full object-contain" draggable={false} />
                         </div>
                       </div>
                     )}
