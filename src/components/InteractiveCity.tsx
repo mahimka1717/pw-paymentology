@@ -10,6 +10,7 @@ interface Props {
   onHoverTrack: (trackId: string | null) => void;
   onSelectTrack: (trackId: string, pointerType?: string) => void;
   className?: string;
+  showPlaneAnimation?: boolean;
 }
 
 interface CityTrack {
@@ -63,7 +64,81 @@ const cityTracks: CityTrack[] = [
   { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 755] },
 ];
 
-export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '' }: Props) {
+const planeTotalFrames = 44;
+const planeSegmentFrames = 11;
+const planeFps = 24;
+const planeSegmentStartFrame = 33;
+
+const planeCycleDuration = 7000;
+const planeFlyDuration = 3000;
+const planeFlyStart = 1000;
+const planeFadeDuration = 400;
+const planeBaseTop = 2;
+const planeArcHeight = 4;
+
+function PlaneSequence() {
+  const [frame, setFrame] = useState(planeSegmentStartFrame);
+  const [style, setStyle] = useState<{ left: string; top: string; opacity: number }>({ left: '100%', top: `${planeBaseTop}%`, opacity: 0 });
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      setFrame(planeSegmentStartFrame);
+      setStyle({ left: '50%', top: `${planeBaseTop}%`, opacity: 1 });
+      return;
+    }
+
+    const startTime = performance.now();
+    const frameDuration = planeFlyDuration / planeSegmentFrames;
+    const flyEnd = planeFlyStart + planeFlyDuration;
+
+    const tick = (now: number) => {
+      const elapsed = (now - startTime) % planeCycleDuration;
+
+      if (elapsed < planeFlyStart) {
+        setStyle({ left: '100%', top: `${planeBaseTop}%`, opacity: 0 });
+        setFrame(planeSegmentStartFrame);
+      } else if (elapsed < flyEnd) {
+        const flyElapsed = elapsed - planeFlyStart;
+        const progress = flyElapsed / planeFlyDuration;
+        const left = 100 - progress * 110;
+        const top = planeBaseTop + 4 * planeArcHeight * progress * (1 - progress);
+        let opacity = 1;
+        if (flyElapsed < planeFadeDuration) {
+          opacity = flyElapsed / planeFadeDuration;
+        } else if (flyElapsed > planeFlyDuration - planeFadeDuration) {
+          opacity = (planeFlyDuration - flyElapsed) / planeFadeDuration;
+        }
+        const frameIndex = Math.min(
+          Math.floor(flyElapsed / frameDuration),
+          planeSegmentFrames - 1,
+        );
+        setStyle({ left: `${left}%`, top: `${top}%`, opacity });
+        setFrame(planeSegmentStartFrame + frameIndex);
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const segment = Math.floor(frame / 11) + 1;
+  const frameInSegment = (frame % 11) + 1;
+
+  return (
+    <img
+      src={`/img/city/plane/${segment}_${frameInSegment}.png`}
+      alt=""
+      className="city-plane"
+      style={{ left: style.left, top: style.top, opacity: style.opacity, transform: 'none' }}
+      draggable={false}
+    />
+  );
+}
+
+export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showPlaneAnimation = false }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -153,6 +228,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
             />
           ))}
         </div>
+
+        {showPlaneAnimation && <PlaneSequence />}
 
         <AnimatedBillboard
           x={624}

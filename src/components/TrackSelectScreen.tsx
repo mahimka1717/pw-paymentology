@@ -13,6 +13,12 @@ interface Props {
   onSelect: (trackId: string) => void;
 }
 
+function showPlaneAnimation(): boolean {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get('plane') === 'true';
+}
+
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
   if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
@@ -137,11 +143,12 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
           onHoverTrack={onHoverTrack}
           onSelectTrack={handleCitySelect}
           className="w-full"
+          showPlaneAnimation={showPlaneAnimation()}
         />
       </div>
 
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
-        <div className="w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
+        <div className="relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             THE ISSUER CHALLENGE
           </h1>
@@ -203,6 +210,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               onHoverTrack={onHoverTrack}
               onSelectTrack={handleCitySelect}
               className="w-full"
+              showPlaneAnimation={showPlaneAnimation()}
             />
           </div>
           <div className="order-3 flex-1 lg:hidden" />
