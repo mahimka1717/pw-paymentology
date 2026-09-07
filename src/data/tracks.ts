@@ -51,7 +51,7 @@ export const tracks: Track[] = [
         id: 2,
         title: "Fix User Drop-Off",
         description: "The card is live, but cracks are showing. Even though interest is real, users are dropping off before they become active customers. If the leak continues, the business burns capital, misses revenue targets, and loses momentum fast.\n\nWhat do you do?",
-        insight: "Cardholder onboarding requires Know Your Customer (KYC) checks to meet Anti-Money Laundering (AML) requirements. These checks can only be performed by a bank sponsor or BIN sponsor with the regulatory authorisation to do so.",
+        insight: "KYC checks must be performed by a bank or BIN sponsor with the required regulatory authorisation.",
         options: [
           { id: "A", title: "Open the Funnel", description: "Ease onboarding requirements to help more users become active customers.", feedback: "You lift activation, but invite more risk in at the front door.", score: { growth: 2, trust: 0, control: -2, momentum: 2 }, aggressive: true },
           { id: "B", title: "Hold the Line", description: "Keep existing onboarding checks in place to protect against risk.", feedback: "You safeguard trust, but lose more users before they convert.", score: { growth: 0, trust: 2, control: 2, momentum: -1 } },
@@ -77,7 +77,7 @@ export const tracks: Track[] = [
         options: [
           { id: "A", title: "Add Credit", description: "Introduce lending, instalments, or short-term credit to unlock new sources of revenue.", feedback: "You open a stronger revenue path, but take on more risk, regulatory pressure, and product complexity.", score: { growth: 2, trust: 0, control: -1, momentum: 2 }, aggressive: true },
           { id: "B", title: "Add Card Utility", description: "Launch or expand features like virtual cards, wallet use, and day-to-day spend tools to give customers more flexibility.", feedback: "You give customers more ways to use the product day to day, but increase delivery and servicing complexity.", score: { growth: 2, trust: 2, control: 0, momentum: 1 } },
-          { id: "C", title: "Add Digital Assets", description: "Introduce crypto, stablecoin, or tokenised-money features for customers who want more choice and borderless options.", feedback: "You create new opportunities for innovation, but take on more uncertainty around regulation, trust, and operational complexity.", score: { growth: 0, trust: 1, control: -1, momentum: 2 } },
+          { id: "C", title: "Add Digital Assets", description: "Introduce crypto, stablecoin, or tokenized-money features for customers who want more choice and borderless options.", feedback: "You create new opportunities for innovation, but take on more uncertainty around regulation, trust, and operational complexity.", score: { growth: 0, trust: 1, control: -1, momentum: 2 } },
         ],
       },
       {
@@ -366,7 +366,7 @@ export const tracks: Track[] = [
         options: [
           { id: "A", title: "Win Salary", description: "Make this the account where salaries land, using incentives or stronger product value.", feedback: "You move closer to primary-account status, but getting customers to reroute salary is still a high-friction ask.", score: { growth: 2, trust: 0, control: 0, momentum: 2 }, aggressive: true },
           { id: "B", title: "Capture Disbursements", description: "Go after government payments, benefits, or other regular inflows that can make the account more active and more essential.", feedback: "You build a stronger inflow engine, but take on more complexity in partnerships, compliance, and public-sector fit.", score: { growth: 1, trust: 1, control: 0, momentum: 0 } },
-          { id: "C", title: "Own the Relationship", description: "Strengthen trust and preference through clearer positioning, more transparent communication, and a more reassuring customer experience.", feedback: "You build trust and brand pull, but it may take longer - and cost more - to turn that into primary-account behaviour.", score: { growth: 1, trust: 2, control: 0, momentum: -1 } },
+          { id: "C", title: "Own the Relationship", description: "Strengthen trust and preference through clearer positioning, more transparent communication, and a more reassuring customer experience.", feedback: "You build trust and brand pull, but turning that into primary-account behaviour takes time and money.", score: { growth: 1, trust: 2, control: 0, momentum: -1 } },
         ],
       },
       {
@@ -383,7 +383,7 @@ export const tracks: Track[] = [
       {
         id: 5,
         title: "Fight the Fraud Wave",
-        description: "More usage, more value, and deeper engagement have made the bank more attractive to fraudsters. Suspicious activity is rising, disputes are getting louder, and weak controls are becoming harder to hide. This is no longer background noise. It is a live test of whether the bank can scale trust as fast as it scales usage.\n\nHow do you fight back?",
+        description: "More usage, value and engagement have made the bank a bigger target for fraud. Suspicious activity is rising, disputes are growing, and weak controls are being exposed. Now the bank needs to prove it can scale trust as fast as it scales usage.\n\nHow do you fight back?",
         insight: "Next-generation processors use real-time data and smarter detection to help issuers spot and respond to fraud faster.",
         options: [
           { id: "A", title: "Build the Fraud Engine", description: "Strengthen your in-house fraud, risk, and trust capability with better tools, faster decisioning, and a bigger specialist team.", feedback: "You build stronger internal defence, but take on more cost and operational complexity.", score: { growth: 1, trust: 1, control: 2, momentum: 0 }, aggressive: true },

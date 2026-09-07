@@ -208,7 +208,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
             <button
               onClick={onRestart}
               className="result-restart-button group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[33px] border-2 border-white bg-transparent px-[20px] text-[16px] font-normal text-white transition-all active:scale-[1.2] active:!bg-[#773cf5] md:h-[66px] md:w-[212px] md:text-[24px] md:font-semibold"
-              style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1 }}
+              style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1, visibility: 'hidden' }}
             >
               Play Again
               <svg className="h-6 w-6 shrink-0 stroke-[2px] transition-transform duration-200 ease-out group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

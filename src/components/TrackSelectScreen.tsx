@@ -153,10 +153,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             THE ISSUER CHALLENGE
           </h1>
           <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
-            Building a successful payment programme is all about the decisions you make.<br/>
-            Play your way through the decisions that shape a successful payment programme, from launch and growth to risk, innovation and scale.<br/>
-            The challenge? Build growth and momentum without losing trust and control.<br/>
-            Every decision shapes your outcome. At the end, discover what kind of programme you’ve built and what your choices reveal about your decision-making style.
+            Every payment programme is shaped by the decisions you make. Put yourself to the test with real-world challenges across growth, risk, innovation and scale. Can you build a successful card programme without losing trust and control? At the end, discover what you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
           <div ref={dropdownRef} className="relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
