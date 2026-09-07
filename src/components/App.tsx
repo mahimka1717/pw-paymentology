@@ -74,6 +74,19 @@ export default function App() {
   const gameCompletionTracked = useRef(false);
   const buildingRef = useRef<HTMLDivElement>(null);
   const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
+
+  const videoOpacity = game.screen === 'select' && phase !== 'exit' ? 1 : 0;
+
+  useEffect(() => {
+    const video = bgVideoRef.current;
+    if (!video) return;
+    if (videoOpacity > 0) {
+      video.play().catch(() => undefined);
+    } else {
+      video.pause();
+    }
+  }, [videoOpacity]);
 
   useEffect(() => {
     document.body.dataset.screen = game.screen;
@@ -292,6 +305,29 @@ export default function App() {
   return (
     <>
       <TopBar />
+
+      {/* Video background — desktop only, fades on select screen */}
+      <div
+        className="fixed inset-0 hidden lg:block pointer-events-none"
+        style={{
+          zIndex: 0,
+          opacity: videoOpacity,
+          transition: `opacity ${animationMs(500)} ease-in-out`,
+        }}
+      >
+        <video
+          ref={bgVideoRef}
+          className="h-full w-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src="/video/bg.webm" type="video/webm" />
+          <source src="/video/bg-compressed.mp4" type="video/mp4" />
+        </video>
+      </div>
 
       <div className="game-canvas">
         {/* Building background — behind all screens, visible on intro */}
