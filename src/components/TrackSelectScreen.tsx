@@ -153,8 +153,8 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             THE ISSUER CHALLENGE
           </h1>
           <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
-            Can you build a successful card programme?<br />
-            Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<br />
+            Can you build a successful card programme?<br /><br />
+            Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<br /><br />
             At the end, discover what you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
