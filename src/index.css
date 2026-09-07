@@ -222,6 +222,10 @@ body {
 
 }
 
+  body[data-screen='select'] .track-select-copy {
+    max-width: 82%;
+  }
+
 @media (min-width: 1025px) and (max-height: 800px) {
   .building {
     --building-size: 0.9;
