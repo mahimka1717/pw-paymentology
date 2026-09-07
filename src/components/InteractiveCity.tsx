@@ -64,9 +64,7 @@ const cityTracks: CityTrack[] = [
   { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 755] },
 ];
 
-const planeTotalFrames = 44;
 const planeSegmentFrames = 11;
-const planeFps = 24;
 const planeSegmentStartFrame = 33;
 
 const planeCycleDuration = 7000;
@@ -120,7 +118,7 @@ function PlaneSequence() {
       rafId = requestAnimationFrame(tick);
     };
 
-    const rafId = requestAnimationFrame(tick);
+    let rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
   }, []);
 
