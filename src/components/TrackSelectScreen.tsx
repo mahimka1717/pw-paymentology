@@ -152,8 +152,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
           <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             THE ISSUER CHALLENGE
           </h1>
-          <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[30px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
-            Every payment programme is shaped by the decisions you make. Put yourself to the test with real-world challenges across growth, risk, innovation and scale. Can you build a successful card programme without losing trust and control? At the end, discover what you’ve built and what your choices reveal about your decision-making style.
+          <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
+            Can you build a successful card programme?<br />
+            Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<br />
+            At the end, discover what you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
           <div ref={dropdownRef} className="relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
