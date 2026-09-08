@@ -124,7 +124,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   };
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:min-h-[920px] lg:items-center lg:overflow-visible lg:pb-10">
+    <div className="flex h-[calc(100dvh-var(--topbar-h))] max-h-[calc(100dvh-var(--topbar-h))] items-stretch overflow-x-clip overflow-y-auto overscroll-none px-6 pt-0 lg:h-auto lg:max-h-none lg:min-h-[920px] lg:items-center lg:overflow-visible lg:pb-10">
       <div
         className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
         style={{
@@ -202,7 +202,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               </div>
             )}
           </div>
-          <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}}>
+          <div className="relative left-1/2 order-1 w-screen max-w-[100dvw] -translate-x-1/2 overflow-hidden md:left-auto md:mx-auto md:w-[85%] md:max-w-none md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}}>
             <InteractiveCity
               hoveredTrackId={hoveredTrackId}
               selectedTrackId={touchSelectedTrackId}
@@ -215,7 +215,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
           <div className="order-3 flex-1 lg:hidden" />
         </div>
 
-        <div className="w-full lg:w-1/2">
+        <div className="hidden w-full lg:block lg:w-1/2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             {/* {tracks.map((track) => {
               const Icon = trackIcons[track.id];
