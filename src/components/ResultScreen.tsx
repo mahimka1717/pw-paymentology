@@ -28,9 +28,9 @@ const outcomeImages: Record<Outcome, string> = {
 };
 
 const styleDescriptions: Record<Style, string> = {
-  'Consistent Aggressive': 'You backed yourself early and kept pushing. The fact that trust and growth moved together under that kind of pace says something. You have good instincts for knowing when the model can take the pressure.',
-  'Consistent Cautious': 'You earned this the patient way. Every move was considered before it was made, and the outcome reflects that discipline. Where others hoped the foundations would hold, you made sure they would.',
-  'Situational': 'You knew which moments to push and which to protect. Not every opportunity was worth chasing, and you seemed to know the difference. That kind of read is harder to teach than most people admit.',
+  'Consistent Aggressive': 'You backed yourself early and kept pushing. You chased growth without letting trust fall away, and knew when the model could take more pressure. Your instinct was to move, and it paid off.',
+  'Consistent Cautious': 'You earned this the patient way. Every move was considered before it was made, and the outcome reflects your discipline. While others might have left the foundations to chance, you made sure yours would hold.',
+  'Situational': 'You knew which moments to push and which to protect. Not every opportunity was worth chasing, and you could tell the difference. That instinct is hard to teach, and even harder to master.',
 };
 
 function StyleIcon({ style }: { style: Style }) {

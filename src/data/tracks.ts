@@ -109,7 +109,7 @@ export const tracks: Track[] = [
   {
     id: "government",
     name: "Government",
-    intro: ["You’re running a public payment programme that gets government funds into people’s hands. The decisions you make impact real lives, with real consequences. Make the right calls, balance speed with control, and build a system people can rely on.", "Do you have what it takes?"],
+    intro: ["The government is rethinking its public payment programme, and you’ve been put in charge of reshaping how it gets money into people’s hands. The decisions you make impact real lives, with real consequences. Make the right calls, balance speed with control, and build a system people can rely on.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
