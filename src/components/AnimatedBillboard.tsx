@@ -20,6 +20,7 @@ interface Props {
   referenceHeight: number;
   scale?: number;
   distortion?: BillboardDistortion;
+  image?: string;
   firstImage?: string;
   secondImage?: string;
   duration?: number;
@@ -38,6 +39,7 @@ export function AnimatedBillboard({
   referenceHeight,
   scale = 1,
   distortion = {},
+  image,
   firstImage = '/board1.jpg',
   secondImage = '/board2.jpg',
   duration = 8000,
@@ -59,7 +61,7 @@ export function AnimatedBillboard({
   return (
     <div
       aria-hidden="true"
-      className={`animated-billboard pointer-events-none absolute ${className}`}
+      className={`animated-billboard pointer-events-none absolute ${image ? 'animated-billboard--static' : ''} ${className}`}
       style={{
         left: `${x / referenceWidth * 100}%`,
         top: `${y / referenceHeight * 100}%`,
@@ -72,8 +74,8 @@ export function AnimatedBillboard({
         '--billboard-delay': animationMs(delay),
       } as CSSProperties}
     >
-      <img className="animated-billboard-image" src={firstImage} alt="" draggable={false} />
-      <img className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} />
+      <img className="animated-billboard-image" src={image ?? firstImage} alt="" draggable={false} />
+      {!image && <img className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} />}
     </div>
   );
 }

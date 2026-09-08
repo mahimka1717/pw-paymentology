@@ -237,6 +237,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           referenceWidth={imageWidth}
           referenceHeight={imageHeight}
           distortion={{ rotate: 0, skewY: 22, origin: 'bottom center' }}
+          image="/img/posters/p_0.webp"
           brightness={0.9}
           saturation={0.95}
         />
@@ -248,6 +249,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           referenceWidth={imageWidth}
           referenceHeight={imageHeight}
           distortion={{ rotate: 3, skewY: 16, origin: 'bottom center' }}
+          image="/img/posters/p_2.webp"
           brightness={0.88}
           saturation={0.92}
           delay={4000}

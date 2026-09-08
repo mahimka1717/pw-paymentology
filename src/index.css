@@ -101,6 +101,10 @@ button:focus-visible,
   );
 }
 
+.animated-billboard--static::after {
+  display: none;
+}
+
 @keyframes billboard-swap {
   0%, 35% { --billboard-stripe-reveal: 0%; }
   45%, 85% { --billboard-stripe-reveal: 8.333%; }

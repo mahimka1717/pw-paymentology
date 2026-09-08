@@ -383,6 +383,7 @@ export default function App() {
                     height={standaloneBillboard.height}
                     referenceWidth={1920}
                     referenceHeight={1080}
+                    image={`/img/posters/p_${buildingIndex}.webp`}
                     distortion={{
                       rotate: standaloneBillboard.rotate,
                       skewY: standaloneBillboard.skewY,
