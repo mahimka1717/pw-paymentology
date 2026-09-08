@@ -9,11 +9,12 @@ interface Props {
   scenarioIndex: number;
   totalScenarios: number;
   selectedOption: number | null;
-  accentColor: string;
-  accentTextColor: string;
   exiting: boolean;
   resettingOption: boolean;
   showFeedback: boolean;
+  showInsight: boolean;
+  exitWithFeedbackOpen: boolean;
+  exitWithInsightOpen: boolean;
   onCloseFeedback: () => void;
   onToggleFeedback: () => void;
   onChoose: (index: number, delta: Score, aggressive: boolean) => void;
@@ -21,8 +22,19 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, accentColor, accentTextColor, exiting, resettingOption, showFeedback, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, exiting, resettingOption, showFeedback, showInsight, exitWithFeedbackOpen, exitWithInsightOpen, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
+  const hideHeaderForFeedback = showFeedback || exitWithFeedbackOpen;
+  const hideHeaderForInsight = showInsight || exitWithInsightOpen;
+  const hideOptionsForInsight = showInsight || exitWithInsightOpen;
+  const questionContentVisibility = hideHeaderForFeedback
+    ? 'opacity-0 pointer-events-none'
+    : hideHeaderForInsight
+      ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto'
+      : 'opacity-100';
+  const optionVisibility = hideOptionsForInsight
+    ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto'
+    : 'opacity-100';
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
@@ -60,11 +72,11 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Scenario header — single line */}
       <div
-        className={`mb-[12px] flex flex-col gap-[12px] transition-opacity duration-200 md:pl-[20px] md:pr-14 ${showFeedback && !resettingOption ? 'opacity-50 lg:opacity-0' : 'opacity-100'}`}
-        style={exiting
-          ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` }
-          : undefined
-        }
+        className={`mb-[12px] flex flex-col gap-[12px] transition-opacity ease-in-out md:pl-[20px] md:pr-14 ${questionContentVisibility}`}
+        style={{
+          transitionDuration: `${animationMs(200)}ms`,
+          ...(exiting ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
+        }}
       >
         <h2 className="game-question-title uppercase text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
           {scenario.title}
@@ -88,11 +100,11 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Option cards */}
       <div
-        className="relative flex-[3] min-h-0"
-        style={exiting
-          ? { animation: `question-content-out ${animationMs(350)} cubic-bezier(0.55,0,0.78,0) ${animationMs(50)} forwards` }
-          : undefined
-        }
+        className={`relative flex-[3] min-h-0 transition-opacity ease-in-out ${optionVisibility}`}
+        style={{
+          transitionDuration: `${animationMs(200)}ms`,
+          ...(exiting ? { animation: `question-content-out ${animationMs(350)} cubic-bezier(0.55,0,0.78,0) ${animationMs(50)} forwards` } : {}),
+        }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]" onKeyDown={handleOptionKeyDown}>
           {scenario.options.map((option, index) => (
@@ -122,8 +134,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 selected={selectedOption === index}
                 disabled={selectedOption !== null && selectedOption !== index}
                 resetting={resettingOption}
-                accentColor={accentColor}
-                accentTextColor={accentTextColor}
+                showFeedback={showFeedback}
                 animDelay={(scenarioIndex === 0 ? 500 : 200) + index * 100}
                 onSelect={() => {
                   if (selectedOption === null) {

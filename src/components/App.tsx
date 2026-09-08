@@ -306,9 +306,9 @@ export default function App() {
     <>
       <TopBar />
 
-      {/* Video background — desktop only, fades on select screen */}
+      {/* Video background — fades on select screen */}
       <div
-        className="fixed inset-0 hidden lg:block pointer-events-none"
+        className="fixed inset-0 pointer-events-none"
         style={{
           zIndex: 0,
           opacity: videoOpacity,
@@ -317,7 +317,7 @@ export default function App() {
       >
         <video
           ref={bgVideoRef}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover bg-video"
           autoPlay
           loop
           muted

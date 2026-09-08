@@ -4,7 +4,6 @@ import { Track, Scenario, Score } from '../data/tracks';
 import { ScoreBars } from './ScoreBars';
 import { TrackSidebar } from './TrackSidebar';
 import { ScenarioQuestion } from './ScenarioQuestion';
-import { trackTheme } from '../data/theme';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
 import { animationMs, scaledMs } from '../utils/animationTiming';
@@ -49,6 +48,8 @@ export function GameScreen({
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
   const [questionExiting, setQuestionExiting] = useState(false);
+  const [exitWithFeedbackOpen, setExitWithFeedbackOpen] = useState(false);
+  const [exitWithInsightOpen, setExitWithInsightOpen] = useState(false);
   const [resettingOption, setResettingOption] = useState(false);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
@@ -119,6 +120,8 @@ export function GameScreen({
       scenario_number: scenarioIndex + 1,
       completes_game: isLastScenario,
     });
+    setExitWithFeedbackOpen(showFeedback);
+    setExitWithInsightOpen(showInsight);
     setButtonsExiting(true);
     setQuestionExiting(!isLastScenario);
     setShowFeedback(false);
@@ -127,6 +130,10 @@ export function GameScreen({
     setTimeout(() => {
       setButtonsExiting(false);
       setQuestionExiting(false);
+      if (!isLastScenario) {
+        setExitWithFeedbackOpen(false);
+        setExitWithInsightOpen(false);
+      }
       onNext();
     }, scaledMs(isLastScenario ? 250 : 400));
   };
@@ -137,10 +144,10 @@ export function GameScreen({
     setResettingOption(true);
     setButtonsExiting(true);
     setShowScoreDelta(false);
+    setShowFeedback(false);
     if (showInsight) setIsClosingInsight(true);
     setTimeout(() => {
       onResetOption();
-      setShowFeedback(false);
       setShowInsight(false);
       setIsClosingInsight(false);
       setButtonsExiting(false);
@@ -148,7 +155,6 @@ export function GameScreen({
     }, scaledMs(700));
   };
 
-  const theme = trackTheme[track.id] ?? { accent: '#FFFFFF', accentText: '#000000' };
   const displayedScore = resettingOption && lastDelta
     ? {
         growth: totalScore.growth - lastDelta.growth,
@@ -171,9 +177,9 @@ export function GameScreen({
           {/* Right col — 8/12 */}
           <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_1106px))]">
             {showInsight && (
-              <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:block">
+              <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:flex items-center justify-center">
                 <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                  <img src="/mascot.webp" alt="" className="h-full w-full object-contain" draggable={false} />
+                  <img src="/mascot.webp" alt="" className="max-h-full max-w-full" draggable={false} />
                 </div>
               </div>
             )}
@@ -198,7 +204,7 @@ export function GameScreen({
                   {scenario.insight}
                 </p>
                 <div
-                  className="absolute bottom-[50px] right-[-14px] h-0 w-0 border-y-[8px] border-l-[14px] border-y-transparent border-l-white"
+                  className="absolute bottom-[50px] right-[-13px] h-0 w-0 border-y-[8px] border-l-[14px] border-y-transparent border-l-white"
                 />
               </div>
             )}
@@ -211,7 +217,7 @@ export function GameScreen({
             <div className="game-question-spacer flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
 
             {/* Mobile track title */}
-            <div className="lg:hidden mb-[10px]" style={cascade(phase, 1)}>
+            <div className="hidden mb-[10px]" style={cascade(phase, 1)}>
               <h2
                 className="text-[18px] leading-[20px] md:text-[40px] md:leading-[48px] font-bold uppercase"
                 style={{ color: `#fff`, fontFamily: "'PP Monument Wide', sans-serif" }}
@@ -227,11 +233,12 @@ export function GameScreen({
                 scenarioIndex={scenarioIndex}
                 totalScenarios={totalScenarios}
                 selectedOption={selectedOption}
-                accentColor={theme.accent}
-                accentTextColor={theme.accentText}
                 exiting={questionExiting}
                 resettingOption={resettingOption}
                 showFeedback={showFeedback}
+                showInsight={showInsight}
+                exitWithFeedbackOpen={exitWithFeedbackOpen}
+                exitWithInsightOpen={exitWithInsightOpen}
                 onCloseFeedback={() => {
                   if (resettingOption) return;
                   setShowFeedback(false);
@@ -245,6 +252,8 @@ export function GameScreen({
                     scenario_number: scenarioIndex + 1,
                     method: 'selected_option',
                   });
+                  setShowInsight(false);
+                  setIsClosingInsight(false);
                   setShowFeedback(!showFeedback);
                   setShowScoreDelta(false);
                 }}
@@ -262,7 +271,7 @@ export function GameScreen({
                   {showInsight && (
                     <div
                       ref={insightPopupRef}
-                      className="z-40 lg:hidden left-[16px] right-[16px] md:left-[32px] md:right-[32px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
+                      className="z-40 lg:hidden left-[32px] right-[32px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
                       style={{
                         position: 'absolute',
                         bottom: 'calc(100% + 99px)',
@@ -292,14 +301,14 @@ export function GameScreen({
                       {/* Triangle pointer — bottom 1/3 */}
                       <div style={{
                         position: 'absolute',
-                        bottom: '-12px',
-                        left: '33.33%',
+                        bottom: '-8px',
+                        left: '30%',
                         transform: 'translateX(-50%)',
                         width: 0,
                         height: 0,
-                        borderLeft: '8px solid transparent',
-                        borderRight: '8px solid transparent',
-                        borderTop: '12px solid #FFFFFF',
+                        borderLeft: '10px solid transparent',
+                        borderRight: '10px solid transparent',
+                        borderTop: '8px solid #FFFFFF',
                       }} />
                     </div>
                   )}
@@ -312,10 +321,10 @@ export function GameScreen({
                     {showInsight && (
                       <div
                         ref={mascotRef}
-                        className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[75px] w-[54px] -translate-x-1/2 overflow-hidden lg:hidden"
+                        className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:hidden flex items-end justify-center"
                       >
                         <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                          <img src="/mascot.webp" alt="" className="h-full w-full object-contain" draggable={false} />
+                          <img src="/mascot.webp" alt="" className="max-h-full max-w-full translate-y-[10px]" draggable={false} />
                         </div>
                       </div>
                     )}

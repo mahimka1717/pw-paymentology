@@ -148,7 +148,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
       </div>
 
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
-        <div className="relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
+        <div className="pointer-events-none relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
           <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             THE ISSUER CHALLENGE
           </h1>
@@ -158,7 +158,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
             At the end, discover what you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
-          <div ref={dropdownRef} className="relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
+          <div ref={dropdownRef} className="pointer-events-auto relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
             <button
               ref={selectButtonRef}
               type="button"

@@ -8,13 +8,12 @@ interface Props {
   selected: boolean;
   disabled: boolean;
   resetting: boolean;
-  accentColor: string;
-  accentTextColor: string;
+  showFeedback: boolean;
   onSelect: () => void;
   animDelay?: number;
 }
 
-export function OptionCard({ title, description, optionId, selected, disabled, resetting, onSelect, animDelay = 0 }: Props) {
+export function OptionCard({ title, description, optionId, selected, disabled, resetting, showFeedback, onSelect, animDelay = 0 }: Props) {
   const [animDone, setAnimDone] = useState(false);
 
   return (
@@ -37,12 +36,14 @@ export function OptionCard({ title, description, optionId, selected, disabled, r
         onClick={onSelect}
         onMouseDown={selected ? event => event.stopPropagation() : undefined}
         disabled={disabled && !resetting}
-        className={`group relative flex h-full w-full lg:min-h-[174px] flex-col text-left py-[14px] px-[14px] lg:py-[25px] lg:px-[20px] rounded-[12px] lg:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] ${resetting ? 'pointer-events-none bg-white opacity-100 transition-[background-color,box-shadow,opacity] duration-[350ms] ease-in-out' : ''} ${
+        className={`group relative flex h-full w-full lg:min-h-[174px] flex-col text-left py-[14px] px-[14px] lg:py-[25px] lg:px-[20px] rounded-[12px] lg:rounded-[16px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)] transition-opacity duration-200 ease-in-out ${resetting ? 'pointer-events-none bg-white opacity-100 transition-[background-color,box-shadow,opacity] duration-[350ms] ease-in-out' : ''} ${
           selected && !resetting
             ? 'bg-[#151547] shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)]'
             : disabled && !resetting
-              ? 'bg-white/50 opacity-50 cursor-not-allowed'
-              : resetting ? '' : 'game-option-interactive bg-white cursor-pointer'
+              ? showFeedback
+                ? 'bg-white/50 opacity-0 lg:opacity-50 cursor-not-allowed'
+                : 'bg-white/50 opacity-50 cursor-not-allowed'
+            : resetting ? '' : 'game-option-interactive bg-white cursor-pointer'
         }`}
         style={{ WebkitTapHighlightColor: 'transparent' }}
       >
