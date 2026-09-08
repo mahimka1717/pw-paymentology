@@ -46,6 +46,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-anchor: none;
+}
+
 button:focus-visible,
 [role='button']:focus-visible {
   outline: 3px solid #d2affe;
@@ -149,7 +153,11 @@ html {
 html::before {
   position: fixed;
   z-index: 0;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   background: linear-gradient(to bottom, #15154a 0%, #783cff 100%);
   content: '';
   pointer-events: none;
