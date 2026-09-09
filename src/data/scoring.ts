@@ -21,5 +21,5 @@ export const outcomeDescriptions: Record<Outcome, string> = {
   'Built to Scale': "You found the sweet spot. Growth came through, trust held, and the model stayed under control as momentum built. You built something exciting, with the shape and discipline to scale!",
   'Fast but Fragile': "You moved quickly and grabbed momentum, but the cracks are starting to show. Growth came first, while trust and control took a few hits along the way. Big upside, but the model may be running hotter than it can comfortably handle.",
   'Trusted Operator': "You built something that holds up. In a market where trust is easy to promise and hard to keep, you protected the customer relationship, maintained discipline under pressure, and kept the model in control as it grew. That consistency comes from decisions most organisations struggle to make.",
-  'Stuck in Neutral': "Nothing broke badly, but nothing really took off either. The organisation stayed in the game, though it never found enough momentum to pull ahead. Safe enough to survive, but not sharp enough to stand out.",
+  'Stuck in Neutral': "You kept things steady and avoided any major missteps. But the momentum never really came, leaving the organisation in the game without a clear edge. Safe enough to survive, but not sharp enough to stand out.",
 };

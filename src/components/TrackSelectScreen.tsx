@@ -149,20 +149,20 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
 
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="pointer-events-none relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
-          <h1 className="track-select-title text-[22px] leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
+          <h1 className="track-select-title text-[22px] leading-[26px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             THE ISSUER CHALLENGE
           </h1>
-          <p className="track-select-copy text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
-            Can you build a successful card programme?<br /><br />
-            Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<br /><br />
+          <p className="track-select-copy text-[14px] leading-[20px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
+            Can you build a successful card programme?<br className="md:hidden" /><span className="hidden md:inline"><br /><br /></span>{' '}
+            Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<span className="hidden md:inline"><br /><br /></span>{' '}
             At the end, discover what you’ve built and what your choices reveal about your decision-making style.
           </p>
           <div className="flex-1 lg:hidden" />
-          <div ref={dropdownRef} className="pointer-events-auto relative z-30 order-2 mt-[60px] w-[94%] max-w-[300px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0" style={cascade(phase, 2, 4)}>
+          <div ref={dropdownRef} className="pointer-events-auto relative z-30 order-1 mt-[5px] mb-[20px] w-[94%] max-w-[298px] md:w-full md:max-w-[320px] lg:order-none lg:mt-0 lg:mb-0" style={cascade(phase, 2, 4)}>
             <button
               ref={selectButtonRef}
               type="button"
-              className="track-select-control relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[18px] text-black outline-none transition-[background-color,box-shadow,transform] duration-200 hover:scale-[1.025] hover:bg-[#D2AFFE] hover:shadow-[0_8px_24px_rgba(21,21,74,0.28)] active:scale-[0.985] md:text-[20px]"
+              className="track-select-control relative z-30 h-12 w-full rounded-full bg-white px-5 pr-12 text-left text-[16px] text-black outline-none transition-[background-color,box-shadow,transform] duration-200 hover:scale-[1.025] hover:bg-[#D2AFFE] hover:shadow-[0_8px_24px_rgba(21,21,74,0.28)] active:scale-[0.985] md:text-[20px]"
               style={{ fontFamily: "'Inter', sans-serif" }}
               onClick={() => setIsDropdownOpen((prev) => !prev)}
               onKeyDown={handleSelectKeyDown}
@@ -172,13 +172,13 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               {selectedTrackName}
             </button>
             <span
-              className="track-select-arrow pointer-events-none absolute right-7 top-1/2 z-30 h-0 w-0 border-l-[9px] border-r-[9px] border-t-[12px] border-l-transparent border-r-transparent border-t-black"
+              className="track-select-arrow pointer-events-none absolute right-7 top-1/2 z-30 h-0 w-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-black"
               data-open={isDropdownOpen}
               aria-hidden="true"
             />
             {isDropdownOpen && (
               <div
-                className="absolute bottom-[calc(100%+10px)] z-20 w-full overflow-hidden rounded-[24px] py-3 lg:bottom-auto lg:top-[calc(100%+10px)]"
+                className="absolute top-[calc(100%+10px)] z-20 w-full overflow-hidden rounded-[24px] py-3"
                 style={{ background: '#703ff5' }}
                 role="listbox"
                 onKeyDown={handleOptionsKeyDown}
@@ -202,7 +202,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               </div>
             )}
           </div>
-          <div className="relative left-1/2 order-1 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}}>
+          <div className="relative left-1/2 order-2 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={{
+            ...(phase === 'enter' ? { animation: `mobile-city-in ${animationMs(600)} ease ${animationMs(450)} forwards`, opacity: 0 } : {}),
+            ...(phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}),
+          }}>
             <InteractiveCity
               hoveredTrackId={hoveredTrackId}
               selectedTrackId={touchSelectedTrackId}

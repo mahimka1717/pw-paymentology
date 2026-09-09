@@ -184,7 +184,7 @@ export const tracks: Track[] = [
   {
     id: "telco",
     name: "Telco",
-    intro: ["You’ve built a telco with what most financial players want: reach, frequency and a place in customers’ everyday lives. Now you want to become a bigger part of how they manage and move their money. Make the right calls, deepen the relationship and build a financial ecosystem customers trust and stick with.", "Do you have what it takes?"],
+    intro: ["You’ve built a telco with what most financial players want: reach, frequency and a place in customers’ everyday lives. Now you’re looking to become a bigger part of how they manage and move their money. Make the right calls, deepen the relationship and build a financial ecosystem customers trust and stick with.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -233,7 +233,7 @@ export const tracks: Track[] = [
       {
         id: 5,
         title: "Scale the Controls",
-        description: "More transactions, stored value and use cases are making the service more important, but also more exposed. As the financial layer grows, so do the risks around fraud, compliance and transactions. Now your controls need to keep pace.\n\nHow do you strengthen your control model?",
+        description: "Increased transactions, stored value and use cases are making the service more important, but also more exposed. As the financial layer grows, so do the risks around fraud, compliance and transactions. Now your controls need to keep pace.\n\nHow do you strengthen your control model?",
         insight: "Paymentology’s Fraud Control Services combines real-time decisioning, monitoring and customisable rules to manage fraud at scale.",
         options: [
           { id: "A", title: "Build the Engine", description: "Expand in-house fraud, monitoring, and risk operations so you own more of the control model directly.", feedback: "You build stronger internal capability, but take on more cost and operational complexity.", score: { growth: 1, trust: 2, control: 2, momentum: 0 } },
@@ -259,7 +259,7 @@ export const tracks: Track[] = [
   {
     id: "remittance",
     name: "Remittance",
-    intro: ["You’ve built a service people trust with money that matters. But in remittance, reliability is just the start. Now you need to move beyond the transfer, create more value for customers and give them more reasons to stay. Make the right calls and build your relevance.", "Do you have what it takes?"],
+    intro: ["You’ve built a service people trust with money they depend on. But in remittance, reliability is just the start. Now you’ve been tasked with taking the business to its next stage of growth. Move beyond the transfer, create more value for customers and give them more reasons to stay. Make the right calls and build your relevance.", "Do you have what it takes?"],
     scenarios: [
       {
         id: 1,
@@ -289,15 +289,15 @@ export const tracks: Track[] = [
         description: "The payout model is under pressure. Cash still matters in some corridors, but digital rails are advancing fast. The challenge is choosing the right infrastructure to deliver the speed, cost and convenience customers expect.\n\nWhere do you place your bet?",
         insight: "Stablecoins can move money around the world at very low cost, often faster than traditional remittance transfers.",
         options: [
-          { id: "A", title: "Back Stablecoins", description: "Use stablecoin-based flows where they could reduce cost, improve speed, or make cross-border movement more flexible.", feedback: "You have move closer to a potentially cheaper and faster future, but take on more regulatory, partner, and execution risk early.", score: { growth: 1, trust: 0, control: -1, momentum: 2 }, aggressive: true },
+          { id: "A", title: "Back Stablecoins", description: "Use stablecoin-based flows where they could reduce cost, improve speed, or make cross-border movement more flexible.", feedback: "You move closer to a potentially cheaper and faster future, but take on more regulatory, partner, and execution risk early.", score: { growth: 1, trust: 0, control: -1, momentum: 2 }, aggressive: true },
           { id: "B", title: "Double Down on Accounts", description: "Lean further into bank-account and account-based payout routes as the most familiar and scalable digital destination.", feedback: "You keep the model easier to explain and widely usable, but may look less flexible in markets where account access is uneven.", score: { growth: 0, trust: 2, control: 2, momentum: -1 } },
-          { id: "C", title: "Build the Wallet", description: "Make wallets a more central payout destination, with stronger integrations and a more useful digital recipient experience.", feedback: "You make payout more convenient and digital-first, but increase dependency on wallet adoption and the strength of your local partner network.", score: { growth: 2, trust: 2, control: 0, momentum: 1 } },
+          { id: "C", title: "Prioritise the Wallet", description: "Make wallets a more central payout destination, with stronger integrations and a more useful digital recipient experience.", feedback: "You make payout more convenient and digital-first, but increase dependency on wallet adoption and the strength of your local partner network.", score: { growth: 2, trust: 2, control: 0, momentum: 1 } },
         ],
       },
       {
         id: 4,
         title: "Move Beyond the Transfer",
-        description: "You’ve decided how the money moves. Now the focus shifts to the people behind the transfers. Many remittance customers are migrants supporting families back home while facing financial challenges of their own, from opening accounts and proving identity to accessing credit.\n\nWhat role do you play next in their journey?",
+        description: "You’ve decided how the money moves. Now the focus shifts to the people behind the transfers. Many are migrants who support families back home while facing financial challenges of their own, from opening accounts and proving identity to accessing credit.\n\nWhat role do you play next in their journey?",
         insight: "Remittance users range from expats and migrant workers to entrepreneurs and families managing money across borders.",
         options: [
           { id: "A", title: "Build the Arrival Layer", description: "Create services that help newcomers get set up from day one, from onboarding and identity checks to credit recognition and multi-currency tools.", feedback: "You make the proposition more valuable at a life-changing moment, but add more complexity across infrastructure, compliance, data-sharing, and partnerships.", score: { growth: 2, trust: 2, control: -1, momentum: 1 } },
@@ -308,22 +308,22 @@ export const tracks: Track[] = [
       {
         id: 5,
         title: "Build Stickiness",
-        description: "Customers are starting to expect more than a one-off transfer. They want tools that add value between payments, while wallets, superapps and digital platforms are giving them more ways to hold, use and manage money across borders.\n\nHow do you give customers stronger reasons to stay?",
+        description: "Wallets, superapps and digital platforms are changing expectations. Remittance customers now want more than a one-off transfer, with tools that add value between payments.\n\nHow do you give customers stronger reasons to stay?",
         insight: "Remittance firms are adding tailored products, rewards and money tools to give customers more reasons to stay.",
         options: [
           { id: "A", title: "Build the Toolkit", description: "Create tailored financial products around how customers actually send, receive, and manage money across borders.", feedback: "You build a more differentiated proposition, but take on more product complexity and a broader servicing burden.", score: { growth: 2, trust: 1, control: 0, momentum: 0 }, aggressive: true },
           { id: "B", title: "Bridge the Gap", description: "Offer small, tightly scoped credit or advance features to help customers handle short-term gaps between payments.", feedback: "You add value when it matters most, but take on more risk, regulation, and servicing complexity.", score: { growth: 1, trust: 0, control: -1, momentum: 0 } },
-          { id: "C", title: "Unlock the Spend", description: "Launch cards or loyalty benefits tied to remittance behaviour, such as better FX, transfer-linked perks, or recipient-side benefits", feedback: "You give customers another reason to stay, but risk weaker loyalty if the benefits do too much of the work.", score: { growth: 1, trust: 2, control: 0, momentum: 1 } },
+          { id: "C", title: "Unlock the Spend", description: "Launch cards or loyalty benefits tied to remittance behaviour, such as better FX, transfer-linked perks, or recipient-side benefits.", feedback: "You give customers another reason to stay, but risk weaker loyalty if the benefits do too much of the work.", score: { growth: 1, trust: 2, control: 0, momentum: 1 } },
         ],
       },
       {
         id: 6,
         title: "Choose Your Future",
-        description: "The business is no longer judged only on whether it can move money reliably. Pricing pressure, customer expectations, added services, and the rails underneath them have all expanded what’s possible. Your trusted remittance service could now become something bigger.\n\nWhat kind of business do you build from here?",
+        description: "You’ve built a strong foundation. Pricing pressure and customer expectations are evolving as new services and payment rails expand what’s possible. Your trusted remittance service could now become something bigger.\n\nWhat kind of business do you build from here?",
         insight: "Banks and traditional transfer firms are losing ground to fintechs, superapps, retailers and telcos, according to Paymentology’s Remittance Revolution report.",
         options: [
-          { id: "A", title: "Go Premium", description: "Build a higher-value service with stronger support, faster delivery, and premium features for customers who need more than a basic transfer.", feedback: "You create a more differentiated offer, but narrow the audience and raise the bar on service quality.", score: { growth: 1, trust: 2, control: 0, momentum: 0 } },
-          { id: "B", title: "Build the All-in-One", description: "Develop a broader cross-border product that brings transfers, stored value, cards, bill pay, and everyday money tools into one place.", feedback: "You make the proposition harder to replace, but take on much more product and operational complexity.", score: { growth: 2, trust: 1, control: 0, momentum: 0 }, aggressive: true },
+          { id: "A", title: "Go Premium", description: "Build a higher-value service with stronger support, faster delivery, and premium features for customers who need more than a basic transfer.", feedback: "You create a more differentiated offer, but narrow the audience and take on higher expectations for service quality.", score: { growth: 1, trust: 2, control: 0, momentum: 0 } },
+          { id: "B", title: "Build the All-in-One", description: "Develop a broader cross-border product that brings transfers, stored value, cards, bill pay, and everyday money tools into one place.", feedback: "You make the proposition harder for customers to replace, but take on much more product and operational complexity.", score: { growth: 2, trust: 1, control: 0, momentum: 0 }, aggressive: true },
           { id: "C", title: "Own a Niche", description: "Stay focused on a specific market, corridor, or customer segment and serve it better than anyone else.", feedback: "You sharpen your position, but limit how broadly you can scale.", score: { growth: 0, trust: 1, control: 0, momentum: 2 } },
         ],
       },
@@ -339,8 +339,8 @@ export const tracks: Track[] = [
       {
         id: 1,
         title: "Drive Demand",
-        description: "The bank is live, but demand is not coming fast enough. Acquisition is expensive, sign-ups are slower than expected, and a polished product is not yet turning into real momentum.\n\nHow do you get more people through the door?",
-        insight: "Paymentology powers GoTyme to issue virtual and physical Visa debit cards in minutes in the Philippines.",
+        description: "The bank is live, but demand isn’t building fast enough. Acquisition is expensive, sign-ups are slower than expected, and a polished product is not yet turning into real momentum.\n\nHow do you get more people through the door?",
+        insight: "In the Philippines, Paymentology powers GoTyme to issue virtual and physical Visa debit cards in minutes.",
         options: [
           { id: "A", title: "Push Incentives", description: "Use cashback, rewards, or joining offers to drive sign-ups faster.", feedback: "You accelerate acquisition, but risk attracting customers who only show up for the offer.", score: { growth: 2, trust: 0, control: 0, momentum: 2 }, aggressive: true },
           { id: "B", title: "Go Phygital", description: "Blend digital sign-up with human support to help customers discover, trust, and join the bank with confidence.", feedback: "You make the product easier to adopt, but add more servicing cost and complexity.", score: { growth: 1, trust: 2, control: 1, momentum: 0 } },
@@ -350,7 +350,7 @@ export const tracks: Track[] = [
       {
         id: 2,
         title: "Build Spend Habit",
-        description: "Sign-ups are climbing, but too many customers still aren’t building a real spending habit. They may have the account, even the card, but if first spend doesn’t turn into repeat spend, the bank risks becoming a nice idea instead of a useful one.\n\nHow do you get customers spending?",
+        description: "Sign-ups are climbing, but too many customers still aren’t building a real usage habit. They may have the account, even the card, but if first spend doesn’t turn into repeat spend, the bank risks becoming a nice idea instead of a useful one.\n\nHow do you get customers spending?",
         insight: "Modern API-driven platforms can help digital banks personalise experiences and adapt faster as markets change.",
         options: [
           { id: "A", title: "Skip the Plastic", description: "Let customers start spending digitally right away, without waiting for the physical card to arrive.", feedback: "You speed up first use, but depend more on customers being comfortable starting fully digital.", score: { growth: 1, trust: 0, control: 0, momentum: 2 }, aggressive: true },
@@ -361,7 +361,7 @@ export const tracks: Track[] = [
       {
         id: 3,
         title: "Become the Main Account",
-        description: "Customers are spending more, but their financial lives still sit elsewhere. Salaries land with another bank, government payments go elsewhere, and key inflows bypass your account. Until more money starts landing here, you risk remaining useful, but secondary.\n\nHow do you become the main account?",
+        description: "Customers are spending more, but their financial lives still sit somewhere else. Salaries land with another bank, government payments go elsewhere, and key inflows bypass your account. Until more money starts landing here, you risk remaining useful, but secondary.\n\nHow do you become the main account?",
         insight: "Many successful digital banks start with one strong card proposition, then expand as customer demand becomes clearer.",
         options: [
           { id: "A", title: "Win Salary", description: "Make this the account where salaries land, using incentives or stronger product value.", feedback: "You move closer to primary-account status, but getting customers to reroute salary is still a high-friction ask.", score: { growth: 2, trust: 0, control: 0, momentum: 2 }, aggressive: true },
@@ -372,7 +372,7 @@ export const tracks: Track[] = [
       {
         id: 4,
         title: "Serve Small Business",
-        description: "A new opportunity is emerging. Freelancers, sole traders and micro-businesses are looking for better ways to manage their money. Some struggle to open accounts, others with uneven cashflow or tools that don't fit how they work. The demand is real.\n\nWhere do you place your bet?",
+        description: "A new opportunity is emerging. Freelancers, sole traders and micro-businesses are looking for better banking options. Some struggle to open accounts, while others face uneven cashflow or tools that don’t fit how they work. Your could fill the gap.\n\nWhere do you place your bet?",
         insight: "SMEs power roughly two-thirds of the global economy, yet many remain underserved by payment services.",
         options: [
           { id: "A", title: "Lower the Barriers", description: "Simplify onboarding and account access for freelancers and small operators blocked by traditional banking requirements.", feedback: "You make the bank easier to access for underserved businesses, but take on more onboarding, verification, and support risk.", score: { growth: 2, trust: 1, control: -1, momentum: 0 }, aggressive: true },
@@ -414,7 +414,7 @@ export const tracks: Track[] = [
       {
         id: 1,
         title: "Reinvent the Card Experience",
-        description: "Your card business has scale, but the experience is starting to feel dated. Customers now expect instant digital issuance, seamless global spending and more control over how their card works. Legacy processes are getting in the way.\n\nWhich part of the card experience do you reinvent first?",
+        description: "Your card business is well established, but the experience is starting to feel dated. Customers now expect instant digital issuance, seamless global spending and more control over how their card works. Legacy processes are getting in the way.\n\nWhich part of the card experience do you reinvent first?",
         insight: "Modern card issuance enables instant cards, multi-currency spending and real-time customer controls.",
         options: [
           { id: "A", title: "Issue Instantly", description: "Prioritise instant digital issuance so customers can access and use the card right away.", feedback: "You make the card feel faster and more modern, but raise the pressure on digital servicing and fulfilment to keep up.", score: { growth: 1, trust: 1, control: 0, momentum: 2 } },
@@ -447,7 +447,7 @@ export const tracks: Track[] = [
       {
         id: 4,
         title: "Upgrade Wealth Management",
-        description: "You’ve modernised the card business, but your most valuable clients now expect more. Family offices want real-time visibility, tighter governance, and less manual work across cards, currencies, and complex structures.\n\nHow do you upgrade the wealth experience without losing control?",
+        description: "You’ve modernised the card business, but your wealthiest clients now expect more. Family offices want real-time visibility, tighter governance, and less manual work across cards, currencies, and complex structures.\n\nHow do you upgrade the wealth experience without losing control?",
         insight: "Paymentology’s FAST Feed provides 120+ transaction data points to power smarter insights and personalised experiences.",
         options: [
           { id: "A", title: "Connect Spend to Wealth", description: "Link card activity more directly into wealth reporting, spending visibility, and consolidated dashboards.", feedback: "You give clients and advisers a clearer whole-picture view, but take on more data, integration, and reporting complexity.", score: { growth: 2, trust: 2, control: 0, momentum: 1 } },

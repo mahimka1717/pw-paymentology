@@ -230,11 +230,15 @@ body {
 
 }
 
-/* @media (min-width: 1025px) { */
+body[data-screen='select'] .track-select-copy {
+  max-width: 95%;
+}
+
+@media (min-width: 1025px) {
   body[data-screen='select'] .track-select-copy {
     max-width: 82%;
   }
-/* } */
+}
 
 @media (min-width: 1025px) and (max-height: 800px) {
   .building {
@@ -372,12 +376,18 @@ h6 {
 .dropdown-track-item {
   color: #fff;
   font-family: 'PP Monument Wide', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 900;
   line-height: 1.4;
   padding-top: 3px;
   padding-bottom: 3px;
   transition: color 160ms ease, transform 160ms ease;
+}
+
+@media (min-width: 1025px) {
+  .dropdown-track-item {
+    font-size: 20px;
+  }
 }
 
 .dropdown-track-item:hover,
@@ -388,21 +398,11 @@ h6 {
 }
 
 .track-select-arrow {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-.track-select-arrow[data-open='true'] {
   transform: translateY(calc(-50% + 1px));
 }
 
-@media (min-width: 1025px) {
-  .track-select-arrow {
-    transform: translateY(calc(-50% + 1px));
-  }
-
-  .track-select-arrow[data-open='true'] {
-    transform: translateY(-50%) rotate(180deg);
-  }
+.track-select-arrow[data-open='true'] {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 ::-webkit-scrollbar {
