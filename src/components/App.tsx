@@ -93,6 +93,30 @@ export default function App() {
   }, [game.screen]);
 
   useEffect(() => {
+    const root = document.documentElement;
+    const isMobile = () =>
+      typeof window.matchMedia !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches;
+
+    const updateOverscrollBackground = () => {
+      if (!isMobile()) return;
+      const maxScroll = root.scrollHeight - window.innerHeight;
+      if (maxScroll > 0 && window.scrollY >= maxScroll - 2) {
+        root.style.backgroundColor = '#783cff';
+      } else {
+        root.style.backgroundColor = '#15154a';
+      }
+    };
+
+    updateOverscrollBackground();
+    window.addEventListener('scroll', updateOverscrollBackground, { passive: true });
+    window.addEventListener('resize', updateOverscrollBackground);
+    return () => {
+      window.removeEventListener('scroll', updateOverscrollBackground);
+      window.removeEventListener('resize', updateOverscrollBackground);
+    };
+  }, [game.screen, phase]);
+
+  useEffect(() => {
     const screenViewKey = `${game.screen}:${game.trackId ?? ''}:${game.currentScenario?.id ?? ''}`;
     if (lastScreenView.current !== screenViewKey) {
       lastScreenView.current = screenViewKey;
