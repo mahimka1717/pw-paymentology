@@ -263,9 +263,10 @@ export function GameScreen({
               />
             </div>
 
-            {/* Buttons area — fixed to bottom on mobile, shown only after an answer */}
-            {selectedOption !== null && phase !== 'exit' && (
-              <div ref={buttonsAreaRef} className={`game-actions-area game-actions-area-fixed-mobile p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${buttonsExiting ? 'is-hiding' : ''}`}>
+            {/* Buttons area — fixed to bottom on mobile (hidden until answered), always reserves space on desktop */}
+            <div ref={buttonsAreaRef} className={`game-actions-area p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${selectedOption !== null && phase !== 'exit' ? `game-actions-area-fixed-mobile ${buttonsExiting ? 'is-hiding' : ''}` : 'hidden lg:flex'} lg:min-h-[48px]`}>
+              {selectedOption !== null && phase !== 'exit' && (
+                <>
                   {/* Mobile insight popup */}
                   {showInsight && (
                     <div
@@ -379,8 +380,9 @@ export function GameScreen({
                       <path d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
-              </div>
-            )}
+                </>
+              )}
+            </div>
 
             {/* Bottom spacer: keeps the fixed mobile bar from covering content (persistent so layout never jumps) */}
             <div className="h-[120px] lg:hidden" />
