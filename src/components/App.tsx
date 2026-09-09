@@ -61,6 +61,16 @@ export default function App() {
   const buildingRef = useRef<HTMLDivElement>(null);
   const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const [isMobileVideo, setIsMobileVideo] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 1024px)').matches : false
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 1024px)');
+    const onChange = (event: MediaQueryListEvent) => setIsMobileVideo(event.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
 
   const videoOpacity = game.screen === 'select' && phase !== 'exit' ? 1 : 0;
 
@@ -310,10 +320,17 @@ export default function App() {
           playsInline
           preload="auto"
         >
-          <source src="/video/bg9_16.webm" type="video/webm" media="(max-width: 1024px)" />
-          <source src="/video/bg9_16-compressed.mp4" type="video/mp4" media="(max-width: 1024px)" />
-          <source src="/video/bg.webm" type="video/webm" />
-          <source src="/video/bg-compressed.mp4" type="video/mp4" />
+          {isMobileVideo ? (
+            <>
+              <source src="/video/bg9_16.webm" type="video/webm" />
+              <source src="/video/bg9_16-compressed.mp4" type="video/mp4" />
+            </>
+          ) : (
+            <>
+              <source src="/video/bg.webm" type="video/webm" />
+              <source src="/video/bg-compressed.mp4" type="video/mp4" />
+            </>
+          )}
         </video>
       </div>
 
