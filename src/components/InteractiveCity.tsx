@@ -200,8 +200,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
             '--car-start-top': `${1540 / imageHeight * 100}%`,
             '--car-end-left': `${1380 / imageWidth * 100}%`,
             '--car-end-top': `${2085 / imageHeight * 100}%`,
-            '--car-translate-x': `${(1380 - 100) / imageWidth * 100}cqw`,
-            '--car-translate-y': `${(2085 - 1540) / imageWidth * 100}cqw`,
+            '--car-translate-x': `${(1380 - 100) / 147 * 100}%`,
+            '--car-translate-y': `${(2085 - 1540) / 147 * (922 / 655) * 100}%`,
             width: `${147 / imageWidth * 100}%`,
             aspectRatio: '922 / 655',
           } as React.CSSProperties}
