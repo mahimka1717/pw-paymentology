@@ -11,6 +11,7 @@ import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
 import { trackTheme } from '../data/theme';
 import { buildingNeonLayers } from '../data/buildingNeon';
+import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
 
 export type Phase = 'enter' | 'idle' | 'exit';
@@ -22,22 +23,6 @@ interface BuildingMaskPixels {
 }
 
 const buildingMaskCache = new Map<number, Promise<BuildingMaskPixels>>();
-
-const standaloneBillboards: Record<string, {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotate: number;
-  skewY: number;
-}> = {
-  fintech: { x: 670, y: 837, width: 50, height: 86, rotate: 0, skewY: -10.5 },
-  government: { x: 480, y: 714, width: 50, height: 86, rotate: 0, skewY: -10.5 },
-  telco: { x: 469, y: 661, width: 70, height: 130, rotate: -2, skewY: 6 },
-  remittance: { x: 742, y: 796.5, width: 55, height: 92, rotate: 0, skewY: -12.4 },
-  'digital-banks': { x: 583, y: 756, width: 54, height: 100, rotate: 0, skewY: -13 },
-  banks: { x: 549, y: 730, width: 55, height: 96, rotate: -1, skewY: -14 },
-};
 
 function loadBuildingMaskPixels(buildingIndex: number) {
   const cached = buildingMaskCache.get(buildingIndex);
@@ -325,6 +310,8 @@ export default function App() {
           playsInline
           preload="auto"
         >
+          <source src="/video/bg9_16.webm" type="video/webm" media="(max-width: 1024px)" />
+          <source src="/video/bg9_16-compressed.mp4" type="video/mp4" media="(max-width: 1024px)" />
           <source src="/video/bg.webm" type="video/webm" />
           <source src="/video/bg-compressed.mp4" type="video/mp4" />
         </video>

@@ -1027,7 +1027,7 @@ h6 {
 
 @media (max-width: 1024px) {
   .bg-video {
-    object-position: 25%;
+    object-position: center;
   }
 }
 

@@ -1,8 +1,10 @@
 import type { CSSProperties } from 'react';
 import { Track, tracks } from '../data/tracks';
 import { buildingNeonLayers } from '../data/buildingNeon';
+import { standaloneBillboards } from '../data/standaloneBillboards';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
+import { AnimatedBillboard } from './AnimatedBillboard';
 
 interface Props {
   phase: Phase;
@@ -19,6 +21,7 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 export function TrackIntroScreen({ phase, track, onStart }: Props) {
   const buildingIndex = tracks.findIndex(t => t.id === track.id);
   const buildingNeonLayer = buildingNeonLayers[buildingIndex];
+  const standaloneBillboard = standaloneBillboards[track.id];
 
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:min-h-[920px] lg:overflow-x-visible">
@@ -61,6 +64,22 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
                 } as CSSProperties}
                 draggable={false}
               />
+              {standaloneBillboard && (
+                <AnimatedBillboard
+                  x={standaloneBillboard.x}
+                  y={standaloneBillboard.y}
+                  width={standaloneBillboard.width}
+                  height={standaloneBillboard.height}
+                  referenceWidth={1920}
+                  referenceHeight={1080}
+                  image={`/img/posters/p_${buildingIndex}.webp`}
+                  distortion={{
+                    rotate: standaloneBillboard.rotate,
+                    skewY: standaloneBillboard.skewY,
+                    origin: 'top left',
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase, 3, 4)}>
