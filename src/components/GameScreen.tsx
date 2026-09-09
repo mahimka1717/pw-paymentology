@@ -263,18 +263,17 @@ export function GameScreen({
               />
             </div>
 
-            {/* Buttons area — space always reserved */}
-            <div ref={buttonsAreaRef} className="game-actions-area relative mt-[16px] mb-[16px] lg:mt-[28px] lg:mb-0 h-[48px] flex flex-row items-center justify-center gap-3 md:gap-4">
-              {selectedOption !== null && phase !== 'exit' && (
-                <>
+            {/* Buttons area — fixed to bottom on mobile, shown only after an answer */}
+            {selectedOption !== null && phase !== 'exit' && (
+              <div ref={buttonsAreaRef} className={`game-actions-area game-actions-area-fixed-mobile p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${buttonsExiting ? 'is-hiding' : ''}`}>
                   {/* Mobile insight popup */}
                   {showInsight && (
                     <div
                       ref={insightPopupRef}
-                      className="z-40 lg:hidden left-[32px] right-[32px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
+                      className="z-40 lg:hidden left-0 right-0 mx-auto w-full max-w-[300px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
                       style={{
                         position: 'absolute',
-                        bottom: 'calc(100% + 99px)',
+                        bottom: 'calc(100% + 79px)',
                         overflow: 'visible',
                         background: '#FFFFFF',
                         borderRadius: '12px',
@@ -314,10 +313,7 @@ export function GameScreen({
                   )}
 
                   {/* Did you know mascot + button */}
-                  <div className="relative" style={buttonsExiting
-                    ? { animation: `fade-out ${animationMs(250)} ease forwards` }
-                    : { opacity: 0, animation: `fade-in-only ${animationMs(500)} ease forwards` }
-                  }>
+                  <div className={`relative ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}>
                     {showInsight && (
                       <div
                         ref={mascotRef}
@@ -365,7 +361,7 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className="game-action-button group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px]"
+                    className={`game-action-button group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px] ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 400,
@@ -375,9 +371,7 @@ export function GameScreen({
                       borderRadius: '26px',
                       border: '2px solid #FFFFFF',
                       cursor: 'pointer',
-                      ...(buttonsExiting
-                        ? { animation: `fade-out ${animationMs(250)} ease forwards` }
-                        : { opacity: 0, animation: `fade-in-only ${animationMs(500)} ease ${animationMs(50)} forwards` }),
+                      ...(buttonsExiting ? {} : { '--enter-delay': animationMs(50) } as CSSProperties),
                     }}
                   >
                     Next
@@ -385,9 +379,11 @@ export function GameScreen({
                       <path d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
-                </>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* Bottom spacer: keeps the fixed mobile bar from covering content (persistent so layout never jumps) */}
+            <div className="h-[120px] lg:hidden" />
 
             {/* Bottom spacer: mirrors top spacer for vertical centering on mobile */}
             <div className="flex-1 lg:hidden" />

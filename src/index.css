@@ -1030,3 +1030,29 @@ h6 {
     object-position: 25%;
   }
 }
+
+@media (max-width: 1024px) {
+  .game-actions-area-fixed-mobile {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    animation: slide-up-reveal calc(550ms * var(--animation-scale, 1)) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
+  .game-actions-area-fixed-mobile.is-hiding {
+    animation: slide-down-hide calc(350ms * var(--animation-scale, 1)) cubic-bezier(0.55, 0, 0.78, 0) forwards;
+  }
+}
+
+@media (min-width: 1025px) {
+  .game-button-enter {
+    opacity: 0;
+    animation: fade-in-only calc(500ms * var(--animation-scale, 1)) ease var(--enter-delay, 0ms) forwards;
+  }
+
+  .game-button-exit {
+    animation: fade-out calc(250ms * var(--animation-scale, 1)) ease forwards;
+  }
+}
