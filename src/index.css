@@ -148,6 +148,7 @@ button:focus-visible,
 
 html {
   min-height: 100%;
+  background-color: #15154a;
 }
 
 html::before {
