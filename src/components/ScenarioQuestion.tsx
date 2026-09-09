@@ -28,7 +28,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
   const hideHeaderForInsight = showInsight || exitWithInsightOpen;
   const hideOptionsForInsight = showInsight || exitWithInsightOpen;
   const questionContentVisibility = hideHeaderForFeedback
-    ? 'opacity-20 pointer-events-none md:opacity-0 md:pointer-events-none'
+    ? 'opacity-10 pointer-events-none md:opacity-0 md:pointer-events-none'
     : hideHeaderForInsight
       ? 'opacity-20 pointer-events-none lg:opacity-100 lg:pointer-events-auto'
       : 'opacity-100';

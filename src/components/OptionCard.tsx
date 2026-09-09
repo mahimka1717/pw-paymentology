@@ -41,7 +41,7 @@ export function OptionCard({ title, description, optionId, selected, disabled, r
             ? 'bg-[#151547] shadow-[2px_2px_6px_0_rgba(0,0,0,0.1)]'
             : disabled && !resetting
               ? showFeedback
-                ? 'bg-white/50 opacity-20 lg:opacity-50 cursor-not-allowed'
+                ? 'bg-white/50 opacity-10 lg:opacity-50 cursor-not-allowed'
                 : 'bg-white/50 opacity-50 cursor-not-allowed'
             : resetting ? '' : 'game-option-interactive bg-white cursor-pointer'
         }`}
