@@ -149,10 +149,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
 
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="pointer-events-none relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
-          <h1 className="track-select-title text-[22px] leading-[26px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
+          <h1 className="track-select-title text-[22px] leading-[26px] min-[400px]:text-[24px] min-[400px]:leading-[28px] md:text-[30px] md:leading-[36px] font-bold mb-[20px] md:mb-[50px] text-left uppercase" style={cascade(phase, 0, 4)}>
             THE ISSUER CHALLENGE
           </h1>
-          <p className="track-select-copy text-[14px] leading-[20px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
+          <p className="track-select-copy text-[14px] leading-[22px] min-[400px]:text-[16px] min-[400px]:leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-[20px] md:mb-[70px]" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
             Can you build a successful card programme?<br className="md:hidden" /><span className="hidden md:inline"><br /><br /></span>{' '}
             Put yourself to the test as you navigate real-world challenges in growth, risk, innovation and scale.<span className="hidden md:inline"><br /><br /></span>{' '}
             At the end, discover what you’ve built and what your choices reveal about your decision-making style.
