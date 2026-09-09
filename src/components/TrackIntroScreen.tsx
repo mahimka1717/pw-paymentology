@@ -24,7 +24,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
   const standaloneBillboard = standaloneBillboards[track.id];
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-10 lg:min-h-[920px] lg:overflow-x-visible">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-[calc(80px+env(safe-area-inset-bottom))] lg:min-h-[920px] lg:overflow-x-visible lg:pb-10">
       <div className="w-full max-w-[87.50vw] md:max-w-[672px] lg:max-w-[1680px]">
         <div className="w-full lg:w-[40%] min-h-[calc(100vh-var(--topbar-h)-40px)] md:min-h-[750px] lg:min-h-[750px] flex flex-col">
           <h1 className="text-[22px] leading-[28px] font-bold mb-[30px] text-left uppercase text-white md:text-[30px] md:leading-[36px] md:mb-[50px] lg:hidden" style={cascade(phase, 0, 4)}>
@@ -41,8 +41,18 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           <div className="flex-1 lg:hidden" />
           <div className={`relative my-0 w-[120vw] -translate-x-1/2 overflow-hidden lg:hidden ${track.id === 'telco' ? 'left-[calc(50%-20px)]' : track.id === 'digital-banks' || track.id === 'banks' || track.id === 'remittance' ? 'left-[calc(50%-10px)]' : 'left-1/2'}`}>
             <div
-              className="relative aspect-[16/9] w-full"
+              className="relative aspect-[16/9] w-full cursor-pointer"
               style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
+              onClick={onStart}
+              role="button"
+              tabIndex={0}
+              aria-label="Start"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onStart();
+                }
+              }}
             >
               <img
                 src={`/img/buildings/building${buildingIndex}_ws.png`}
