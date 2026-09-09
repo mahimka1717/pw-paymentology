@@ -148,8 +148,7 @@ button:focus-visible,
 
 html {
   min-height: 100%;
-  overscroll-behavior-y: none;
-  background-color: #15154a;
+  background-color: #783cff;
   background-image: linear-gradient(to bottom, #15154a 0%, #15154a 49%, #783cff 51%, #783cff 100%);
 }
 
@@ -175,7 +174,6 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   background: transparent;
-  overscroll-behavior-y: none;
 }
 
 #root {
