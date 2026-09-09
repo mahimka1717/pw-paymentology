@@ -105,7 +105,7 @@ export function GameScreen({
     setShowInsight(false);
     setTimeout(() => {
       if (window.innerWidth < 768) {
-        smoothScrollTo(document.documentElement.scrollHeight, scaledMs(1200));
+        // smoothScrollTo(document.documentElement.scrollHeight, scaledMs(1200));
       }
     }, scaledMs(100));
   };
