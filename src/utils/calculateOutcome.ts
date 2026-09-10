@@ -65,9 +65,10 @@ export function calculateOutcome(
   }
 
   let style: Style;
-  if (aggressiveCount >= 4) style = 'Consistent Aggressive';
-  else if (aggressiveCount <= 2) style = 'Consistent Cautious';
-  else style = 'Situational';
+  if (aggressiveCount >= 4) style = 'Bold';
+  else if (aggressiveCount === 3) style = 'Situational';
+  else if (aggressiveCount === 2) style = 'Deliberate';
+  else style = 'Disciplined';
 
   return {
     outcome,

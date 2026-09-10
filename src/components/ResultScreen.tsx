@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Score } from '../data/tracks';
-import { outcomeDescriptions, Outcome, Style } from '../data/scoring';
+import { outcomeDescriptions, resultStyleCopy, Outcome, Style } from '../data/scoring';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 
@@ -27,14 +27,8 @@ const outcomeImages: Record<Outcome, string> = {
   'Stuck in Neutral': '/img/result/result3.jpg',
 };
 
-const styleDescriptions: Record<Style, string> = {
-  'Consistent Aggressive': 'You backed yourself early and kept pushing. You chased growth without letting trust fall away, and knew when the model could take more pressure. Your instinct was to move, and it paid off.',
-  'Consistent Cautious': 'You earned this the patient way. Every move was considered before it was made, and the outcome reflects your discipline. While others might have left the foundations to chance, you made sure yours would hold.',
-  'Situational': 'You knew which moments to push and which to protect. Not every opportunity was worth chasing, and you could tell the difference. That instinct is hard to teach, and even harder to master.',
-};
-
 function StyleIcon({ style }: { style: Style }) {
-  if (style === 'Consistent Aggressive') {
+  if (style === 'Bold') {
     return (
       <svg width="78" height="44" viewBox="0 0 78 44" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4.53003 43.9101C7.03188 43.9101 9.06 41.882 9.06 39.3801C9.06 36.8783 7.03188 34.8501 4.53003 34.8501C2.02818 34.8501 0 36.8783 0 39.3801C0 41.882 2.02818 43.9101 4.53003 43.9101Z" fill="white"/>
@@ -56,7 +50,18 @@ function StyleIcon({ style }: { style: Style }) {
       </svg>
     );
   }
-  // Consistent Cautious
+  if (style === 'Deliberate') {
+    return (
+      <svg width="78" height="10" viewBox="0 0 78 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.53003 9.06C7.03188 9.06 9.06 7.03188 9.06 4.53003C9.06 2.02818 7.03188 0 4.53003 0C2.02818 0 0 2.02818 0 4.53003C0 7.03188 2.02818 9.06 4.53003 9.06Z" fill="white"/>
+        <path d="M27.2302 9.06C29.732 9.06 31.7602 7.03188 31.7602 4.53003C31.7602 2.02818 29.732 0 27.2302 0C24.7283 0 22.7002 2.02818 22.7002 4.53003C22.7002 7.03188 24.7283 9.06 27.2302 9.06Z" fill="white"/>
+        <path d="M49.9299 9.06C52.4318 9.06 54.46 7.03188 54.46 4.53003C54.46 2.02818 52.4318 0 49.9299 0C47.4281 0 45.3999 2.02818 45.3999 4.53003C45.3999 7.03188 47.4281 9.06 49.9299 9.06Z" fill="white"/>
+        <path d="M72.6301 9.06C75.132 9.06 77.1602 7.03188 77.1602 4.53003C77.1602 2.02818 75.132 0 72.6301 0C70.1283 0 68.1001 2.02812 68.1001 4.52997C68.1001 7.03182 70.1283 9.06 72.6301 9.06Z" fill="white"/>
+        <path d="M4.52979 4.52979H72.6298" stroke="white" strokeWidth="2" strokeMiterlimit="10"/>
+      </svg>
+    );
+  }
+  // Disciplined — placeholder, duplicates Deliberate icon until full set arrives
   return (
     <svg width="78" height="10" viewBox="0 0 78 10" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4.53003 9.06C7.03188 9.06 9.06 7.03188 9.06 4.53003C9.06 2.02818 7.03188 0 4.53003 0C2.02818 0 0 2.02818 0 4.53003C0 7.03188 2.02818 9.06 4.53003 9.06Z" fill="white"/>
@@ -198,7 +203,7 @@ export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
                   fontWeight: 400,
                 }}
               >
-                {styleDescriptions[style]}
+                {resultStyleCopy[outcome][style]}
               </p>
             </div>
           </div>
