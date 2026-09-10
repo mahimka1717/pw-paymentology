@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function TopBar() {
+export function TopBar({ showPlayAgain = true }: { showPlayAgain?: boolean }) {
   const [backHovered, setBackHovered] = useState(false);
   const [backPressed, setBackPressed] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
@@ -18,7 +18,8 @@ export function TopBar() {
     >
       {/* Back button */}
       <div
-        className="flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer"
+        className={`flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer transition-opacity duration-300 ${showPlayAgain ? 'opacity-100' : 'invisible opacity-0 pointer-events-none'}`}
+        aria-hidden={!showPlayAgain}
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setBackHovered(true);
         }}
@@ -64,7 +65,7 @@ export function TopBar() {
             Play again
           </button>
         )}
-      </div>
+        </div>
 
       {/* Home link */}
       <div

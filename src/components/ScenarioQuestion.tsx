@@ -12,6 +12,7 @@ interface Props {
   exiting: boolean;
   resettingOption: boolean;
   showFeedback: boolean;
+  canToggleFeedback: boolean;
   showInsight: boolean;
   exitWithFeedbackOpen: boolean;
   exitWithInsightOpen: boolean;
@@ -22,7 +23,7 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, exiting, resettingOption, showFeedback, showInsight, exitWithFeedbackOpen, exitWithInsightOpen, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, exiting, resettingOption, showFeedback, canToggleFeedback, showInsight, exitWithFeedbackOpen, exitWithInsightOpen, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
   const hideHeaderForFeedback = showFeedback || exitWithFeedbackOpen;
   const hideHeaderForInsight = showInsight || exitWithInsightOpen;
@@ -139,7 +140,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 onSelect={() => {
                   if (selectedOption === null) {
                     onChoose(index, option.score, option.aggressive ?? false);
-                  } else if (selectedOption === index) {
+                  } else if (selectedOption === index && canToggleFeedback) {
                     onToggleFeedback();
                   }
                 }}

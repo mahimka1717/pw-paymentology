@@ -300,7 +300,7 @@ export default function App() {
 
   return (
     <>
-      <TopBar />
+      <TopBar showPlayAgain={(game.screen === 'game' && game.scenarioIndex >= 1) || game.screen === 'result'} />
 
       {/* Video background — fades on select screen */}
       <div

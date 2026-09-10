@@ -44,6 +44,7 @@ export function GameScreen({
 }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showScoreDelta, setShowScoreDelta] = useState(false);
+  const [showActionButtons, setShowActionButtons] = useState(false);
   const [showInsight, setShowInsight] = useState(false);
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
@@ -51,6 +52,8 @@ export function GameScreen({
   const [exitWithFeedbackOpen, setExitWithFeedbackOpen] = useState(false);
   const [exitWithInsightOpen, setExitWithInsightOpen] = useState(false);
   const [resettingOption, setResettingOption] = useState(false);
+  const [insightHintSeen, setInsightHintSeen] = useState(false);
+  const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const insightPopupRef = useRef<HTMLDivElement>(null);
   const insightToggleRef = useRef<HTMLButtonElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
@@ -68,6 +71,12 @@ export function GameScreen({
       setIsClosingInsight(false);
     }, scaledMs(350));
   };
+
+  useEffect(() => {
+    return () => {
+      if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!showInsight || isClosingInsight) return;
@@ -93,21 +102,21 @@ export function GameScreen({
       control_delta: delta.control,
       momentum_delta: delta.momentum,
     });
-    trackEvent('feedback_opened', {
-      track_id: track.id,
-      scenario_id: scenario.id,
-      scenario_number: scenarioIndex + 1,
-      method: 'automatic',
-    });
     onChoose(index, delta, aggressive);
-    setShowFeedback(true);
     setShowScoreDelta(true);
     setShowInsight(false);
-    setTimeout(() => {
-      if (window.innerWidth < 768) {
-        // smoothScrollTo(document.documentElement.scrollHeight, scaledMs(1200));
-      }
-    }, scaledMs(100));
+    if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+    revealTimeoutRef.current = setTimeout(() => {
+      trackEvent('feedback_opened', {
+        track_id: track.id,
+        scenario_id: scenario.id,
+        scenario_number: scenarioIndex + 1,
+        method: 'automatic',
+      });
+      setShowFeedback(true);
+      setShowActionButtons(true);
+      revealTimeoutRef.current = null;
+    }, scaledMs(700));
   };
 
   const handleNext = () => {
@@ -122,14 +131,20 @@ export function GameScreen({
     });
     setExitWithFeedbackOpen(showFeedback);
     setExitWithInsightOpen(showInsight);
+    if (revealTimeoutRef.current) {
+      clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = null;
+    }
     setButtonsExiting(true);
     setQuestionExiting(!isLastScenario);
     setShowFeedback(false);
+    setShowScoreDelta(false);
     setShowInsight(false);
     smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
       setButtonsExiting(false);
       setQuestionExiting(false);
+      setShowActionButtons(false);
       if (!isLastScenario) {
         setExitWithFeedbackOpen(false);
         setExitWithInsightOpen(false);
@@ -141,6 +156,10 @@ export function GameScreen({
   const handleResetOption = () => {
     if (resettingOption) return;
 
+    if (revealTimeoutRef.current) {
+      clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = null;
+    }
     setResettingOption(true);
     setButtonsExiting(true);
     setShowScoreDelta(false);
@@ -152,6 +171,7 @@ export function GameScreen({
       setIsClosingInsight(false);
       setButtonsExiting(false);
       setResettingOption(false);
+      setShowActionButtons(false);
     }, scaledMs(700));
   };
 
@@ -210,7 +230,7 @@ export function GameScreen({
             )}
 
             <div style={cascade(phase, 0)}>
-              <ScoreBars totalScore={displayedScore} lastDelta={showFeedback && showScoreDelta ? lastDelta : null} />
+              <ScoreBars totalScore={displayedScore} lastDelta={showScoreDelta ? lastDelta : null} />
             </div>
 
             {/* Spacer: pushes content group to vertical center on mobile */}
@@ -236,6 +256,7 @@ export function GameScreen({
                 exiting={questionExiting}
                 resettingOption={resettingOption}
                 showFeedback={showFeedback}
+                canToggleFeedback={showActionButtons}
                 showInsight={showInsight}
                 exitWithFeedbackOpen={exitWithFeedbackOpen}
                 exitWithInsightOpen={exitWithInsightOpen}
@@ -264,8 +285,8 @@ export function GameScreen({
             </div>
 
             {/* Buttons area — fixed to bottom on mobile (hidden until answered), always reserves space on desktop */}
-            <div ref={buttonsAreaRef} className={`game-actions-area p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${selectedOption !== null && phase !== 'exit' ? `game-actions-area-fixed-mobile ${buttonsExiting ? 'is-hiding' : ''}` : 'hidden lg:flex'} lg:min-h-[48px]`}>
-              {selectedOption !== null && phase !== 'exit' && (
+            <div ref={buttonsAreaRef} className={`game-actions-area p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${selectedOption !== null && showActionButtons && phase !== 'exit' ? `game-actions-area-fixed-mobile ${buttonsExiting ? 'is-hiding' : ''}` : 'hidden lg:flex'} lg:min-h-[48px]`}>
+              {selectedOption !== null && showActionButtons && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
                   {showInsight && (
@@ -328,6 +349,7 @@ export function GameScreen({
                     <button
                       ref={insightToggleRef}
                       onClick={() => {
+                        setInsightHintSeen(true);
                         if (showInsight) {
                           handleCloseInsight();
                         } else {
@@ -340,7 +362,7 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className="game-action-button h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px]"
+                      className={`game-action-button h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px] ${!insightHintSeen && !buttonsExiting ? 'insight-hint' : ''}`}
                       style={{
                         fontFamily: "'Inter', sans-serif",
                         fontWeight: 400,

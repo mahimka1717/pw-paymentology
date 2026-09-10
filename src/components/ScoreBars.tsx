@@ -1,5 +1,6 @@
 import { scoreIcons } from '../assets/scoreIcons';
 import { Score } from '../data/tracks';
+import { animationMs } from '../utils/animationTiming';
 
 interface Props {
   totalScore: Score;
@@ -38,8 +39,11 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
               }}
             >
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-700 ease-out"
-                style={{ left: `clamp(13px, ${positionPct}%, calc(100% - 13px))` }}
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 ease-out"
+                style={{
+                  left: `clamp(13px, ${positionPct}%, calc(100% - 13px))`,
+                  transition: `left ${animationMs(700)} ease-out`,
+                }}
               >
                 {delta !== null && delta !== 0 && (
                   <span
@@ -62,7 +66,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                         key={`ripple-${key}-${value}-${i}`}
                         className="score-ripple absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full pointer-events-none"
                         style={{
-                          backgroundColor: '#703ff5',
+                          backgroundColor: delta > 0 ? '#AAFF6E' : '#FF7DFF',
                           animationDelay: `${i * 0.42}s`,
                         }}
                       />

@@ -25,6 +25,11 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
+const selectOrder = ['remittance', 'digital-banks', 'government', 'banks', 'telco', 'fintech'];
+const orderedTracks = selectOrder
+  .map(id => tracks.find(track => track.id === id))
+  .filter((track): track is NonNullable<typeof track> => track !== undefined);
+
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
@@ -183,7 +188,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
                 role="listbox"
                 onKeyDown={handleOptionsKeyDown}
               >
-                {tracks.map((track) => (
+                {orderedTracks.map((track) => (
                   <button
                     key={track.id}
                     type="button"
