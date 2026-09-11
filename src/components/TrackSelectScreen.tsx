@@ -73,10 +73,10 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
 
     onHoverTrack(null);
     setTouchSelectedTrackId(trackId);
+    setIsDropdownOpen(false);
     touchSelectionTimeoutRef.current = window.setTimeout(() => {
-      setIsDropdownOpen(false);
       onSelect(trackId);
-    }, scaledMs(650));
+    }, scaledMs(1150));
   };
 
   const handleCitySelect = (trackId: string, pointerType?: string) => {

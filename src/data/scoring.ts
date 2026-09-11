@@ -41,7 +41,7 @@ export const resultStyleCopy: Record<Outcome, Record<Style, string>> = {
     Bold: "You consistently chose the more expansive option, and still landed here. The ambition you committed to happens to be the kind that earns confidence rather than undermines it. Expansive vision with earned credibility is a rarer combination than it looks.",
     Situational: "Knowing which decisions needed boldness and which needed a steadier hand, and acting on that distinction consistently is what trust is actually built on. Not blanket caution. Situational judgment. You seemed to know the difference when it mattered.",
     Deliberate: "Earning confidence the slow way is not a limitation, it is a strategy. In a market full of promises, a model that consistently does what it says is a competitive advantage most organisations underestimate. You built that, deliberately and without shortcuts.",
-    Disciplined: "A clear internal compass, followed almost without exception, is what this outcome is built from.. Most people know what the right call is. The rare thing is rarely talking yourself out of it. Across these six decisions, you almost never did.",
+    Disciplined: "A clear internal compass, followed almost without exception, is what this outcome is built from. Most people know what the right call is. The rare thing is rarely talking yourself out of it. Across these six decisions, you almost never did.",
   },
   'Stuck in Neutral': {
     Bold: "The ambition was genuine, but committing to the expansive option across multiple dimensions simultaneously disperses energy rather than concentrating it. The drive is an asset. It needs a sharper target.",

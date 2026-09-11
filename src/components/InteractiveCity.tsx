@@ -59,9 +59,9 @@ const cityTracks: CityTrack[] = [
   { id: 'fintech', name: 'Fintech', image: 'fintech', bounds: [759, 336, 1171, 1303], anchor: [319, 275.5], endpoint: [72.5, 275.5], mobileEndpoint: [319, 90] },
   { id: 'remittance', name: 'Remittance', image: 'remittance', bounds: [1140, 378, 1590, 1192], anchor: [497.35, 156.6], endpoint: [682.95, 156.6], mobileEndpoint: [497.35, 50] },
   { id: 'digital-banks', name: 'Digital Banks', image: 'digitalbanks', bounds: [1513, 597, 2242, 1494], anchor: [600.3, 301.6], endpoint: [788.8, 301.6], mobileAnchor: [700.3, 301.6], mobileEndpoint: [700.3, 140] },
-  { id: 'telco', name: 'Telco', image: 'telco', bounds: [288, 864, 958, 1707], anchor: [226.2, 485.75], endpoint: [-46.4, 485.75], mobileEndpoint: [226.2, 755] },
-  { id: 'banks', name: 'Banks', image: 'bank', bounds: [931, 1139, 1675, 1773], anchor: [423.4, 488.65], endpoint: [933.8, 488.65], mobileEndpoint: [423.4, 795] },
-  { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 755] },
+  { id: 'telco', name: 'Telco', image: 'telco', bounds: [288, 864, 958, 1707], anchor: [226.2, 485.75], endpoint: [-46.4, 485.75], mobileEndpoint: [226.2, 90] },
+  { id: 'banks', name: 'Banks', image: 'bank', bounds: [931, 1139, 1675, 1773], anchor: [423.4, 488.65], endpoint: [933.8, 488.65], mobileEndpoint: [423.4, 75] },
+  { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 115] },
 ];
 
 const planeSegmentFrames = 11;
@@ -454,15 +454,21 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
                 '--callout-background': trackTheme[track.id].accent,
                 left: `${track.mobileEndpoint[0] / calloutWidth * 100}%`,
                 top: `${track.mobileEndpoint[1] / calloutHeight * 100}%`,
-                transform: track.id === 'fintech'
-                  ? 'translate(-75%, -100%)'
-                  : track.id === 'telco'
+                transform: labelOnTop
+                  ? track.id === 'fintech'
+                    ? 'translate(-75%, -100%)'
+                    : track.id === 'telco'
+                      ? 'translate(-75%, -100%)'
+                      : track.id === 'government'
+                        ? 'translate(-25%, -100%)'
+                        : 'translate(-50%, -100%)'
+                  : track.id === 'fintech'
                     ? 'translate(-75%, 0)'
-                    : track.id === 'government'
-                      ? 'translate(-25%, 0)'
-                  : labelOnTop
-                    ? 'translate(-50%, -100%)'
-                    : 'translate(-50%, 0)',
+                    : track.id === 'telco'
+                      ? 'translate(-75%, 0)'
+                      : track.id === 'government'
+                        ? 'translate(-25%, 0)'
+                        : 'translate(-50%, 0)',
                 padding: '2.222cqw 3.333cqw',
                 borderRadius: '3.333cqw',
                 fontFamily: "'PP Monument Wide', sans-serif",
