@@ -32,16 +32,16 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
         return (
           <div key={key} className="flex flex-col items-center flex-1 gap-1.5 min-w-0">
             <div
-              className="relative w-full h-[30px] md:h-[40px]"
+              className="relative w-full h-[26px] md:h-[40px]"
               style={{
                 borderRadius: '20px',
                 background: 'linear-gradient(to right, #ED83F8, #A187F8)',
               }}
             >
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 ease-out"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 ease-out z-10"
                 style={{
-                  left: `clamp(13px, ${positionPct}%, calc(100% - 13px))`,
+                  left: `clamp(11px, ${positionPct}%, calc(100% - 11px))`,
                   transition: `left ${animationMs(700)} ease-out`,
                 }}
               >
@@ -59,7 +59,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                     {delta > 0 ? `+${delta}` : delta}
                   </span>
                 )}
-                <div className="relative w-[26px] h-[26px] md:w-[34px] md:h-[34px]">
+                <div className="relative w-[22px] h-[22px] md:w-[34px] md:h-[34px]">
                   {delta !== null && delta !== 0 &&
                     Array.from({ length: Math.abs(delta) }).map((_, i) => (
                       <div
@@ -72,7 +72,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                       />
                     ))
                   }
-                  <div className="relative z-10 w-[26px] h-[26px] md:w-[34px] md:h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
+                  <div className="relative z-10 w-[22px] h-[22px] md:w-[34px] md:h-[34px] rounded-full bg-white/95 grid place-items-center overflow-hidden shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
                     <span
                       className="grid place-items-center leading-none"
                       style={{
@@ -80,7 +80,7 @@ export function ScoreBars({ totalScore, lastDelta }: Props) {
                         transform: key === 'trust' ? 'translate(1px, 1px)' : undefined,
                       }}
                     >
-                      <Icon className="block w-[15px] h-[15px] lg:w-5 lg:h-5" />
+                      <Icon className="block w-[13px] h-[13px] lg:w-5 lg:h-5" />
                     </span>
                   </div>
                 </div>

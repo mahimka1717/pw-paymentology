@@ -430,16 +430,27 @@ h6 {
 }
 
 @keyframes score-ripple {
-  0%   { width: 34px; height: 34px; opacity: 1; }
-  50%  { width: 57px; height: 57px; opacity: 1; }
-  100% { width: 80px; height: 80px; opacity: 0; }
+  0%   { width: var(--ripple-start, 34px); height: var(--ripple-start, 34px); opacity: 1; }
+  50%  { width: var(--ripple-mid, 57px); height: var(--ripple-mid, 57px); opacity: 1; }
+  100% { width: var(--ripple-end, 80px); height: var(--ripple-end, 80px); opacity: 0; }
 }
 
 .score-ripple {
-  width: 34px;
-  height: 34px;
+  --ripple-start: 34px;
+  --ripple-mid: 57px;
+  --ripple-end: 80px;
+  width: var(--ripple-start);
+  height: var(--ripple-start);
   opacity: 0;
   animation: score-ripple 1.2s linear forwards;
+}
+
+@media (max-width: 1024px) {
+  .score-ripple {
+    --ripple-start: 29px;
+    --ripple-mid: 48px;
+    --ripple-end: 68px;
+  }
 }
 
 @keyframes spin-once {
