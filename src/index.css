@@ -236,6 +236,12 @@ body[data-screen='select'] .track-select-copy {
   max-width: 95%;
 }
 
+@media (min-width: 768px) {
+  body[data-screen='select'] .track-select-copy {
+    max-width: 85%;
+  }
+}
+
 @media (min-width: 1025px) {
   body[data-screen='select'] .track-select-copy {
     max-width: 82%;

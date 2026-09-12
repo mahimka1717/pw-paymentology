@@ -29,7 +29,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
   const hideHeaderForInsight = showInsight || exitWithInsightOpen;
   const hideOptionsForInsight = showInsight || exitWithInsightOpen;
   const questionContentVisibility = hideHeaderForFeedback
-    ? 'opacity-10 pointer-events-none md:opacity-0 md:pointer-events-none'
+    ? 'opacity-10 pointer-events-none lg:opacity-0 lg:pointer-events-none'
     : hideHeaderForInsight
       ? 'opacity-20 pointer-events-none lg:opacity-100 lg:pointer-events-auto'
       : 'opacity-100';
@@ -73,13 +73,13 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
 
       {/* Scenario header — single line */}
       <div
-        className={`mb-[12px] flex flex-col gap-[12px] transition-opacity ease-in-out md:pl-[20px] md:pr-14 ${questionContentVisibility}`}
+        className={`mb-[12px] flex flex-col gap-[12px] transition-opacity ease-in-out md:pl-[20px] lg:pr-14 ${questionContentVisibility}`}
         style={{
           transitionDuration: `${animationMs(200)}ms`,
           ...(exiting ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
         }}
       >
-        <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[19px] md:leading-[23px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
+        <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[23px] md:leading-[28px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
           {scenario.title}
         </h2>
         <div className="game-question-copy-wrap flex max-w-full flex-col gap-[19px] md:max-w-[85%] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
@@ -89,7 +89,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
             return (
               <p
                 key={index}
-                className={isEmphasizedLastParagraph ? 'game-question-emphasis pt-[clamp(0px,calc(10.7143vh_-_85.714px),30px)] text-[15px] leading-[19px] md:text-[20px] md:leading-[24px] lg:pt-[30px]' : 'game-question-copy text-[14px] leading-[16px] md:text-[16px] md:leading-[19px]'}
+                className={isEmphasizedLastParagraph ? 'game-question-emphasis pt-[clamp(0px,calc(10.7143vh_-_85.714px),30px)] text-[15px] leading-[19px] md:text-[22px] md:leading-[27px] lg:pt-[30px] lg:text-[20px] lg:leading-[24px]' : 'game-question-copy text-[14px] leading-[16px] md:text-[19px] md:leading-[23px] lg:text-[16px] lg:leading-[19px]'}
                 style={{ fontWeight: isEmphasizedLastParagraph ? 500 : 400 }}
               >
                 {paragraph}

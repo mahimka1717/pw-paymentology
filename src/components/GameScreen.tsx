@@ -292,7 +292,7 @@ export function GameScreen({
                   {showInsight && (
                     <div
                       ref={insightPopupRef}
-                      className="z-40 lg:hidden left-0 right-0 mx-auto w-full max-w-[300px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
+                      className="z-40 lg:hidden left-0 right-0 mx-auto w-full max-w-[300px] md:max-w-[350px] p-[16px] pr-[36px] md:p-[24px] md:pr-[48px]"
                       style={{
                         position: 'absolute',
                         bottom: 'calc(100% + 79px)',
@@ -407,7 +407,7 @@ export function GameScreen({
             </div>
 
             {/* Bottom spacer: keeps the fixed mobile bar from covering content (persistent so layout never jumps) */}
-            <div className="h-[120px] lg:hidden" />
+            <div className="h-[120px] md:h-[60px] lg:hidden" />
 
             {/* Bottom spacer: mirrors top spacer for vertical centering on mobile */}
             <div className="flex-1 lg:hidden" />
