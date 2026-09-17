@@ -950,6 +950,15 @@ h6 {
     display: none;
   }
 
+  .city-base-enter,
+  .city-callout-dot,
+  .city-callout-label {
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
+  }
+
   .standalone-building-neon {
     opacity: 1;
     filter: brightness(1.15) saturate(1.16) drop-shadow(0 0 9px rgba(255, 255, 255, 0.32));

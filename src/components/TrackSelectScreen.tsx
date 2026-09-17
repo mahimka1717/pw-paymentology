@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
 import { InteractiveCity } from './InteractiveCity';
 import { animationMs, scaledMs } from '../utils/animationTiming';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 import type { Phase } from './App';
 import type { CSSProperties, KeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
@@ -37,6 +38,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);
   const touchSelectionTimeoutRef = useRef<number | null>(null);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -128,29 +130,36 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
     }
   };
 
+  const city = (
+    <InteractiveCity
+      hoveredTrackId={hoveredTrackId}
+      selectedTrackId={touchSelectedTrackId}
+      onHoverTrack={onHoverTrack}
+      onSelectTrack={handleCitySelect}
+      className="w-full"
+      showPlaneAnimation={showPlaneAnimation()}
+      showAnimatedPosters={isDesktop}
+    />
+  );
+
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-stretch overflow-x-hidden px-6 pt-0 lg:min-h-[920px] lg:items-center lg:overflow-visible lg:pb-10">
-      <div
-        className="city fixed left-1/2 top-1/2 z-20 hidden transition-all ease-in-out lg:block"
-        style={{
-          transitionDuration: animationMs(700),
-          width: '900px',
-          transformOrigin: 'center center',
-          opacity: phase === 'exit' ? 0 : 1,
-          transform: phase === 'exit'
-            ? 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1.4)'
-            : 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1)',
-        }}
-      >
-        <InteractiveCity
-          hoveredTrackId={hoveredTrackId}
-          selectedTrackId={touchSelectedTrackId}
-          onHoverTrack={onHoverTrack}
-          onSelectTrack={handleCitySelect}
-          className="w-full"
-          showPlaneAnimation={showPlaneAnimation()}
-        />
-      </div>
+      {isDesktop && (
+        <div
+          className="city fixed left-1/2 top-1/2 z-20 transition-all ease-in-out"
+          style={{
+            transitionDuration: animationMs(700),
+            width: '900px',
+            transformOrigin: 'center center',
+            opacity: phase === 'exit' ? 0 : 1,
+            transform: phase === 'exit'
+              ? 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1.4)'
+              : 'translate(calc(-50% + 242px), calc(-50% + 145px)) scale(1)',
+          }}
+        >
+          {city}
+        </div>
+      )}
 
       <div className="mx-auto flex w-full max-w-[87.50vw] md:max-w-[672px] flex-col gap-10 lg:max-w-[1680px] lg:flex-row lg:items-start lg:gap-12">
         <div className="pointer-events-none relative z-30 w-full lg:w-1/2 md:min-h-[750px] lg:min-h-[750px] flex-1 lg:flex-none flex flex-col lg:block">
@@ -207,19 +216,14 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
               </div>
             )}
           </div>
-          <div className="relative left-1/2 order-2 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0 lg:hidden" style={{
-            ...(phase === 'enter' ? { animation: `mobile-city-in ${animationMs(600)} ease ${animationMs(450)} forwards`, opacity: 0 } : {}),
-            ...(phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}),
-          }}>
-            <InteractiveCity
-              hoveredTrackId={hoveredTrackId}
-              selectedTrackId={touchSelectedTrackId}
-              onHoverTrack={onHoverTrack}
-              onSelectTrack={handleCitySelect}
-              className="w-full"
-              showPlaneAnimation={showPlaneAnimation()}
-            />
-          </div>
+          {!isDesktop && (
+            <div className="relative left-1/2 order-2 w-screen -translate-x-1/2 md:left-auto md:mx-auto md:w-[85%] md:translate-x-0" style={{
+              ...(phase === 'enter' ? { animation: `mobile-city-in ${animationMs(600)} ease ${animationMs(450)} forwards`, opacity: 0 } : {}),
+              ...(phase === 'exit' ? { animation: `mobile-city-out ${animationMs(333)} ease forwards` } : {}),
+            }}>
+              {city}
+            </div>
+          )}
           <div className="order-3 flex-1 lg:hidden" />
         </div>
 

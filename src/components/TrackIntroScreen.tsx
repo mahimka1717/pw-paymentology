@@ -55,10 +55,13 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
               }}
             >
               <img
-                src={`/img/buildings/building${buildingIndex}_ws.png`}
+                src={`/img/buildings/building${buildingIndex}_ws-1920.webp`}
+                srcSet={`/img/buildings/building${buildingIndex}_ws-1920.webp 1920w, /img/buildings/building${buildingIndex}_ws-2560.webp 2560w`}
+                sizes="120vw"
                 alt=""
                 className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}
+                decoding="async"
               />
               <img
                 src={`/img/buildings/building${buildingIndex}_icon.png`}
@@ -73,6 +76,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
                   height: buildingNeonLayer.height ? `${buildingNeonLayer.height / 1080 * 100}%` : undefined,
                 } as CSSProperties}
                 draggable={false}
+                decoding="async"
               />
               {standaloneBillboard && (
                 <AnimatedBillboard

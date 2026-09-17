@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { trackTheme } from '../data/theme';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { cityAnimationType } from '../utils/cityAnimation';
@@ -11,6 +11,7 @@ interface Props {
   onSelectTrack: (trackId: string, pointerType?: string) => void;
   className?: string;
   showPlaneAnimation?: boolean;
+  showAnimatedPosters?: boolean;
 }
 
 interface CityTrack {
@@ -132,13 +133,15 @@ function PlaneSequence() {
       className="city-plane"
       style={{ left: style.left, top: style.top, opacity: style.opacity, transform: 'none' }}
       draggable={false}
+      decoding="async"
     />
   );
 }
 
-export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showPlaneAnimation = false }: Props) {
+export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showPlaneAnimation = false, showAnimatedPosters = true }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
+  const overlaysPrefetched = useRef(false);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const idleAnimationEnabled = cityAnimationType === 1 && !reducedMotion;
   const ambientAnimationEnabled = cityAnimationType === 2 && !reducedMotion;
@@ -172,6 +175,13 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
       className={`city-parallax relative aspect-[2670/2508] select-none ${ambientAnimationEnabled ? 'city-ambient-active' : ''} ${hoveredTrackId ? 'has-hover' : ''} ${selectedTrackId ? 'selection-locked' : ''} ${className}`}
       style={{ isolation: 'auto', containerType: 'inline-size' }}
       onPointerMove={event => {
+        if (!overlaysPrefetched.current) {
+          overlaysPrefetched.current = true;
+          cityTracks.forEach(track => {
+            const image = new Image();
+            image.src = `/img/city/city-${track.image}-900.webp`;
+          });
+        }
         if (!idleAnimationEnabled || event.pointerType !== 'mouse') return;
         const bounds = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - bounds.left) / bounds.width - 0.5;
@@ -186,10 +196,15 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
     >
       <div className="city-base-enter absolute inset-0">
         <img
-          src="/img/city/city.png"
+          src="/img/city/city-900.webp"
+          srcSet="/img/city/city-900.webp 900w, /img/city/city-1800.webp 1800w"
+          sizes="(min-width: 1024px) 900px, 100vw"
+          width={2670}
+          height={2508}
           alt="Choose a Paymentology track from the interactive city"
           className="absolute inset-0 h-full w-full object-contain"
           draggable={false}
+          decoding="async"
         />
 
         <div
@@ -207,12 +222,12 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           } as React.CSSProperties}
         >
           {[
-            ['01_drive_right.png', 1, 0, 0],
-            ['02_turn_rear_side.png', 0.86, 0.07, 0],
-            ['03_rear.png', 0.95, 0.025, -0.02],
-            ['04_drive_left.png', 0.87, 0.065, 0],
-            ['05_turn_front_side.png', 0.86, 0.07, -0.04],
-            ['06_front.png', 0.95, 0.025, -0.07],
+            ['01_drive_right.webp', 1, 0, 0],
+            ['02_turn_rear_side.webp', 0.86, 0.07, 0],
+            ['03_rear.webp', 0.95, 0.025, -0.02],
+            ['04_drive_left.webp', 0.87, 0.065, 0],
+            ['05_turn_front_side.webp', 0.86, 0.07, -0.04],
+            ['06_front.webp', 0.95, 0.025, -0.07],
           ].map(([file, width, left, top], index) => (
             <img
               key={file}
@@ -225,37 +240,42 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
                 width: `${Number(width) * 100}%`,
               }}
               draggable={false}
+              decoding="async"
             />
           ))}
         </div>
 
         {showPlaneAnimation && <PlaneSequence />}
 
-        <AnimatedBillboard
-          x={624}
-          y={1688}
-          width={32}
-          height={74}
-          referenceWidth={imageWidth}
-          referenceHeight={imageHeight}
-          distortion={{ rotate: 0, skewY: 22, origin: 'bottom center' }}
-          image="/img/posters/p_0.webp"
-          brightness={0.9}
-          saturation={0.95}
-        />
-        <AnimatedBillboard
-          x={2306}
-          y={1596}
-          width={38}
-          height={71}
-          referenceWidth={imageWidth}
-          referenceHeight={imageHeight}
-          distortion={{ rotate: 3, skewY: 16, origin: 'bottom center' }}
-          image="/img/posters/p_2.webp"
-          brightness={0.88}
-          saturation={0.92}
-          delay={4000}
-        />
+        {showAnimatedPosters && (
+          <>
+            <AnimatedBillboard
+              x={624}
+              y={1688}
+              width={32}
+              height={74}
+              referenceWidth={imageWidth}
+              referenceHeight={imageHeight}
+              distortion={{ rotate: 0, skewY: 22, origin: 'bottom center' }}
+              image="/img/posters/p_0.webp"
+              brightness={0.9}
+              saturation={0.95}
+            />
+            <AnimatedBillboard
+              x={2306}
+              y={1596}
+              width={38}
+              height={71}
+              referenceWidth={imageWidth}
+              referenceHeight={imageHeight}
+              distortion={{ rotate: 3, skewY: 16, origin: 'bottom center' }}
+              image="/img/posters/p_2.webp"
+              brightness={0.88}
+              saturation={0.92}
+              delay={4000}
+            />
+          </>
+        )}
       </div>
 
       {ambientAnimationEnabled && (
@@ -280,21 +300,25 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
       )}
 
       {cityTracks.map((track, index) => {
-        const imageUrl = `/img/city/city-${track.image}.png`;
+        const imageUrl = `/img/city/city-${track.image}-900.webp`;
+        const districtVisible = ambientAnimationEnabled || interactiveTrackId === track.id;
         return (
           <div key={track.id}>
-            <img
-              src={imageUrl}
-              alt=""
-              aria-hidden="true"
-              className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${ambientAnimationEnabled ? 'is-ambient' : ''} ${interactiveTrackId === track.id ? 'is-hovered' : ''}`}
-              style={{
-                opacity: ambientAnimationEnabled ? 0.24 : 0,
-                mixBlendMode: 'soft-light',
-                animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 850) : undefined,
-              }}
-              draggable={false}
-            />
+            {districtVisible && (
+              <img
+                src={imageUrl}
+                alt=""
+                aria-hidden="true"
+                className={`city-district-layer pointer-events-none absolute inset-0 h-full w-full object-contain ${ambientAnimationEnabled ? 'is-ambient' : ''} ${interactiveTrackId === track.id ? 'is-hovered' : ''}`}
+                style={{
+                  opacity: ambientAnimationEnabled ? 0.24 : 0,
+                  mixBlendMode: 'soft-light',
+                  animationDelay: ambientAnimationEnabled ? animationMs(750 + index * 850) : undefined,
+                }}
+                draggable={false}
+                decoding="async"
+              />
+            )}
             {ambientAnimationEnabled && (
               <div
                 aria-hidden="true"

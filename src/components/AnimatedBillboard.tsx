@@ -74,8 +74,8 @@ export function AnimatedBillboard({
         '--billboard-delay': animationMs(delay),
       } as CSSProperties}
     >
-      <img className="animated-billboard-image" src={image ?? firstImage} alt="" draggable={false} />
-      {!image && <img className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} />}
+      <img className="animated-billboard-image" src={image ?? firstImage} alt="" draggable={false} decoding="async" />
+      {!image && <img className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} decoding="async" />}
     </div>
   );
 }

@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useGameState } from '../hooks/useGameState';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { tracks } from '../data/tracks';
 import { TrackSelectScreen } from './TrackSelectScreen';
-import { TrackIntroScreen } from './TrackIntroScreen';
-import { GameScreen } from './GameScreen';
-import { ResultScreen } from './ResultScreen';
 import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
@@ -13,6 +11,16 @@ import { trackTheme } from '../data/theme';
 import { buildingNeonLayers } from '../data/buildingNeon';
 import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
+
+const TrackIntroScreen = lazy(() =>
+  import('./TrackIntroScreen').then(module => ({ default: module.TrackIntroScreen })),
+);
+const GameScreen = lazy(() =>
+  import('./GameScreen').then(module => ({ default: module.GameScreen })),
+);
+const ResultScreen = lazy(() =>
+  import('./ResultScreen').then(module => ({ default: module.ResultScreen })),
+);
 
 export type Phase = 'enter' | 'idle' | 'exit';
 
@@ -61,28 +69,43 @@ export default function App() {
   const buildingRef = useRef<HTMLDivElement>(null);
   const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
-  const [isMobileVideo, setIsMobileVideo] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia('(max-width: 1024px)').matches : false
-  );
+  const previousMobileVideo = useRef<boolean | null>(null);
+  const isMobileVideo = useMediaQuery('(max-width: 1023px)');
+  const [videoReady, setVideoReady] = useState(false);
 
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 1024px)');
-    const onChange = (event: MediaQueryListEvent) => setIsMobileVideo(event.matches);
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
-  const videoOpacity = game.screen === 'select' && phase !== 'exit' ? 1 : 0;
+  const videoVisible = game.screen === 'select' && phase !== 'exit';
+  const videoOpacity = videoVisible && videoReady ? 1 : 0;
 
   useEffect(() => {
     const video = bgVideoRef.current;
     if (!video) return;
-    if (videoOpacity > 0) {
+
+    const markReady = () => setVideoReady(true);
+    video.addEventListener('canplay', markReady);
+
+    const breakpointChanged = previousMobileVideo.current !== null
+      && previousMobileVideo.current !== isMobileVideo;
+    previousMobileVideo.current = isMobileVideo;
+
+    if (breakpointChanged) {
+      setVideoReady(false);
+      video.load();
+    } else if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      markReady();
+    }
+
+    return () => video.removeEventListener('canplay', markReady);
+  }, [isMobileVideo]);
+
+  useEffect(() => {
+    const video = bgVideoRef.current;
+    if (!video) return;
+    if (videoVisible) {
       video.play().catch(() => undefined);
     } else {
       video.pause();
     }
-  }, [videoOpacity]);
+  }, [isMobileVideo, videoVisible]);
 
   useEffect(() => {
     document.body.dataset.screen = game.screen;
@@ -140,6 +163,7 @@ export default function App() {
   const startGame = useCallback(() => {
     gameStartedAt.current = Date.now();
     trackEvent('game_started', { track_id: game.trackId ?? undefined });
+    void import('./GameScreen');
     triggerTransition(() => game.startGame(), 650);
   }, [game.startGame, game.trackId, triggerTransition]);
 
@@ -156,10 +180,12 @@ export default function App() {
               const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
               if (selectedBuildingIndex >= 0) {
                 const buildingImage = new Image();
-                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}_ws.png`;
+                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}_ws-1920.webp`;
                 const buildingIcon = new Image();
                 buildingIcon.src = `/img/buildings/building${selectedBuildingIndex}_icon.png`;
                 void loadBuildingMaskPixels(selectedBuildingIndex);
+                void import('./TrackIntroScreen');
+                void import('./GameScreen');
               }
               triggerTransition(() => {
                 setHoveredTrackId(null);
@@ -192,7 +218,10 @@ export default function App() {
             onChoose={game.chooseOption}
             onResetOption={game.resetOption}
             onNext={game.scenarioIndex === game.totalScenarios - 1
-              ? () => triggerTransition(() => game.nextScenario())
+              ? () => {
+                  void import('./ResultScreen');
+                  triggerTransition(() => game.nextScenario());
+                }
               : game.nextScenario
             }
           />
@@ -361,10 +390,13 @@ export default function App() {
               >
                 <img
                   key={game.trackId}
-                  src={`/img/buildings/building${buildingIndex}_ws.png`}
+                  src={`/img/buildings/building${buildingIndex}_ws-1920.webp`}
+                  srcSet={`/img/buildings/building${buildingIndex}_ws-1920.webp 1920w, /img/buildings/building${buildingIndex}_ws-2560.webp 2560w`}
+                  sizes="(min-width: 1024px) 1920px, 120vw"
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain"
                   draggable={false}
+                  decoding="async"
                 />
                 <img
                   src={`/img/buildings/building${buildingIndex}_icon.png`}
@@ -415,7 +447,9 @@ export default function App() {
         </div>
 
         <div style={{ paddingTop: 'var(--topbar-h)', position: 'relative', zIndex: 1 }}>
-          {renderScreen()}
+          <Suspense fallback={null}>
+            {renderScreen()}
+          </Suspense>
         </div>
       </div>
     </>
