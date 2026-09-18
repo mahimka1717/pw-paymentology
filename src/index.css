@@ -565,74 +565,26 @@ h6 {
 }
 
 @keyframes city-base-enter {
-  from { opacity: 0; transform: scale(0.86); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-@keyframes city-car-drive {
-  0% {
-    transform: translate(0, 0);
-  }
-  49.554%, 50% {
-    transform: translate(var(--car-translate-x), var(--car-translate-y));
-  }
-  99.554%, 100% {
-    transform: translate(0, 0);
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .city-car {
-  left: var(--car-start-left);
-  top: var(--car-start-top);
-  transform: translate(0, 0);
-  will-change: transform;
-  animation: city-car-drive calc(20180ms * var(--animation-scale, 1)) linear calc(750ms * var(--animation-scale, 1)) infinite;
+  left: calc(100 / 2670 * 100%);
+  top: calc(1540 / 2508 * 100%);
+  width: calc(147 / 2670 * 100%);
+  aspect-ratio: 922 / 655;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .city-car-frame {
   opacity: 0;
-  animation-duration: calc(20180ms * var(--animation-scale, 1));
-  animation-timing-function: step-end;
-  animation-delay: calc(750ms * var(--animation-scale, 1));
-  animation-iteration-count: infinite;
+  backface-visibility: hidden;
 }
 
-@keyframes city-car-frame-1 {
-  0%, 49.553%, 99.852%, 100% { opacity: 1; }
-  49.554%, 99.851% { opacity: 0; }
-}
-
-@keyframes city-car-frame-2 {
-  0%, 49.702%, 100% { opacity: 0; }
-  49.554%, 49.701% { opacity: 1; }
-}
-
-@keyframes city-car-frame-3 {
-  0%, 49.851%, 100% { opacity: 0; }
-  49.703%, 49.85% { opacity: 1; }
-}
-
-@keyframes city-car-frame-4 {
-  0%, 49.851%, 99.554%, 100% { opacity: 0; }
-  49.852%, 99.553% { opacity: 1; }
-}
-
-@keyframes city-car-frame-5 {
-  0%, 99.702%, 100% { opacity: 0; }
-  99.554%, 99.701% { opacity: 1; }
-}
-
-@keyframes city-car-frame-6 {
-  0%, 99.851%, 100% { opacity: 0; }
-  99.703%, 99.85% { opacity: 1; }
-}
-
-.city-car-frame-1 { animation-name: city-car-frame-1; }
-.city-car-frame-2 { animation-name: city-car-frame-2; }
-.city-car-frame-3 { animation-name: city-car-frame-3; }
-.city-car-frame-4 { transform: translateX(10px); animation-name: city-car-frame-4; }
-.city-car-frame-5 { animation-name: city-car-frame-5; }
-.city-car-frame-6 { animation-name: city-car-frame-6; }
+.city-car-frame-1 { opacity: 1; }
+.city-car-frame-4 { transform: translateX(10px); }
 
 @keyframes city-plane-fly {
   0% { left: -20%; }
@@ -967,22 +919,6 @@ h6 {
 
   .city-parallax[data-animation-type='1'] {
     transform: none;
-  }
-
-  .city-car {
-    left: var(--car-end-left);
-    top: var(--car-end-top);
-    opacity: 1;
-    animation: none;
-  }
-
-  .city-car-frame {
-    opacity: 0;
-    animation: none;
-  }
-
-  .city-car-frame-1 {
-    opacity: 1;
   }
 
   .city-plane {

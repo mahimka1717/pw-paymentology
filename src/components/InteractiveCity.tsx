@@ -27,6 +27,25 @@ interface CityTrack {
 
 const imageWidth = 2670;
 const imageHeight = 2508;
+const carWidth = 147;
+const carStartX = 100;
+const carStartY = 1540;
+const carEndX = 1380;
+const carEndY = 2085;
+const carDriveDuration = 20180;
+const carDriveDelay = 750;
+const carTranslateX = (carEndX - carStartX) / carWidth;
+const carTranslateY = (carEndY - carStartY) / carWidth * (922 / 655);
+const carMobileEndScale = 0.95;
+const carMobileQuery = '(max-width: 1023px)';
+const carFrames = [
+  ['01_drive_right.webp', 1, 0, 0],
+  ['02_turn_rear_side.webp', 0.86, 0.07, 0],
+  ['03_rear.webp', 0.95, 0.025, -0.02],
+  ['04_drive_left.webp', 0.87, 0.065, 0],
+  ['05_turn_front_side.webp', 0.86, 0.07, -0.04],
+  ['06_front.webp', 0.95, 0.025, -0.07],
+] as const;
 const calloutWidth = 900;
 const calloutHeight = calloutWidth * imageHeight / imageWidth;
 const calloutOrder = ['government', 'fintech', 'banks', 'remittance', 'digital-banks', 'telco'];
@@ -138,6 +157,104 @@ function PlaneSequence() {
   );
 }
 
+function carProgress(t: number) {
+  if (t <= 49.554) return t / 49.554;
+  if (t < 50) return 1;
+  if (t <= 99.554) return 1 - (t - 50) / 49.554;
+  return 0;
+}
+
+function carFrameIndex(t: number) {
+  if (t >= 49.554 && t <= 49.701) return 1;
+  if (t >= 49.703 && t <= 49.85) return 2;
+  if (t >= 49.852 && t <= 99.553) return 3;
+  if (t >= 99.554 && t <= 99.701) return 4;
+  if (t >= 99.703 && t <= 99.85) return 5;
+  return 0;
+}
+
+function CityCar() {
+  const carRef = useRef<HTMLDivElement>(null);
+  const framesRef = useRef<(HTMLImageElement | null)[]>([]);
+
+  useEffect(() => {
+    const car = carRef.current;
+    if (!car) return;
+
+    const duration = scaledMs(carDriveDuration);
+    const delay = scaledMs(carDriveDelay);
+    const startedAt = performance.now();
+    const mobileQuery = window.matchMedia(carMobileQuery);
+    let endScale = mobileQuery.matches ? carMobileEndScale : 1;
+    let rafId = 0;
+    let activeFrame = 0;
+
+    const onMobileChange = (event: MediaQueryListEvent) => {
+      endScale = event.matches ? carMobileEndScale : 1;
+    };
+    mobileQuery.addEventListener('change', onMobileChange);
+
+    const setFrame = (nextFrame: number) => {
+      if (nextFrame === activeFrame) return;
+      const frames = framesRef.current;
+      const current = frames[activeFrame];
+      const next = frames[nextFrame];
+      if (current) current.style.opacity = '0';
+      if (next) next.style.opacity = '1';
+      activeFrame = nextFrame;
+    };
+
+    const apply = (now: number) => {
+      const elapsed = now - startedAt - delay;
+      const progress = elapsed < 0 ? 0 : carProgress(((elapsed % duration) / duration) * 100);
+      const x = car.offsetWidth * carTranslateX * progress * endScale;
+      const y = car.offsetHeight * carTranslateY * progress * endScale;
+      car.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      if (elapsed >= 0) setFrame(carFrameIndex(((elapsed % duration) / duration) * 100));
+    };
+
+    const loop = (now: number) => {
+      apply(now);
+      rafId = requestAnimationFrame(loop);
+    };
+
+    rafId = requestAnimationFrame(loop);
+    const intervalId = window.setInterval(() => apply(performance.now()), 50);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearInterval(intervalId);
+      mobileQuery.removeEventListener('change', onMobileChange);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={carRef}
+      aria-hidden="true"
+      className="city-car pointer-events-none absolute z-10"
+    >
+      {carFrames.map(([file, width, left, top], index) => (
+        <img
+          key={file}
+          ref={node => {
+            framesRef.current[index] = node;
+          }}
+          src={`/img/city/car/${file}`}
+          alt=""
+          className={`city-car-frame city-car-frame-${index + 1} absolute object-contain`}
+          style={{
+            left: `${left * 100}%`,
+            top: `${top * 100}%`,
+            width: `${width * 100}%`,
+          }}
+          draggable={false}
+          decoding="async"
+        />
+      ))}
+    </div>
+  );
+}
+
 export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showPlaneAnimation = false, showAnimatedPosters = true }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
@@ -207,43 +324,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           decoding="async"
         />
 
-        <div
-          aria-hidden="true"
-          className="city-car pointer-events-none absolute z-10"
-          style={{
-            '--car-start-left': `${100 / imageWidth * 100}%`,
-            '--car-start-top': `${1540 / imageHeight * 100}%`,
-            '--car-end-left': `${1380 / imageWidth * 100}%`,
-            '--car-end-top': `${2085 / imageHeight * 100}%`,
-            '--car-translate-x': `${(1380 - 100) / 147 * 100}%`,
-            '--car-translate-y': `${(2085 - 1540) / 147 * (922 / 655) * 100}%`,
-            width: `${147 / imageWidth * 100}%`,
-            aspectRatio: '922 / 655',
-          } as React.CSSProperties}
-        >
-          {[
-            ['01_drive_right.webp', 1, 0, 0],
-            ['02_turn_rear_side.webp', 0.86, 0.07, 0],
-            ['03_rear.webp', 0.95, 0.025, -0.02],
-            ['04_drive_left.webp', 0.87, 0.065, 0],
-            ['05_turn_front_side.webp', 0.86, 0.07, -0.04],
-            ['06_front.webp', 0.95, 0.025, -0.07],
-          ].map(([file, width, left, top], index) => (
-            <img
-              key={file}
-              src={`/img/city/car/${file}`}
-              alt=""
-              className={`city-car-frame city-car-frame-${index + 1} absolute object-contain`}
-              style={{
-                left: `${Number(left) * 100}%`,
-                top: `${Number(top) * 100}%`,
-                width: `${Number(width) * 100}%`,
-              }}
-              draggable={false}
-              decoding="async"
-            />
-          ))}
-        </div>
+        <CityCar />
 
         {showPlaneAnimation && <PlaneSequence />}
 
