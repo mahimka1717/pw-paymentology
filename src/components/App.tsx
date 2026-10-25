@@ -1,6 +1,6 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, startTransition, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useGameState } from '../hooks/useGameState';
-import { useMediaQuery } from '../hooks/useMediaQuery';
+import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
 import { tracks } from '../data/tracks';
 import { TrackSelectScreen } from './TrackSelectScreen';
 import { TopBar } from './TopBar';
@@ -65,6 +65,12 @@ export default function App() {
   const [hoveredTrackId, setHoveredTrackId] = useState<string | null>(null);
   const gameStartedAt = useRef<number | null>(null);
   const lastScreenView = useRef<string | null>(null);
+  // Browser history entries pushed for game steps since the select screen; Go back and the browser back button both pop them.
+  const historyDepth = useRef(0);
+  const previousStepOrder = useRef(0);
+  const [gameBackRequests, setGameBackRequests] = useState(0);
+  // Moving between the intro and the game (either way): the desktop track title stays put instead of animating.
+  const [keepTrackTitle, setKeepTrackTitle] = useState(false);
   const gameCompletionTracked = useRef(false);
   const buildingRef = useRef<HTMLDivElement>(null);
   const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
@@ -107,7 +113,18 @@ export default function App() {
     }
   }, [isMobileVideo, videoVisible]);
 
+  // On desktop, set it in a layout effect so screen-specific CSS applies in the same frame as the new screen.
+  useLayoutEffect(() => {
+    if (!window.matchMedia(DESKTOP_QUERY).matches) return;
+    document.body.dataset.screen = game.screen;
+
+    return () => {
+      delete document.body.dataset.screen;
+    };
+  }, [game.screen]);
+
   useEffect(() => {
+    if (window.matchMedia(DESKTOP_QUERY).matches) return;
     document.body.dataset.screen = game.screen;
 
     return () => {
@@ -145,26 +162,111 @@ export default function App() {
   }, [game.currentScenario?.id, game.scenarioIndex, game.screen, game.trackId]);
 
   useEffect(() => {
+    if (phase === 'idle') setKeepTrackTitle(false);
     if (phase === 'enter') {
       const t = setTimeout(() => setPhase('idle'), scaledMs(850));
       return () => clearTimeout(t);
     }
   }, [phase]);
 
-  const triggerTransition = useCallback((action: () => void, delay = 550) => {
+  const triggerTransition = useCallback((action: () => void, delay = 550, keepScreenWhileLoading = false) => {
     setPhase('exit');
     smoothScrollTo(0, scaledMs(1200));
     setTimeout(() => {
-      action();
-      setPhase('enter');
+      const switchScreen = () => {
+        action();
+        setPhase('enter');
+      };
+      // On desktop, a transition keeps the current screen on display while a lazy screen loads,
+      // instead of blanking everything via the Suspense fallback.
+      if (keepScreenWhileLoading && window.matchMedia(DESKTOP_QUERY).matches) startTransition(switchScreen);
+      else switchScreen();
     }, scaledMs(delay));
+  }, []);
+
+  const goBack = useCallback(() => {
+    trackEvent('go_back', {
+      screen_name: game.screen,
+      track_id: game.trackId ?? undefined,
+      scenario_number: game.screen === 'game' ? game.scenarioIndex + 1 : undefined,
+    });
+    // Between questions only the question animates, as on Next.
+    if (game.screen === 'game' && game.scenarioIndex > 0) {
+      setGameBackRequests(count => count + 1);
+      return;
+    }
+    if (game.screen === 'game') setKeepTrackTitle(true);
+    triggerTransition(() => {
+      setHoveredTrackId(null);
+      game.goBack();
+    });
+  }, [game.goBack, game.screen, game.scenarioIndex, game.trackId, triggerTransition]);
+
+  const goBackRef = useRef(goBack);
+  goBackRef.current = goBack;
+
+  // Every forward step gets its own history entry, so the browser back button walks back through the game.
+  const stepOrder = game.screen === 'select' ? 0 : game.screen === 'intro' ? 1 : game.screen === 'game' ? 2 + game.scenarioIndex : 1000;
+  useEffect(() => {
+    if (stepOrder > previousStepOrder.current) {
+      historyDepth.current += 1;
+      window.history.pushState({ gameDepth: historyDepth.current }, '');
+    }
+    previousStepOrder.current = stepOrder;
+  }, [stepOrder]);
+
+  useEffect(() => {
+    // A reload mid-game keeps the old entry's depth; the game restarts at the select screen, so reset it.
+    window.history.replaceState({ gameDepth: 0 }, '');
+
+    const handlePopState = (event: PopStateEvent) => {
+      const depth = typeof event.state?.gameDepth === 'number' ? event.state.gameDepth : 0;
+      if (depth >= historyDepth.current) {
+        // Browser forward (or our own resync): undo it, the game only moves forward through its own buttons.
+        if (depth > historyDepth.current) window.history.go(historyDepth.current - depth);
+        return;
+      }
+      historyDepth.current -= 1;
+      goBackRef.current();
+      // Jumped back several entries at once: step back once and move the browser to match.
+      if (depth < historyDepth.current) window.history.go(historyDepth.current - depth);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Play again, from the result screen or the top bar: back to the select screen with a fresh game.
+  const restartGame = useCallback(() => {
+    trackEvent('game_restarted', {
+      screen_name: game.screen,
+      track_id: game.trackId ?? undefined,
+      outcome: game.result?.outcome,
+    });
+    gameStartedAt.current = null;
+    gameCompletionTracked.current = false;
+    // Drop the game's history entries so browser back from the select screen leaves the game as before.
+    if (historyDepth.current > 0) {
+      const depth = historyDepth.current;
+      historyDepth.current = 0;
+      window.history.go(-depth);
+    }
+    triggerTransition(() => {
+      setHoveredTrackId(null);
+      game.restart();
+    });
+  }, [game.restart, game.result?.outcome, game.screen, game.trackId, triggerTransition]);
+
+  const handleGoBack = useCallback(() => {
+    if (historyDepth.current > 0) window.history.back();
   }, []);
 
   const startGame = useCallback(() => {
     gameStartedAt.current = Date.now();
     trackEvent('game_started', { track_id: game.trackId ?? undefined });
     void import('./GameScreen');
-    triggerTransition(() => game.startGame(), 650);
+    setKeepTrackTitle(true);
+    // Keep the intro on screen until the game screen loads so the track title doesn't blink.
+    triggerTransition(() => game.startGame(), 650, true);
   }, [game.startGame, game.trackId, triggerTransition]);
 
   function renderScreen() {
@@ -201,6 +303,7 @@ export default function App() {
             phase={phase}
             track={game.currentTrack!}
             onStart={startGame}
+            keepTitle={keepTrackTitle}
           />
         );
 
@@ -217,6 +320,9 @@ export default function App() {
             selectedOption={game.selectedOption}
             onChoose={game.chooseOption}
             onResetOption={game.resetOption}
+            backRequest={gameBackRequests}
+            onBack={game.goBack}
+            keepTitle={keepTrackTitle}
             onNext={game.scenarioIndex === game.totalScenarios - 1
               ? () => {
                   void import('./ResultScreen');
@@ -236,18 +342,7 @@ export default function App() {
             normalized={game.result!.normalized}
             totalScore={game.totalScore}
             trackName={game.currentTrack!.name}
-            onRestart={() => {
-              trackEvent('game_restarted', {
-                track_id: game.trackId ?? undefined,
-                outcome: game.result?.outcome,
-              });
-              gameStartedAt.current = null;
-              gameCompletionTracked.current = false;
-              triggerTransition(() => {
-                setHoveredTrackId(null);
-                game.restart();
-              });
-            }}
+            onRestart={restartGame}
           />
         );
     }
@@ -329,7 +424,7 @@ export default function App() {
 
   return (
     <>
-      <TopBar showPlayAgain={(game.screen === 'game' && game.scenarioIndex >= 1) || game.screen === 'result'} />
+      <TopBar showNavigation={game.screen !== 'select'} onGoBack={handleGoBack} onPlayAgain={restartGame} />
 
       {/* Video background — fades on select screen */}
       <div

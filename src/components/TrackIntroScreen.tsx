@@ -10,6 +10,8 @@ interface Props {
   phase: Phase;
   track: Track;
   onStart: () => void;
+  /** Moving to or from the game: the desktop track title stays in place instead of animating in or out. */
+  keepTitle: boolean;
 }
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
@@ -18,7 +20,7 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
-export function TrackIntroScreen({ phase, track, onStart }: Props) {
+export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
   const buildingIndex = tracks.findIndex(t => t.id === track.id);
   const buildingNeonLayer = buildingNeonLayers[buildingIndex];
   const standaloneBillboard = standaloneBillboards[track.id];
@@ -30,7 +32,7 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           <h1 className="text-[22px] leading-[28px] font-bold mb-[30px] text-left uppercase text-white md:text-[30px] md:leading-[36px] md:mb-[50px] lg:hidden" style={cascade(phase, 0, 4)}>
             {track.name}
           </h1>
-          <h1 className="track-intro-title mb-[50px] hidden text-left text-[30px] font-bold uppercase leading-[36px] text-white lg:block" style={phase === 'exit' ? {} : cascade(phase, 0, 4)}>
+          <h1 className="track-intro-title mb-[50px] hidden text-left text-[30px] font-bold uppercase leading-[36px] text-white lg:block" style={keepTitle ? {} : cascade(phase, 0, 4)}>
             {track.name}
           </h1>
           <div className="track-intro-copy max-w-[620px] text-[16px] leading-[22px] md:text-[20px] md:leading-[28px] text-left mb-0 lg:mb-[92px] text-white flex flex-col gap-4" style={{ fontFamily: "'Inter', sans-serif", ...cascade(phase, 1, 4) }}>
@@ -42,7 +44,8 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
           <div className={`relative my-0 w-[120vw] -translate-x-1/2 overflow-hidden lg:hidden ${track.id === 'telco' ? 'left-[calc(50%-20px)]' : track.id === 'digital-banks' || track.id === 'banks' || track.id === 'remittance' ? 'left-[calc(50%-10px)]' : 'left-1/2'}`}>
             <div
               className="relative aspect-[16/9] w-full cursor-pointer"
-              style={phase === 'idle' ? {} : phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
+              // Keep the enter animation through idle: it ends at 800ms, so a late start on a busy phone would get it cut off when the 850ms enter phase ends.
+              style={phase === 'idle' || phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
               onClick={onStart}
               role="button"
               tabIndex={0}
@@ -96,7 +99,8 @@ export function TrackIntroScreen({ phase, track, onStart }: Props) {
               )}
             </div>
           </div>
-          <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase, 3, 4)}>
+          {/* The button's enter animation (450ms delay + 500ms) outlasts the 850ms enter phase, so keep it through idle instead of cutting it off mid-way. */}
+          <div className="mt-[10px] flex justify-center lg:mt-0 lg:justify-start" style={cascade(phase === 'idle' ? 'enter' : phase, 3, 4)}>
             <button
               onClick={onStart}
               className="track-intro-start group flex h-[44px] w-auto items-center justify-center gap-[10px] rounded-[29px] border-2 border-white bg-transparent px-[25px] text-[16px] font-normal text-white transition-all active:!border-white active:!bg-transparent active:!text-white md:h-[66px] md:w-[212px] md:gap-6 md:rounded-[33px] md:px-0 md:text-[24px] md:font-semibold"

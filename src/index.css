@@ -50,6 +50,18 @@ html {
   overflow-anchor: none;
 }
 
+/* Hide the scrollbar (the page still scrolls) so the top bar and centred content don't shift between screens
+   with and without scrolling, and the background reaches the edge. */
+@media (max-width: 1024px) {
+  html {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 button:focus-visible,
 [role='button']:focus-visible {
   outline: 3px solid #d2affe;
@@ -567,6 +579,14 @@ h6 {
 @keyframes city-base-enter {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Desktop keeps the zoom-in; mobile stays opacity-only so the car keeps driving on iOS WebKit. */
+@media (min-width: 1025px) {
+  @keyframes city-base-enter {
+    from { opacity: 0; transform: scale(0.86); }
+    to   { opacity: 1; transform: scale(1); }
+  }
 }
 
 .city-car {

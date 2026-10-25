@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Track, Scenario, Score } from '../data/tracks';
 import { ScoreBars } from './ScoreBars';
 import { TrackSidebar } from './TrackSidebar';
-import { ScenarioQuestion } from './ScenarioQuestion';
+import { ProgressDots, ScenarioQuestion } from './ScenarioQuestion';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import type { Phase } from './App';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
+import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
 
 interface Props {
   phase: Phase;
@@ -21,6 +22,11 @@ interface Props {
   onChoose: (index: number, delta: Score, aggressive: boolean) => void;
   onResetOption: () => void;
   onNext: () => void;
+  /** Bumped by the app to go back a question; the question leaves the same way as on Next, then onBack runs. */
+  backRequest: number;
+  onBack: () => void;
+  /** Going back to the intro: the desktop track title stays in place instead of animating out. */
+  keepTitle: boolean;
 }
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
@@ -41,6 +47,9 @@ export function GameScreen({
   onChoose,
   onResetOption,
   onNext,
+  backRequest,
+  onBack,
+  keepTitle,
 }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showScoreDelta, setShowScoreDelta] = useState(false);
@@ -58,6 +67,19 @@ export function GameScreen({
   const insightToggleRef = useRef<HTMLButtonElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
   const buttonsAreaRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  const [questionHeight, setQuestionHeight] = useState<number | null>(null);
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+
+  // Below desktop the question panel's background lives here, outside the per-question ScenarioQuestion,
+  // so it can grow or shrink smoothly to each new question's height.
+  useLayoutEffect(() => {
+    const question = questionRef.current;
+    if (isDesktop || !question) return;
+    const observer = new ResizeObserver(() => setQuestionHeight(question.offsetHeight));
+    observer.observe(question);
+    return () => observer.disconnect();
+  }, [isDesktop]);
 
   const handleCloseInsight = () => {
     trackEvent('insight_closed', {
@@ -129,6 +151,19 @@ export function GameScreen({
       scenario_number: scenarioIndex + 1,
       completes_game: isLastScenario,
     });
+    leaveQuestion(isLastScenario, onNext);
+  };
+
+  const lastBackRequest = useRef(backRequest);
+  useEffect(() => {
+    if (backRequest === lastBackRequest.current) return;
+    lastBackRequest.current = backRequest;
+    if (questionExiting) return;
+    leaveQuestion(false, onBack);
+  }, [backRequest]);
+
+  // Shared by Next and Go back: closes popups and plays the question's exit before switching question.
+  function leaveQuestion(isLastScenario: boolean, onDone: () => void) {
     setExitWithFeedbackOpen(showFeedback);
     setExitWithInsightOpen(showInsight);
     if (revealTimeoutRef.current) {
@@ -149,9 +184,9 @@ export function GameScreen({
         setExitWithFeedbackOpen(false);
         setExitWithInsightOpen(false);
       }
-      onNext();
+      onDone();
     }, scaledMs(isLastScenario ? 250 : 400));
-  };
+  }
 
   const handleResetOption = () => {
     if (resettingOption) return;
@@ -185,13 +220,13 @@ export function GameScreen({
     : totalScore;
 
   return (
-    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center lg:items-center justify-center px-4 md:px-6 md:pb-10 lg:min-h-[920px]">
+    <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-start lg:items-center justify-center px-4 md:px-6 md:pb-10 lg:min-h-[920px]">
       <div className="w-full max-w-[87.5vw] md:max-w-[672px] lg:max-w-[1680px]">
         <div className="flex flex-col lg:h-[750px] lg:flex-row lg:items-stretch lg:gap-6">
 
           {/* Left col — 4/12 */}
           <aside className="game-sidebar hidden flex-shrink-0 lg:block lg:w-[41%]">
-            <TrackSidebar phase={phase} track={track} />
+            <TrackSidebar phase={keepTitle ? 'idle' : phase} track={track} />
           </aside>
 
           {/* Right col — 8/12 */}
@@ -233,8 +268,8 @@ export function GameScreen({
               <ScoreBars totalScore={displayedScore} lastDelta={showScoreDelta ? lastDelta : null} />
             </div>
 
-            {/* Spacer: pushes content group to vertical center on mobile */}
-            <div className="game-question-spacer flex-1 min-h-[1.5rem] lg:flex-none lg:min-h-0 lg:mt-[90px]" />
+            {/* Spacer: a fixed gap on mobile so the question panel stays put under the score bars as questions change height */}
+            <div className="game-question-spacer min-h-[1.5rem] lg:min-h-0 lg:mt-[90px]" />
 
             {/* Mobile track title */}
             <div className="hidden mb-[10px]" style={cascade(phase, 1)}>
@@ -246,46 +281,64 @@ export function GameScreen({
               </h2>
             </div>
 
-            <div className="lg:flex-1 min-h-0" style={cascade(phase, 2)}>
-              <ScenarioQuestion
-                key={scenario.id}
-                scenario={scenario}
-                scenarioIndex={scenarioIndex}
-                totalScenarios={totalScenarios}
-                selectedOption={selectedOption}
-                exiting={questionExiting}
-                resettingOption={resettingOption}
-                showFeedback={showFeedback}
-                canToggleFeedback={showActionButtons}
-                showInsight={showInsight}
-                exitWithFeedbackOpen={exitWithFeedbackOpen}
-                exitWithInsightOpen={exitWithInsightOpen}
-                onCloseFeedback={() => {
-                  if (resettingOption) return;
-                  setShowFeedback(false);
-                  setShowScoreDelta(false);
-                }}
-                onToggleFeedback={() => {
-                  if (resettingOption) return;
-                  trackEvent(showFeedback ? 'feedback_closed' : 'feedback_opened', {
-                    track_id: track.id,
-                    scenario_id: scenario.id,
-                    scenario_number: scenarioIndex + 1,
-                    method: 'selected_option',
-                  });
-                  setShowInsight(false);
-                  setIsClosingInsight(false);
-                  setShowFeedback(!showFeedback);
-                  setShowScoreDelta(false);
-                }}
-                onChoose={handleChoose}
-                onResetOption={handleResetOption}
-                onNext={handleNext}
-              />
+            <div className="relative lg:flex-1 min-h-0" style={cascade(phase, 2)}>
+              {!isDesktop && (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 rounded-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]"
+                  style={{
+                    background: '#703ff6',
+                    height: questionHeight ?? '100%',
+                    transition: `height ${animationMs(400)} cubic-bezier(0.22,1,0.36,1)`,
+                  }}
+                >
+                  <div className="absolute inset-x-0 bottom-[20px] flex justify-center px-[20px] md:bottom-[40px] md:pl-[48px] md:pr-[52px]">
+                    <ProgressDots scenarioIndex={scenarioIndex} totalScenarios={totalScenarios} />
+                  </div>
+                </div>
+              )}
+              <div ref={questionRef} className="relative lg:h-full">
+                <ScenarioQuestion
+                  key={scenario.id}
+                  scenario={scenario}
+                  scenarioIndex={scenarioIndex}
+                  totalScenarios={totalScenarios}
+                  selectedOption={selectedOption}
+                  exiting={questionExiting}
+                  enteringWithScreen={phase === 'enter'}
+                  resettingOption={resettingOption}
+                  showFeedback={showFeedback}
+                  canToggleFeedback={showActionButtons}
+                  showInsight={showInsight}
+                  exitWithFeedbackOpen={exitWithFeedbackOpen}
+                  exitWithInsightOpen={exitWithInsightOpen}
+                  onCloseFeedback={() => {
+                    if (resettingOption) return;
+                    setShowFeedback(false);
+                    setShowScoreDelta(false);
+                  }}
+                  onToggleFeedback={() => {
+                    if (resettingOption) return;
+                    trackEvent(showFeedback ? 'feedback_closed' : 'feedback_opened', {
+                      track_id: track.id,
+                      scenario_id: scenario.id,
+                      scenario_number: scenarioIndex + 1,
+                      method: 'selected_option',
+                    });
+                    setShowInsight(false);
+                    setIsClosingInsight(false);
+                    setShowFeedback(!showFeedback);
+                    setShowScoreDelta(false);
+                  }}
+                  onChoose={handleChoose}
+                  onResetOption={handleResetOption}
+                  onNext={handleNext}
+                />
+              </div>
             </div>
 
             {/* Buttons area — fixed to bottom on mobile (hidden until answered), always reserves space on desktop */}
-            <div ref={buttonsAreaRef} className={`game-actions-area p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row items-center justify-center gap-3 md:gap-4 ${selectedOption !== null && showActionButtons && phase !== 'exit' ? `game-actions-area-fixed-mobile ${buttonsExiting ? 'is-hiding' : ''}` : 'hidden lg:flex'} lg:min-h-[48px]`}>
+            <div ref={buttonsAreaRef} className={`game-actions-area p-[20px] pb-[calc(20px+env(safe-area-inset-bottom))] bg-[#783cff] lg:static lg:mt-[28px] lg:mb-0 lg:p-0 lg:pb-0 lg:bg-transparent h-auto flex flex-row flex-wrap items-center justify-center gap-3 md:gap-4 ${selectedOption !== null && showActionButtons && phase !== 'exit' ? `game-actions-area-fixed-mobile ${buttonsExiting ? 'is-hiding' : ''}` : 'hidden lg:flex'} lg:min-h-[48px]`}>
               {selectedOption !== null && showActionButtons && phase !== 'exit' && (
                 <>
                   {/* Mobile insight popup */}
@@ -362,7 +415,7 @@ export function GameScreen({
                           setShowInsight(true);
                         }
                       }}
-                      className={`game-action-button h-[44px] text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px] ${!insightHintSeen && !buttonsExiting ? 'insight-hint' : ''}`}
+                      className={`game-action-button h-[44px] whitespace-nowrap text-[14px] transition-colors hover:!bg-white hover:!text-[#15154A] active:!bg-[#D2AFFE] active:!text-[#15154A] md:h-[48px] md:text-[20px] ${!insightHintSeen && !buttonsExiting ? 'insight-hint' : ''}`}
                       style={{
                         fontFamily: "'Inter', sans-serif",
                         fontWeight: 400,
@@ -384,7 +437,7 @@ export function GameScreen({
                   {/* Next button */}
                   <button
                     onClick={handleNext}
-                    className={`game-action-button group flex h-[44px] items-center justify-center gap-[10px] px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px] ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}
+                    className={`game-action-button group flex h-[44px] items-center justify-center gap-[10px] whitespace-nowrap px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px] ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 400,
@@ -397,7 +450,7 @@ export function GameScreen({
                       ...(buttonsExiting ? {} : { '--enter-delay': animationMs(50) } as CSSProperties),
                     }}
                   >
-                    Next
+                    {scenarioIndex === totalScenarios - 1 ? 'Your decision-making style' : 'Next'}
                     <svg className="h-6 w-6 shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-[10px]" viewBox="0 0 26 24" fill="none" aria-hidden="true">
                       <path d="M2 12H22M14 4L22 12L14 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -406,8 +459,9 @@ export function GameScreen({
               )}
             </div>
 
-            {/* Bottom spacer: keeps the fixed mobile bar from covering content (persistent so layout never jumps) */}
-            <div className="h-[120px] md:h-[60px] lg:hidden" />
+            {/* Bottom spacer: keeps the fixed mobile bar from covering content (persistent so layout never jumps).
+                Taller on the last question, where the longer button can wrap onto a second row on narrow phones. */}
+            <div className={`${scenarioIndex === totalScenarios - 1 ? 'h-[180px]' : 'h-[120px]'} md:h-[60px] lg:hidden`} />
 
             {/* Bottom spacer: mirrors top spacer for vertical centering on mobile */}
             <div className="flex-1 lg:hidden" />

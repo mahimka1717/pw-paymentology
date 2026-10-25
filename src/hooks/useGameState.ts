@@ -24,6 +24,7 @@ type Action =
   | { type: 'RESET_OPTION' }
   | { type: 'NEXT_SCENARIO' }
   | { type: 'DISMISS_FEEDBACK' }
+  | { type: 'GO_BACK' }
   | { type: 'RESTART' };
 
 const initialState: GameState = {
@@ -37,6 +38,21 @@ const initialState: GameState = {
   showFeedback: false,
   selectedOption: null,
 };
+
+// Totals are rebuilt from the answers kept, so going back drops exactly the undone answers' score.
+function scoreFromChoices(track: Track, choices: number[]) {
+  const totalScore: Score = { growth: 0, trust: 0, control: 0, momentum: 0 };
+  let aggressiveCount = 0;
+  choices.forEach((optionIndex, scenarioIndex) => {
+    const option = track.scenarios[scenarioIndex].options[optionIndex];
+    totalScore.growth += option.score.growth;
+    totalScore.trust += option.score.trust;
+    totalScore.control += option.score.control;
+    totalScore.momentum += option.score.momentum;
+    if (option.aggressive) aggressiveCount += 1;
+  });
+  return { totalScore, aggressiveCount };
+}
 
 function reducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -89,6 +105,20 @@ function reducer(state: GameState, action: Action): GameState {
     }
     case 'DISMISS_FEEDBACK':
       return { ...state, showFeedback: false };
+    case 'GO_BACK': {
+      if (state.screen === 'select') return state;
+      if (state.screen === 'intro') return { ...initialState };
+
+      const track = tracks.find(t => t.id === state.trackId)!;
+      // From a question: the previous one, shown unanswered. From the result: the last question.
+      const targetIndex = state.screen === 'result' ? track.scenarios.length - 1 : state.scenarioIndex - 1;
+      const cleared = { lastDelta: null, showFeedback: false, selectedOption: null };
+      if (targetIndex < 0) {
+        return { ...state, ...cleared, ...scoreFromChoices(track, []), screen: 'intro', scenarioIndex: 0, choices: [] };
+      }
+      const choices = state.choices.slice(0, targetIndex);
+      return { ...state, ...cleared, ...scoreFromChoices(track, choices), screen: 'game', scenarioIndex: targetIndex, choices };
+    }
     case 'RESTART':
       return { ...initialState };
     default:
@@ -115,6 +145,7 @@ export function useGameState() {
     dispatch({ type: 'CHOOSE_OPTION', optionIndex, delta, aggressive }), []);
   const resetOption = useCallback(() => dispatch({ type: 'RESET_OPTION' }), []);
   const nextScenario = useCallback(() => dispatch({ type: 'NEXT_SCENARIO' }), []);
+  const goBack = useCallback(() => dispatch({ type: 'GO_BACK' }), []);
   const restart = useCallback(() => dispatch({ type: 'RESTART' }), []);
 
   return {
@@ -134,6 +165,7 @@ export function useGameState() {
     chooseOption,
     resetOption,
     nextScenario,
+    goBack,
     restart,
   };
 }

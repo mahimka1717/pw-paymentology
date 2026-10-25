@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Scenario, Score } from '../data/tracks';
 import { OptionCard } from './OptionCard';
@@ -10,6 +11,8 @@ interface Props {
   totalScenarios: number;
   selectedOption: number | null;
   exiting: boolean;
+  /** The whole game screen is cascading in with this question (from the intro or the result). */
+  enteringWithScreen: boolean;
   resettingOption: boolean;
   showFeedback: boolean;
   canToggleFeedback: boolean;
@@ -23,8 +26,11 @@ interface Props {
   onNext: () => void;
 }
 
-export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, exiting, resettingOption, showFeedback, canToggleFeedback, showInsight, exitWithFeedbackOpen, exitWithInsightOpen, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
+export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, selectedOption, exiting, enteringWithScreen, resettingOption, showFeedback, canToggleFeedback, showInsight, exitWithFeedbackOpen, exitWithInsightOpen, onCloseFeedback, onToggleFeedback, onChoose, onResetOption }: Props) {
   const questionParagraphs = scenario.description.split(/\n\s*\n/);
+  // Fixed at mount (the component is keyed per question): with the screen cascade the header rides along with it,
+  // otherwise (Next / Go back) the question plays its own cascade.
+  const [withScreen] = useState(enteringWithScreen);
   const hideHeaderForFeedback = showFeedback || exitWithFeedbackOpen;
   const hideHeaderForInsight = showInsight || exitWithInsightOpen;
   const hideOptionsForInsight = showInsight || exitWithInsightOpen;
@@ -55,7 +61,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
     return { right: 0 };
   };
   return (
-    <div className="game-question-panel relative h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]" style={{ background: '#703ff6' }}>
+    <div className="game-question-panel relative h-full flex flex-col rounded-[20px] lg:rounded-[32px] p-[20px] md:pt-[40px] md:pr-[52px] md:pb-[40px] md:pl-[48px] lg:pt-[46px] lg:pb-[20px] lg:bg-[#703ff6] lg:shadow-[5px_5px_10px_0_rgba(0,0,0,0.20)]">
       <button
         type="button"
         className="absolute right-[10px] top-[10px] z-30 grid h-8 w-8 place-items-center rounded-full border-2 border-current bg-transparent text-white transition-colors enabled:hover:text-[#D2AFFE] enabled:active:text-[#A586FF] md:right-[24px] md:top-[24px] md:h-10 md:w-10"
@@ -79,10 +85,10 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
           ...(exiting ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
         }}
       >
-        <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[23px] md:leading-[28px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
+        <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[23px] md:leading-[28px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(withScreen ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
           {scenario.title}
         </h2>
-        <div className="game-question-copy-wrap flex max-w-full flex-col gap-[19px] md:max-w-[85%] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(scenarioIndex === 0 ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
+        <div className="game-question-copy-wrap flex max-w-full flex-col gap-[19px] md:max-w-[85%] lg:max-w-[75%]" style={{ color: '#FFFFFF', fontFamily: "'Inter', sans-serif", fontWeight: 400, ...(withScreen ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease ${animationMs(100)} forwards` }) }}>
           {questionParagraphs.map((paragraph, index) => {
             const isEmphasizedLastParagraph = questionParagraphs.length > 1 && index === questionParagraphs.length - 1;
 
@@ -136,7 +142,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 disabled={selectedOption !== null && selectedOption !== index}
                 resetting={resettingOption}
                 showFeedback={showFeedback}
-                animDelay={(scenarioIndex === 0 ? 500 : 200) + index * 100}
+                animDelay={(withScreen ? 500 : 200) + index * 100}
                 onSelect={() => {
                   if (selectedOption === null) {
                     onChoose(index, option.score, option.aggressive ?? false);
@@ -168,20 +174,27 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         )}
       </div>
 
-      <div className="mt-[24px] md:mt-[40px] lg:mt-[20px] flex justify-center flex-shrink-0">
-        <div className="flex gap-1.5">
-          {Array.from({ length: totalScenarios }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 w-2 rounded-full transition-colors ${
-                i <= scenarioIndex
-                  ? 'bg-[#CCB0F9]'
-                  : 'bg-white'
-              }`}
-            />
-          ))}
-        </div>
+      {/* Below desktop the visible dots ride on GameScreen's animated panel background; these just keep the space. */}
+      <div className="invisible mt-[24px] md:mt-[40px] lg:visible lg:mt-[20px] flex justify-center flex-shrink-0">
+        <ProgressDots scenarioIndex={scenarioIndex} totalScenarios={totalScenarios} />
       </div>
+    </div>
+  );
+}
+
+export function ProgressDots({ scenarioIndex, totalScenarios }: { scenarioIndex: number; totalScenarios: number }) {
+  return (
+    <div className="flex gap-1.5">
+      {Array.from({ length: totalScenarios }).map((_, i) => (
+        <div
+          key={i}
+          className={`h-2 w-2 rounded-full transition-colors ${
+            i <= scenarioIndex
+              ? 'bg-[#CCB0F9]'
+              : 'bg-white'
+          }`}
+        />
+      ))}
     </div>
   );
 }

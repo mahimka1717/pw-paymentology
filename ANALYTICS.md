@@ -25,7 +25,8 @@ VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 - `insight_opened` / `insight_closed`: Did You Know interactions.
 - `scenario_advanced`: Next button and whether the action completes the game.
 - `game_completed`: outcome, decision style, final scores, and duration.
-- `game_restarted`: Play Again action.
+- `game_restarted`: Play again action, from the result screen or the top bar, with the screen it was used on.
+- `go_back`: Go back button or browser back, with the screen (and scenario) it was used on.
 - `ui_click`: every click on a button, link, or ARIA button/option with its control ID and current screen.
 
 Question, option, feedback, and insight text is not sent to analytics.

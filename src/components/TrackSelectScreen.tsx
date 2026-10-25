@@ -33,7 +33,7 @@ const orderedTracks = selectOrder
 
 export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedTrackName, setSelectedTrackName] = useState('Select your track');
+  const [selectedTrackName, setSelectedTrackName] = useState('Select your industry');
   const [touchSelectedTrackId, setTouchSelectedTrackId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);

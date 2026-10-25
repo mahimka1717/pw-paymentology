@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 
+// Matches the Tailwind `lg` breakpoint, where the desktop layout starts.
+export const DESKTOP_QUERY = '(min-width: 1025px)';
+
 export function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false
