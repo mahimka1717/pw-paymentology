@@ -348,19 +348,29 @@ export default function App() {
     }
   }
 
-  const buildingScreen = game.screen === 'intro' || (game.screen === 'game' && phase !== 'exit');
+  // Leaving the intro: towards the game the building slides into the game position; back to the select screen it
+  // reverses its entrance (shrinks and fades in place), finishing before the screen switches.
+  // Going back from the game to the intro it stays visible and slides back from the game position.
+  const buildingToGame = game.screen === 'intro' && phase === 'exit' && keepTrackTitle;
+  const buildingToSelect = game.screen === 'intro' && phase === 'exit' && !keepTrackTitle;
+  const buildingBackToIntro = game.screen === 'game' && phase === 'exit' && keepTrackTitle;
+  // The slide back plays on the intro's enter, with the same timing as the slide to the game.
+  const buildingSlidingBack = game.screen === 'intro' && phase !== 'exit' && keepTrackTitle;
+  const buildingScreen = (game.screen === 'intro' && !buildingToSelect) || (game.screen === 'game' && (phase !== 'exit' || buildingBackToIntro));
   const buildingIndex = game.trackId ? tracks.findIndex(t => t.id === game.trackId) : 0;
   const buildingOnIntroOrGame = game.screen === 'intro' || game.screen === 'game';
-  const buildingAtIntroPosition = game.screen === 'intro' && phase !== 'exit';
-  const buildingMoveDelay = animationMs(game.screen === 'intro' && phase === 'exit' ? 200 : 0);
-  const buildingMoveDuration = animationMs(game.screen === 'intro' && phase === 'exit' || game.screen === 'game' ? 1000 : 800);
-  const buildingMoveEasing = game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
+  const buildingAtIntroPosition = game.screen === 'intro' && !buildingToGame;
+  const buildingMoveDelay = animationMs(buildingToGame ? 200 : 0);
+  const buildingMoveDuration = animationMs(buildingToGame || buildingSlidingBack || game.screen === 'game' ? 1000 : buildingToSelect ? 500 : 800);
+  const buildingMoveEasing = buildingToGame || buildingSlidingBack || game.screen === 'game'
     ? 'ease-in-out'
-    : 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+    : buildingToSelect
+      ? 'cubic-bezier(0.64, 0, 0.78, 0.39)'
+      : 'cubic-bezier(0.22, 0.61, 0.36, 1)';
   const introBuildingOffset = game.trackId === 'telco' || game.trackId === 'government' || game.trackId === 'digital-banks' || game.trackId === 'banks' ? 200 : 100;
   const buildingTransform = game.screen === 'intro' && phase !== 'exit'
     ? 'scale(var(--building-size, 1))'
-    : (game.screen === 'intro' && phase === 'exit') || game.screen === 'game'
+    : buildingToGame || game.screen === 'game'
       ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
       : game.screen === 'result'
         ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
@@ -467,7 +477,7 @@ export default function App() {
               width: '1920px',
               height: '1080px',
               transformOrigin: '65% 65%',
-              transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}, opacity ${animationMs(700)} ease-in-out`,
+              transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}, opacity ${animationMs(buildingToSelect ? 500 : 700)} ease-in-out`,
               opacity: buildingScreen ? 1 : 0,
               transform: buildingTransform,
             }}
@@ -478,9 +488,8 @@ export default function App() {
                 className="standalone-building relative h-full w-full"
                 style={{
                   transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
-                  transition: game.screen === 'intro' && phase === 'exit' || game.screen === 'game'
-                    ? `transform ${buildingMoveDuration} ease-in-out ${buildingMoveDelay}`
-                    : undefined,
+                  // Always set, so the intro offset also animates on the way back from the game (it mounts without one).
+                  transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}`,
                 }}
               >
                 <img
