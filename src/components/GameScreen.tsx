@@ -436,6 +436,7 @@ export function GameScreen({
 
                   {/* Next button */}
                   <button
+                    data-keeps-feedback
                     onClick={handleNext}
                     className={`game-action-button group flex h-[44px] items-center justify-center gap-[10px] whitespace-nowrap px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px] ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}
                     style={{

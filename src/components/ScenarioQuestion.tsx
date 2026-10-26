@@ -82,7 +82,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         className={`mb-[12px] flex flex-col gap-[12px] transition-opacity ease-in-out md:pl-[20px] lg:pr-14 ${questionContentVisibility}`}
         style={{
           transitionDuration: `${animationMs(200)}ms`,
-          ...(exiting ? { animation: `question-content-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
+          ...(exiting ? { animation: `question-header-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
         }}
       >
         <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[23px] md:leading-[28px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(withScreen ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
@@ -141,7 +141,8 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
                 selected={selectedOption === index}
                 disabled={selectedOption !== null && selectedOption !== index}
                 resetting={resettingOption}
-                showFeedback={showFeedback}
+                // Stays dimmed while the question leaves with the popup open, instead of brightening first.
+                showFeedback={hideHeaderForFeedback}
                 animDelay={(withScreen ? 500 : 200) + index * 100}
                 onSelect={() => {
                   if (selectedOption === null) {
