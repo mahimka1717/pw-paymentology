@@ -65,7 +65,7 @@ export function FeedbackPopup({ feedback, optionIndex, onClose }: Props) {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       // Next closes the popup itself as the question leaves; closing it here on mousedown would undim the question first.
-      if ((e.target as Element).closest?.('[data-keeps-feedback]')) return;
+      if ((e.target as Element).closest?.('[data-keeps-popups]')) return;
       if (ref.current && !ref.current.contains(e.target as Node)) {
         onClose();
       }

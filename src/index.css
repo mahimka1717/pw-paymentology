@@ -561,13 +561,8 @@ h6 {
   to   { opacity: 0; transform: translateY(30px); }
 }
 
-@keyframes question-content-out {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(14px); }
-}
-
-/* No starting opacity: a header hidden behind an open popup fades out from where it is instead of flashing back to 1. */
-@keyframes question-header-out {
+/* No starting opacity: content dimmed behind an open popup fades out from where it is instead of flashing back to 1. */
+@keyframes question-dimmed-out {
   from { transform: translateY(0); }
   to   { opacity: 0; transform: translateY(14px); }
 }

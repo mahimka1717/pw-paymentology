@@ -82,7 +82,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         className={`mb-[12px] flex flex-col gap-[12px] transition-opacity ease-in-out md:pl-[20px] lg:pr-14 ${questionContentVisibility}`}
         style={{
           transitionDuration: `${animationMs(200)}ms`,
-          ...(exiting ? { animation: `question-header-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
+          ...(exiting ? { animation: `question-dimmed-out ${animationMs(300)} cubic-bezier(0.55,0,0.78,0) forwards` } : {}),
         }}
       >
         <h2 className="game-question-title uppercase pr-[30px] md:pr-0 text-[14px] leading-[20px] md:text-[23px] md:leading-[28px] lg:text-[20px] lg:leading-[24px]" style={{ color: '#FFFFFF', fontFamily: "'PP Monument Extended'", fontWeight: 900, ...(withScreen ? {} : { opacity: 0, animation: `text-slide-in ${animationMs(400)} ease forwards` }) }}>
@@ -110,7 +110,7 @@ export function ScenarioQuestion({ scenario, scenarioIndex, totalScenarios, sele
         className={`relative flex-[3] min-h-0 transition-opacity ease-in-out ${optionVisibility}`}
         style={{
           transitionDuration: `${animationMs(200)}ms`,
-          ...(exiting ? { animation: `question-content-out ${animationMs(350)} cubic-bezier(0.55,0,0.78,0) ${animationMs(50)} forwards` } : {}),
+          ...(exiting ? { animation: `question-dimmed-out ${animationMs(350)} cubic-bezier(0.55,0,0.78,0) ${animationMs(50)} forwards` } : {}),
         }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5 lg:gap-5 h-full lg:auto-rows-[1fr]" onKeyDown={handleOptionKeyDown}>

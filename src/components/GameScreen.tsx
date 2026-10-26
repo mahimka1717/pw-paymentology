@@ -106,6 +106,8 @@ export function GameScreen({
       const target = e.target as Node;
       if (insightPopupRef.current?.contains(target)) return;
       if (insightToggleRef.current?.contains(target)) return;
+      // Next closes the insight itself as the question leaves (see FeedbackPopup).
+      if ((target as Element).closest?.('[data-keeps-popups]')) return;
       handleCloseInsight();
     };
     document.addEventListener('mousedown', handler);
@@ -436,7 +438,7 @@ export function GameScreen({
 
                   {/* Next button */}
                   <button
-                    data-keeps-feedback
+                    data-keeps-popups
                     onClick={handleNext}
                     className={`game-action-button group flex h-[44px] items-center justify-center gap-[10px] whitespace-nowrap px-[20px] text-[14px] transition-colors md:h-[48px] md:text-[20px] ${buttonsExiting ? 'game-button-exit' : 'game-button-enter'}`}
                     style={{
