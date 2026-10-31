@@ -3,6 +3,7 @@ import { Score } from '../data/tracks';
 import { outcomeDescriptions, resultStyleCopy, Outcome, Style } from '../data/scoring';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
+import { asset } from '../utils/asset';
 
 interface Props {
   phase: Phase;
@@ -21,17 +22,17 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
 }
 
 const outcomeImages: Record<Outcome, string> = {
-  'Built to Scale': '/img/result/result0.jpg',
-  'Fast but Fragile': '/img/result/result1.jpg',
-  'Trusted Operator': '/img/result/result2.jpg',
-  'Stuck in Neutral': '/img/result/result3.jpg',
+  'Built to Scale': asset('/img/result/result0.jpg'),
+  'Fast but Fragile': asset('/img/result/result1.jpg'),
+  'Trusted Operator': asset('/img/result/result2.jpg'),
+  'Stuck in Neutral': asset('/img/result/result3.jpg'),
 };
 
 const styleIcons: Record<Style, string> = {
-  Bold: '/img/result/1.svg',
-  Situational: '/img/result/2.svg',
-  Deliberate: '/img/result/3.svg',
-  Disciplined: '/img/result/4.svg',
+  Bold: asset('/img/result/1.svg'),
+  Situational: asset('/img/result/2.svg'),
+  Deliberate: asset('/img/result/3.svg'),
+  Disciplined: asset('/img/result/4.svg'),
 };
 
 function StyleIcon({ style }: { style: Style }) {

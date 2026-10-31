@@ -11,6 +11,7 @@ import { trackTheme } from '../data/theme';
 import { buildingNeonLayers } from '../data/buildingNeon';
 import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
+import { asset } from '../utils/asset';
 
 const TrackIntroScreen = lazy(() =>
   import('./TrackIntroScreen').then(module => ({ default: module.TrackIntroScreen })),
@@ -52,7 +53,7 @@ function loadBuildingMaskPixels(buildingIndex: number) {
       resolve({ data: pixels.data, width: pixels.width, height: pixels.height });
     };
     image.onerror = reject;
-    image.src = `/img/buildings/building${buildingIndex}_mask.png`;
+    image.src = asset(`/img/buildings/building${buildingIndex}_mask.png`);
   });
 
   buildingMaskCache.set(buildingIndex, pending);
@@ -282,9 +283,9 @@ export default function App() {
               const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
               if (selectedBuildingIndex >= 0) {
                 const buildingImage = new Image();
-                buildingImage.src = `/img/buildings/building${selectedBuildingIndex}_ws-1920.webp`;
+                buildingImage.src = asset(`/img/buildings/building${selectedBuildingIndex}_ws-1920.webp`);
                 const buildingIcon = new Image();
-                buildingIcon.src = `/img/buildings/building${selectedBuildingIndex}_icon.png`;
+                buildingIcon.src = asset(`/img/buildings/building${selectedBuildingIndex}_icon.png`);
                 void loadBuildingMaskPixels(selectedBuildingIndex);
                 void import('./TrackIntroScreen');
                 void import('./GameScreen');
@@ -376,7 +377,7 @@ export default function App() {
         ? 'translate(-660px, 40px) scale(calc(0.71 * var(--building-size, 1)))'
         : 'scale(calc(0.6 * var(--building-size, 1)))';
   const buildingAccent = game.trackId ? trackTheme[game.trackId]?.accent : '#FFFFFF';
-  const buildingMaskUrl = `/img/buildings/building${buildingIndex}_mask.png`;
+  const buildingMaskUrl = asset(`/img/buildings/building${buildingIndex}_mask.png`);
   const standaloneBillboard = game.trackId ? standaloneBillboards[game.trackId] : undefined;
   const buildingNeonLayer = buildingNeonLayers[buildingIndex];
 
@@ -456,13 +457,13 @@ export default function App() {
         >
           {isMobileVideo ? (
             <>
-              <source src="/video/bg9_16.webm" type="video/webm" />
-              <source src="/video/bg9_16-compressed.mp4" type="video/mp4" />
+              <source src={asset('/video/bg9_16.webm')} type="video/webm" />
+              <source src={asset('/video/bg9_16-compressed.mp4')} type="video/mp4" />
             </>
           ) : (
             <>
-              <source src="/video/bg.webm" type="video/webm" />
-              <source src="/video/bg-compressed.mp4" type="video/mp4" />
+              <source src={asset('/video/bg.webm')} type="video/webm" />
+              <source src={asset('/video/bg-compressed.mp4')} type="video/mp4" />
             </>
           )}
         </video>
@@ -494,8 +495,8 @@ export default function App() {
               >
                 <img
                   key={game.trackId}
-                  src={`/img/buildings/building${buildingIndex}_ws-1920.webp`}
-                  srcSet={`/img/buildings/building${buildingIndex}_ws-1920.webp 1920w, /img/buildings/building${buildingIndex}_ws-2560.webp 2560w`}
+                  src={asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)}
+                  srcSet={`${asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)} 1920w, ${asset(`/img/buildings/building${buildingIndex}_ws-2560.webp`)} 2560w`}
                   sizes="(min-width: 1024px) 1920px, 120vw"
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain"
@@ -503,7 +504,7 @@ export default function App() {
                   decoding="async"
                 />
                 <img
-                  src={`/img/buildings/building${buildingIndex}_icon.png`}
+                  src={asset(`/img/buildings/building${buildingIndex}_icon.png`)}
                   alt=""
                   aria-hidden="true"
                   className="standalone-building-neon pointer-events-none absolute object-contain"
@@ -524,7 +525,7 @@ export default function App() {
                     height={standaloneBillboard.height}
                     referenceWidth={1920}
                     referenceHeight={1080}
-                    image={`/img/posters/p_${buildingIndex}.webp`}
+                    image={asset(`/img/posters/p_${buildingIndex}.webp`)}
                     distortion={{
                       rotate: standaloneBillboard.rotate,
                       skewY: standaloneBillboard.skewY,

@@ -1,17 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'node:path'
 
 export default defineConfig({
   plugins: [react()],
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        building3: resolve(__dirname, 'building3.html'),
-      },
-    },
-  },
+  // Relative asset URLs, so the build runs from any path on the hub (see README).
+  base: './',
   server: {
     host: true,
   },

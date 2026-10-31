@@ -8,7 +8,9 @@ declare global {
   }
 }
 
-const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim();
+// The build-time env var wins; otherwise the hub can set the ID in index.html's meta tag without rebuilding.
+const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim()
+  || document.querySelector<HTMLMetaElement>('meta[name="ga-measurement-id"]')?.content.trim();
 let initialized = false;
 
 function getControlId(element: HTMLElement) {

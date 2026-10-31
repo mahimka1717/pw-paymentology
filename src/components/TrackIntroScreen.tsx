@@ -5,6 +5,7 @@ import { standaloneBillboards } from '../data/standaloneBillboards';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 import { AnimatedBillboard } from './AnimatedBillboard';
+import { asset } from '../utils/asset';
 
 interface Props {
   phase: Phase;
@@ -58,8 +59,8 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
               }}
             >
               <img
-                src={`/img/buildings/building${buildingIndex}_ws-1920.webp`}
-                srcSet={`/img/buildings/building${buildingIndex}_ws-1920.webp 1920w, /img/buildings/building${buildingIndex}_ws-2560.webp 2560w`}
+                src={asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)}
+                srcSet={`${asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)} 1920w, ${asset(`/img/buildings/building${buildingIndex}_ws-2560.webp`)} 2560w`}
                 sizes="120vw"
                 alt=""
                 className="absolute inset-0 h-full w-full object-contain"
@@ -67,7 +68,7 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
                 decoding="async"
               />
               <img
-                src={`/img/buildings/building${buildingIndex}_icon.png`}
+                src={asset(`/img/buildings/building${buildingIndex}_icon.png`)}
                 alt=""
                 aria-hidden="true"
                 className="standalone-building-neon pointer-events-none absolute object-contain"
@@ -89,7 +90,7 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
                   height={standaloneBillboard.height}
                   referenceWidth={1920}
                   referenceHeight={1080}
-                  image={`/img/posters/p_${buildingIndex}.webp`}
+                  image={asset(`/img/posters/p_${buildingIndex}.webp`)}
                   distortion={{
                     rotate: standaloneBillboard.rotate,
                     skewY: standaloneBillboard.skewY,

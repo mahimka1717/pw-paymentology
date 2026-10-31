@@ -1,13 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Asset paths are relative, so the game must be opened as /folder/ (with the trailing slash), not /folder.
+      if (!/(\/|\.html?)$/.test(location.pathname)) {
+        location.replace(location.pathname + '/' + location.search + location.hash);
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#783cff" />
+    <!-- Google Analytics 4 Measurement ID (G-XXXXXXXXXX). Empty = no analytics. See ANALYTICS.md. -->
+    <meta name="ga-measurement-id" content="" />
     <meta name="description" content="Can you build a successful card programme? Play the Issuer Challenge and discover what your choices reveal about your decision-making style." />
-    <title>Paymentology — Issuer's Playbook</title>
-    <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
+    <title>The Issuer Challenge | Paymentology</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Paymentology" />
+    <meta property="og:title" content="The Issuer Challenge" />
+    <meta property="og:description" content="Can you build a successful card programme? Play the Issuer Challenge and discover what your choices reveal about your decision-making style." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- og:image (og.jpg, 1200×630), og:url and canonical need the final absolute URL: added on the hub, see README. -->
+    <link rel="icon" href="./favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./favicon.png" />
 
     <script>
       if ('scrollRestoration' in history) {
@@ -16,13 +30,18 @@
       window.scrollTo(0, 0);
     </script>
 
-    <link rel="preload" href="/fonts/subset-PPMonumentWide-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/subset-PPMonumentWide-Black.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/subset-PPMonumentExtended-Black.woff2" as="font" type="font/woff2" crossorigin>
-    <script type="module" crossorigin src="/assets/main-DXsDkxaU.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/main-Dy_NQZp0.css">
+    <link rel="preload" href="./fonts/subset-PPMonumentWide-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="./fonts/subset-PPMonumentWide-Black.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="./fonts/subset-PPMonumentExtended-Black.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="module" crossorigin src="./assets/index-D4SrMFmk.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C6NrFEXI.css">
   </head>
   <body class="min-h-screen text-white antialiased" data-screen="select">
     <div id="root"></div>
+    <noscript>
+      <p style="margin: 0; padding: 40vh 24px 0; font: 18px/1.5 Inter, Arial, sans-serif; text-align: center; color: #fff;">
+        This game needs JavaScript. Please enable it in your browser settings and reload the page.
+      </p>
+    </noscript>
   </body>
 </html>

@@ -3,6 +3,7 @@ import { trackTheme } from '../data/theme';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { cityAnimationType } from '../utils/cityAnimation';
 import { AnimatedBillboard } from './AnimatedBillboard';
+import { asset } from '../utils/asset';
 
 interface Props {
   hoveredTrackId: string | null;
@@ -10,7 +11,6 @@ interface Props {
   onHoverTrack: (trackId: string | null) => void;
   onSelectTrack: (trackId: string, pointerType?: string) => void;
   className?: string;
-  showPlaneAnimation?: boolean;
   showAnimatedPosters?: boolean;
 }
 
@@ -83,79 +83,6 @@ const cityTracks: CityTrack[] = [
   { id: 'banks', name: 'Banks', image: 'bank', bounds: [931, 1139, 1675, 1773], anchor: [423.4, 488.65], endpoint: [933.8, 488.65], mobileEndpoint: [423.4, 75] },
   { id: 'government', name: 'Government', image: 'government', bounds: [1458, 1537, 2081, 1960], anchor: [616.25, 609], endpoint: [822.15, 609], mobileEndpoint: [616.25, 115] },
 ];
-
-const planeSegmentFrames = 11;
-const planeSegmentStartFrame = 33;
-
-const planeCycleDuration = 7000;
-const planeFlyDuration = 3000;
-const planeFlyStart = 1000;
-const planeFadeDuration = 400;
-const planeBaseTop = 2;
-const planeArcHeight = 4;
-
-function PlaneSequence() {
-  const [frame, setFrame] = useState(planeSegmentStartFrame);
-  const [style, setStyle] = useState<{ left: string; top: string; opacity: number }>({ left: '100%', top: `${planeBaseTop}%`, opacity: 0 });
-
-  useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) {
-      setFrame(planeSegmentStartFrame);
-      setStyle({ left: '50%', top: `${planeBaseTop}%`, opacity: 1 });
-      return;
-    }
-
-    const startTime = performance.now();
-    const frameDuration = planeFlyDuration / planeSegmentFrames;
-    const flyEnd = planeFlyStart + planeFlyDuration;
-
-    const tick = (now: number) => {
-      const elapsed = (now - startTime) % planeCycleDuration;
-
-      if (elapsed < planeFlyStart) {
-        setStyle({ left: '100%', top: `${planeBaseTop}%`, opacity: 0 });
-        setFrame(planeSegmentStartFrame);
-      } else if (elapsed < flyEnd) {
-        const flyElapsed = elapsed - planeFlyStart;
-        const progress = flyElapsed / planeFlyDuration;
-        const left = 100 - progress * 110;
-        const top = planeBaseTop + 4 * planeArcHeight * progress * (1 - progress);
-        let opacity = 1;
-        if (flyElapsed < planeFadeDuration) {
-          opacity = flyElapsed / planeFadeDuration;
-        } else if (flyElapsed > planeFlyDuration - planeFadeDuration) {
-          opacity = (planeFlyDuration - flyElapsed) / planeFadeDuration;
-        }
-        const frameIndex = Math.min(
-          Math.floor(flyElapsed / frameDuration),
-          planeSegmentFrames - 1,
-        );
-        setStyle({ left: `${left}%`, top: `${top}%`, opacity });
-        setFrame(planeSegmentStartFrame + frameIndex);
-      }
-
-      rafId = requestAnimationFrame(tick);
-    };
-
-    let rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
-  const segment = Math.floor(frame / 11) + 1;
-  const frameInSegment = (frame % 11) + 1;
-
-  return (
-    <img
-      src={`/img/city/plane/${segment}_${frameInSegment}.png`}
-      alt=""
-      className="city-plane"
-      style={{ left: style.left, top: style.top, opacity: style.opacity, transform: 'none' }}
-      draggable={false}
-      decoding="async"
-    />
-  );
-}
 
 function carProgress(t: number) {
   if (t <= 49.554) return t / 49.554;
@@ -239,7 +166,7 @@ function CityCar() {
           ref={node => {
             framesRef.current[index] = node;
           }}
-          src={`/img/city/car/${file}`}
+          src={asset(`/img/city/car/${file}`)}
           alt=""
           className={`city-car-frame city-car-frame-${index + 1} absolute object-contain`}
           style={{
@@ -255,7 +182,7 @@ function CityCar() {
   );
 }
 
-export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showPlaneAnimation = false, showAnimatedPosters = true }: Props) {
+export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showAnimatedPosters = true }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const overlaysPrefetched = useRef(false);
@@ -296,7 +223,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           overlaysPrefetched.current = true;
           cityTracks.forEach(track => {
             const image = new Image();
-            image.src = `/img/city/city-${track.image}-900.webp`;
+            image.src = asset(`/img/city/city-${track.image}-900.webp`);
           });
         }
         if (!idleAnimationEnabled || event.pointerType !== 'mouse') return;
@@ -313,8 +240,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
     >
       <div className="city-base-enter absolute inset-0">
         <img
-          src="/img/city/city-900.webp"
-          srcSet="/img/city/city-900.webp 900w, /img/city/city-1800.webp 1800w"
+          src={asset('/img/city/city-900.webp')}
+          srcSet={`${asset('/img/city/city-900.webp')} 900w, ${asset('/img/city/city-1800.webp')} 1800w`}
           sizes="(min-width: 1024px) 900px, 100vw"
           width={2670}
           height={2508}
@@ -326,8 +253,6 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
 
         <CityCar />
 
-        {showPlaneAnimation && <PlaneSequence />}
-
         {showAnimatedPosters && (
           <>
             <AnimatedBillboard
@@ -338,7 +263,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
               referenceWidth={imageWidth}
               referenceHeight={imageHeight}
               distortion={{ rotate: 0, skewY: 22, origin: 'bottom center' }}
-              image="/img/posters/p_0.webp"
+              image={asset('/img/posters/p_0.webp')}
               brightness={0.9}
               saturation={0.95}
             />
@@ -350,7 +275,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
               referenceWidth={imageWidth}
               referenceHeight={imageHeight}
               distortion={{ rotate: 3, skewY: 16, origin: 'bottom center' }}
-              image="/img/posters/p_2.webp"
+              image={asset('/img/posters/p_2.webp')}
               brightness={0.88}
               saturation={0.92}
               delay={4000}
@@ -381,7 +306,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
       )}
 
       {cityTracks.map((track, index) => {
-        const imageUrl = `/img/city/city-${track.image}-900.webp`;
+        const imageUrl = asset(`/img/city/city-${track.image}-900.webp`);
         const districtVisible = ambientAnimationEnabled || interactiveTrackId === track.id;
         return (
           <div key={track.id}>

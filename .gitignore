@@ -34,3 +34,5 @@ dist-ssr
 doc
 .todo
 todo
+# TypeScript incremental build info
+*.tsbuildinfo

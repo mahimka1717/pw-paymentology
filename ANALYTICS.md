@@ -1,19 +1,28 @@
 # Game analytics
 
-The game sends analytics to Google Analytics 4 when `VITE_GA_MEASUREMENT_ID` is set at build time.
+The game sends analytics to Google Analytics 4 once a GA4 Measurement ID is set. Without an ID it loads nothing from Google and sends nothing.
+
+The ID is not set yet: the hub developers add it.
 
 ## Configuration
 
-1. Create a GA4 web data stream for the production domain.
-2. Copy its Measurement ID, for example `G-XXXXXXXXXX`.
-3. Set `VITE_GA_MEASUREMENT_ID` locally or in the deployment environment.
-4. Rebuild and redeploy the application.
+Create a GA4 web data stream for the production domain and copy its Measurement ID, for example `G-XXXXXXXXXX`. Then set it in one of two ways.
 
-For local development, create `.env.local`:
+**In the built game, no rebuild needed (recommended for the hub).** In `dist/index.html`, fill in the meta tag:
+
+```html
+<meta name="ga-measurement-id" content="G-XXXXXXXXXX" />
+```
+
+**At build time.** Set `VITE_GA_MEASUREMENT_ID` in the environment or in `.env.local`, then run `npm run build`:
 
 ```text
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
+
+The build-time value wins over the meta tag. To keep the ID across rebuilds, set it in the source `index.html` meta tag or in the environment.
+
+The game loads `gtag.js` itself and sends its own screen views (`game_screen_view`), with GA's automatic page view turned off. Do not add a second GA tag for the same property to the game page, or events will be counted twice.
 
 ## Events
 

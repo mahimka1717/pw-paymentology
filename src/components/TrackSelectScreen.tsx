@@ -14,12 +14,6 @@ interface Props {
   onSelect: (trackId: string) => void;
 }
 
-function showPlaneAnimation(): boolean {
-  if (typeof window === 'undefined') return false;
-  const params = new URLSearchParams(window.location.search);
-  return params.get('plane') === 'true';
-}
-
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   if (phase === 'idle') return {};
   if (phase === 'enter') return { opacity: 0, animation: `cascade-in ${animationMs(500)} ease ${animationMs(index * 150)} forwards` };
@@ -137,7 +131,6 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
       onHoverTrack={onHoverTrack}
       onSelectTrack={handleCitySelect}
       className="w-full"
-      showPlaneAnimation={showPlaneAnimation()}
       showAnimatedPosters={isDesktop}
     />
   );
@@ -229,23 +222,6 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
 
         <div className="w-full lg:w-1/2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-            {/* {tracks.map((track) => {
-              const Icon = trackIcons[track.id];
-              return (
-                <button
-                  key={track.id}
-                  onClick={() => onSelect(track.id)}
-                  className="group bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-indigo-500/50 rounded-xl p-6 text-left transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/10"
-                >
-                  <div className="text-indigo-400 group-hover:text-indigo-300 transition-colors mb-3">
-                    <Icon className="w-12 h-12" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white group-hover:text-indigo-300 transition-colors">
-                    {track.name}
-                  </h3>
-                </button>
-              );
-            })} */}
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { animationMs } from '../utils/animationTiming';
+import { asset } from '../utils/asset';
 
 interface BillboardDistortion {
   rotate?: number;
@@ -40,8 +41,8 @@ export function AnimatedBillboard({
   scale = 1,
   distortion = {},
   image,
-  firstImage = '/board1.jpg',
-  secondImage = '/board2.jpg',
+  firstImage = asset('/board1.jpg'),
+  secondImage = asset('/board2.jpg'),
   duration = 8000,
   delay = 0,
   brightness = 0.82,

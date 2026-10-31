@@ -9,6 +9,7 @@ import type { Phase } from './App';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { trackEvent } from '../utils/analytics';
 import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
+import { asset } from '../utils/asset';
 
 interface Props {
   phase: Phase;
@@ -236,7 +237,7 @@ export function GameScreen({
             {showInsight && (
               <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:flex items-center justify-center">
                 <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                  <img src="/mascot.webp" alt="" className="max-h-full max-w-full" draggable={false} decoding="async" />
+                  <img src={asset('/mascot.webp')} alt="" className="max-h-full max-w-full" draggable={false} decoding="async" />
                 </div>
               </div>
             )}
@@ -397,7 +398,7 @@ export function GameScreen({
                         className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:hidden flex items-end justify-center"
                       >
                         <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
-                          <img src="/mascot.webp" alt="" className="max-h-full max-w-full translate-y-[10px]" draggable={false} decoding="async" />
+                          <img src={asset('/mascot.webp')} alt="" className="max-h-full max-w-full translate-y-[10px]" draggable={false} decoding="async" />
                         </div>
                       </div>
                     )}
