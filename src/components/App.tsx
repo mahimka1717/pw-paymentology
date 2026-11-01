@@ -4,6 +4,8 @@ import { useImageReady } from '../hooks/useImageReady';
 import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
 import { tracks } from '../data/tracks';
 import { TrackSelectScreen } from './TrackSelectScreen';
+// Not lazy: on a slow connection its chunk would queue behind images and leave the intro blank.
+import { TrackIntroScreen } from './TrackIntroScreen';
 import { TopBar } from './TopBar';
 import { smoothScrollTo } from '../utils/smoothScroll';
 import { animationMs, scaledMs } from '../utils/animationTiming';
@@ -15,9 +17,6 @@ import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
 import { buildingImage, buildingImageSizes, preloadBuilding } from '../utils/buildingImages';
 
-const TrackIntroScreen = lazy(() =>
-  import('./TrackIntroScreen').then(module => ({ default: module.TrackIntroScreen })),
-);
 const GameScreen = lazy(() =>
   import('./GameScreen').then(module => ({ default: module.GameScreen })),
 );
@@ -81,6 +80,14 @@ export default function App() {
   const previousMobileVideo = useRef<boolean | null>(null);
   const isMobileVideo = useMediaQuery('(max-width: 1023px)');
   const [videoReady, setVideoReady] = useState(false);
+  // The background video only starts downloading once the city image is in, so it doesn't slow the city down.
+  const [cityReady, setCityReady] = useState(false);
+  const markCityReady = useCallback(() => setCityReady(true), []);
+  const [videoFullyLoaded, setVideoFullyLoaded] = useState(false);
+  // The video is hidden off the select screen: an unfinished download is dropped there so it doesn't slow the
+  // next screen down, and carries on when the player comes back.
+  const videoSourcesOn = cityReady && (game.screen === 'select' || videoFullyLoaded);
+  const videoWasOn = useRef(false);
 
   const videoVisible = game.screen === 'select' && phase !== 'exit';
   const videoOpacity = videoVisible && videoReady ? 1 : 0;
@@ -98,6 +105,7 @@ export default function App() {
 
     if (breakpointChanged) {
       setVideoReady(false);
+      setVideoFullyLoaded(false);
       video.load();
     } else if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
       markReady();
@@ -105,6 +113,29 @@ export default function App() {
 
     return () => video.removeEventListener('canplay', markReady);
   }, [isMobileVideo]);
+
+  useEffect(() => {
+    const video = bgVideoRef.current;
+    if (!video) return;
+
+    const checkFullyLoaded = () => {
+      const { buffered, duration } = video;
+      if (buffered.length && duration && buffered.end(buffered.length - 1) >= duration - 0.1) setVideoFullyLoaded(true);
+    };
+    video.addEventListener('progress', checkFullyLoaded);
+    return () => video.removeEventListener('progress', checkFullyLoaded);
+  }, []);
+
+  useEffect(() => {
+    const video = bgVideoRef.current;
+    if (!video) return;
+    // With its sources gone, load() aborts the download.
+    if (!videoSourcesOn && videoWasOn.current) {
+      setVideoReady(false);
+      video.load();
+    }
+    videoWasOn.current = videoSourcesOn;
+  }, [videoSourcesOn]);
 
   useEffect(() => {
     const video = bgVideoRef.current;
@@ -280,13 +311,13 @@ export default function App() {
             phase={phase}
             hoveredTrackId={hoveredTrackId}
             onHoverTrack={setHoveredTrackId}
+            onCityReady={markCityReady}
             onSelect={(id) => {
               trackEvent('track_selected', { track_id: id });
               const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
               if (selectedBuildingIndex >= 0) {
-                void preloadBuilding(selectedBuildingIndex);
+                preloadBuilding(selectedBuildingIndex);
                 void loadBuildingMaskPixels(selectedBuildingIndex);
-                void import('./TrackIntroScreen');
                 void import('./GameScreen');
               }
               triggerTransition(() => {
@@ -455,7 +486,7 @@ export default function App() {
           playsInline
           preload="auto"
         >
-          {isMobileVideo ? (
+          {!videoSourcesOn ? null : isMobileVideo ? (
             <>
               <source src={asset('/video/bg9_16.webm')} type="video/webm" />
               <source src={asset('/video/bg9_16-compressed.mp4')} type="video/mp4" />
@@ -517,7 +548,7 @@ export default function App() {
                   } as React.CSSProperties}
                   draggable={false}
                 />
-                {standaloneBillboard && (
+                {standaloneBillboard && buildingImageReady && (
                   <AnimatedBillboard
                     x={standaloneBillboard.x}
                     y={standaloneBillboard.y}

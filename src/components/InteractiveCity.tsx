@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { trackTheme } from '../data/theme';
-import { tracks } from '../data/tracks';
 import { useImageReady } from '../hooks/useImageReady';
-import { preloadAllBuildings } from '../utils/buildingImages';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { cityAnimationType } from '../utils/cityAnimation';
 import { AnimatedBillboard } from './AnimatedBillboard';
@@ -15,6 +13,7 @@ interface Props {
   onSelectTrack: (trackId: string, pointerType?: string) => void;
   className?: string;
   showAnimatedPosters?: boolean;
+  onImageReady?: () => void;
 }
 
 interface CityTrack {
@@ -186,7 +185,7 @@ function CityCar({ running }: { running: boolean }) {
   );
 }
 
-export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showAnimatedPosters = true }: Props) {
+export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHoverTrack, onSelectTrack, className = '', showAnimatedPosters = true, onImageReady }: Props) {
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const overlaysPrefetched = useRef(false);
@@ -197,17 +196,9 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
   const interactiveTrackId = selectedTrackId ?? hoveredTrackId;
   const idleTrackId = idleAnimationEnabled && entranceComplete && !interactiveTrackId ? cityTracks[idleTrackIndex].id : null;
 
-  // Once the city is up, fetch the buildings while the player looks around, so the intro opens from the cache.
   useEffect(() => {
-    if (!cityImageReady) return;
-
-    let cancelled = false;
-    const timeout = window.setTimeout(() => preloadAllBuildings(tracks.length, () => cancelled), 1500);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-    };
-  }, [cityImageReady]);
+    if (cityImageReady) onImageReady?.();
+  }, [cityImageReady, onImageReady]);
 
   useEffect(() => {
     if (!idleAnimationEnabled || !cityImageReady) return;
@@ -272,7 +263,8 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
 
         <CityCar running={cityImageReady} />
 
-        {showAnimatedPosters && (
+        {/* The posters are animated and heavy: they load after the city image, not alongside it. */}
+        {showAnimatedPosters && cityImageReady && (
           <>
             <AnimatedBillboard
               x={624}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { tracks } from '../data/tracks';
 import { InteractiveCity } from './InteractiveCity';
 import { animationMs, scaledMs } from '../utils/animationTiming';
+import { preloadBuilding } from '../utils/buildingImages';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 
 import type { Phase } from './App';
@@ -12,6 +13,7 @@ interface Props {
   hoveredTrackId: string | null;
   onHoverTrack: (trackId: string | null) => void;
   onSelect: (trackId: string) => void;
+  onCityReady: () => void;
 }
 
 function cascade(phase: Phase, index: number, total = 3): CSSProperties {
@@ -25,7 +27,7 @@ const orderedTracks = selectOrder
   .map(id => tracks.find(track => track.id === id))
   .filter((track): track is NonNullable<typeof track> => track !== undefined);
 
-export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect }: Props) {
+export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelect, onCityReady }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedTrackName, setSelectedTrackName] = useState('Select your industry');
   const [touchSelectedTrackId, setTouchSelectedTrackId] = useState<string | null>(null);
@@ -60,6 +62,8 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
     const isTouchInteraction = pointerType === 'touch'
       || window.matchMedia('(hover: none), (pointer: coarse)').matches;
     setSelectedTrackName(trackName);
+    // Start on the tap itself: on touch the screen only switches after the highlight pause below.
+    preloadBuilding(tracks.findIndex(track => track.id === trackId));
 
     if (!isTouchInteraction) {
       setIsDropdownOpen(false);
@@ -130,6 +134,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
       selectedTrackId={touchSelectedTrackId}
       onHoverTrack={onHoverTrack}
       onSelectTrack={handleCitySelect}
+      onImageReady={onCityReady}
       className="w-full"
       showAnimatedPosters={isDesktop}
     />

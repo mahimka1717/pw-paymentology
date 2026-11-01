@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { animationMs } from '../utils/animationTiming';
 import { asset } from '../utils/asset';
 
@@ -58,6 +58,18 @@ export function AnimatedBillboard({
     distortion.skewY ? `skewY(${distortion.skewY}deg)` : '',
     `scale(${scale})`,
   ].filter(Boolean).join(' ');
+  const imageRef = useRef<HTMLImageElement>(null);
+  const nextImageRef = useRef<HTMLImageElement>(null);
+
+  // Posters are heavy: if the billboard leaves the screen mid-download, stop it so the next screen gets the bandwidth.
+  useEffect(() => {
+    const images = [imageRef.current, nextImageRef.current];
+    return () => {
+      for (const image of images) {
+        if (image && !image.complete) image.src = '';
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -75,8 +87,8 @@ export function AnimatedBillboard({
         '--billboard-delay': animationMs(delay),
       } as CSSProperties}
     >
-      <img className="animated-billboard-image" src={image ?? firstImage} alt="" draggable={false} decoding="async" />
-      {!image && <img className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} decoding="async" />}
+      <img ref={imageRef} className="animated-billboard-image" src={image ?? firstImage} alt="" draggable={false} decoding="async" />
+      {!image && <img ref={nextImageRef} className="animated-billboard-image animated-billboard-image-next" src={secondImage} alt="" draggable={false} decoding="async" />}
     </div>
   );
 }

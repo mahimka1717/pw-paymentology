@@ -86,7 +86,7 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
                 draggable={false}
                 decoding="async"
               />
-              {standaloneBillboard && (
+              {standaloneBillboard && buildingImageReady && (
                 <AnimatedBillboard
                   x={standaloneBillboard.x}
                   y={standaloneBillboard.y}
