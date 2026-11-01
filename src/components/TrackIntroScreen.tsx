@@ -6,6 +6,8 @@ import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
+import { buildingImage, buildingImageSizes } from '../utils/buildingImages';
+import { useImageReady } from '../hooks/useImageReady';
 
 interface Props {
   phase: Phase;
@@ -25,6 +27,7 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
   const buildingIndex = tracks.findIndex(t => t.id === track.id);
   const buildingNeonLayer = buildingNeonLayers[buildingIndex];
   const standaloneBillboard = standaloneBillboards[track.id];
+  const [buildingImageRef, buildingImageReady] = useImageReady(track.id);
 
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center overflow-x-hidden px-6 pt-0 pb-[calc(80px+env(safe-area-inset-bottom))] lg:min-h-[920px] lg:overflow-x-visible lg:pb-10">
@@ -44,7 +47,8 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
           <div className="flex-1 lg:hidden" />
           <div className={`relative my-0 w-[120vw] -translate-x-1/2 overflow-hidden lg:hidden ${track.id === 'telco' ? 'left-[calc(50%-20px)]' : track.id === 'digital-banks' || track.id === 'banks' || track.id === 'remittance' ? 'left-[calc(50%-10px)]' : 'left-1/2'}`}>
             <div
-              className="relative aspect-[16/9] w-full cursor-pointer"
+              // Waits for the building image: its paused fade-in then plays with the badge and billboard together.
+              className={`relative aspect-[16/9] w-full cursor-pointer ${buildingImageReady ? '' : 'awaiting-image'}`}
               // Keep the enter animation through idle: it ends at 800ms, so a late start on a busy phone would get it cut off when the 850ms enter phase ends.
               style={phase === 'idle' || phase === 'enter' ? { opacity: 0, animation: `city-in ${animationMs(500)} ease ${animationMs(300)} forwards` } : { animation: `city-out ${animationMs(333)} ease ${animationMs(100)} forwards` }}
               onClick={onStart}
@@ -59,9 +63,9 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
               }}
             >
               <img
-                src={asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)}
-                srcSet={`${asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)} 1920w, ${asset(`/img/buildings/building${buildingIndex}_ws-2560.webp`)} 2560w`}
-                sizes="120vw"
+                ref={buildingImageRef}
+                {...buildingImage(buildingIndex)}
+                sizes={buildingImageSizes}
                 alt=""
                 className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}

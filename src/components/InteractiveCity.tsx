@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { trackTheme } from '../data/theme';
+import { tracks } from '../data/tracks';
+import { useImageReady } from '../hooks/useImageReady';
+import { preloadAllBuildings } from '../utils/buildingImages';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { cityAnimationType } from '../utils/cityAnimation';
 import { AnimatedBillboard } from './AnimatedBillboard';
@@ -100,13 +103,14 @@ function carFrameIndex(t: number) {
   return 0;
 }
 
-function CityCar() {
+/** `running` holds the drive back until the city image is up, so the car starts with the city's entrance. */
+function CityCar({ running }: { running: boolean }) {
   const carRef = useRef<HTMLDivElement>(null);
   const framesRef = useRef<(HTMLImageElement | null)[]>([]);
 
   useEffect(() => {
     const car = carRef.current;
-    if (!car) return;
+    if (!car || !running) return;
 
     const duration = scaledMs(carDriveDuration);
     const delay = scaledMs(carDriveDelay);
@@ -152,7 +156,7 @@ function CityCar() {
       window.clearInterval(intervalId);
       mobileQuery.removeEventListener('change', onMobileChange);
     };
-  }, []);
+  }, [running]);
 
   return (
     <div
@@ -186,21 +190,34 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
   const [idleTrackIndex, setIdleTrackIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const overlaysPrefetched = useRef(false);
+  const [cityImageRef, cityImageReady] = useImageReady('city');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const idleAnimationEnabled = cityAnimationType === 1 && !reducedMotion;
   const ambientAnimationEnabled = cityAnimationType === 2 && !reducedMotion;
   const interactiveTrackId = selectedTrackId ?? hoveredTrackId;
   const idleTrackId = idleAnimationEnabled && entranceComplete && !interactiveTrackId ? cityTracks[idleTrackIndex].id : null;
 
+  // Once the city is up, fetch the buildings while the player looks around, so the intro opens from the cache.
   useEffect(() => {
-    if (!idleAnimationEnabled) return;
+    if (!cityImageReady) return;
+
+    let cancelled = false;
+    const timeout = window.setTimeout(() => preloadAllBuildings(tracks.length, () => cancelled), 1500);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [cityImageReady]);
+
+  useEffect(() => {
+    if (!idleAnimationEnabled || !cityImageReady) return;
 
     const timeout = window.setTimeout(
       () => setEntranceComplete(true),
       scaledMs(calloutEntranceDuration + calloutCycleStartDelay),
     );
     return () => window.clearTimeout(timeout);
-  }, [idleAnimationEnabled]);
+  }, [cityImageReady, idleAnimationEnabled]);
 
   useEffect(() => {
     if (!idleAnimationEnabled || !entranceComplete || hoveredTrackId || selectedTrackId) return;
@@ -216,7 +233,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
     <div
       data-interactive-city
       data-animation-type={cityAnimationType}
-      className={`city-parallax relative aspect-[2670/2508] select-none ${ambientAnimationEnabled ? 'city-ambient-active' : ''} ${hoveredTrackId ? 'has-hover' : ''} ${selectedTrackId ? 'selection-locked' : ''} ${className}`}
+      className={`city-parallax relative aspect-[2670/2508] select-none ${ambientAnimationEnabled ? 'city-ambient-active' : ''} ${hoveredTrackId ? 'has-hover' : ''} ${selectedTrackId ? 'selection-locked' : ''} ${cityImageReady ? '' : 'awaiting-image'} ${className}`}
       style={{ isolation: 'auto', containerType: 'inline-size' }}
       onPointerMove={event => {
         if (!overlaysPrefetched.current) {
@@ -240,6 +257,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
     >
       <div className="city-base-enter absolute inset-0">
         <img
+          ref={cityImageRef}
           src={asset('/img/city/city-900.webp')}
           srcSet={`${asset('/img/city/city-900.webp')} 900w, ${asset('/img/city/city-1800.webp')} 1800w`}
           sizes="(min-width: 1024px) 900px, 100vw"
@@ -249,9 +267,10 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           className="absolute inset-0 h-full w-full object-contain"
           draggable={false}
           decoding="async"
+          fetchPriority="high"
         />
 
-        <CityCar />
+        <CityCar running={cityImageReady} />
 
         {showAnimatedPosters && (
           <>

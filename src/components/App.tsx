@@ -1,5 +1,6 @@
 import { lazy, startTransition, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useGameState } from '../hooks/useGameState';
+import { useImageReady } from '../hooks/useImageReady';
 import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
 import { tracks } from '../data/tracks';
 import { TrackSelectScreen } from './TrackSelectScreen';
@@ -12,6 +13,7 @@ import { buildingNeonLayers } from '../data/buildingNeon';
 import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
+import { buildingImage, buildingImageSizes, preloadBuilding } from '../utils/buildingImages';
 
 const TrackIntroScreen = lazy(() =>
   import('./TrackIntroScreen').then(module => ({ default: module.TrackIntroScreen })),
@@ -282,10 +284,7 @@ export default function App() {
               trackEvent('track_selected', { track_id: id });
               const selectedBuildingIndex = tracks.findIndex(track => track.id === id);
               if (selectedBuildingIndex >= 0) {
-                const buildingImage = new Image();
-                buildingImage.src = asset(`/img/buildings/building${selectedBuildingIndex}_ws-1920.webp`);
-                const buildingIcon = new Image();
-                buildingIcon.src = asset(`/img/buildings/building${selectedBuildingIndex}_icon.png`);
+                void preloadBuilding(selectedBuildingIndex);
                 void loadBuildingMaskPixels(selectedBuildingIndex);
                 void import('./TrackIntroScreen');
                 void import('./GameScreen');
@@ -380,6 +379,7 @@ export default function App() {
   const buildingMaskUrl = asset(`/img/buildings/building${buildingIndex}_mask.png`);
   const standaloneBillboard = game.trackId ? standaloneBillboards[game.trackId] : undefined;
   const buildingNeonLayer = buildingNeonLayers[buildingIndex];
+  const [buildingImageRef, buildingImageReady] = useImageReady(game.trackId);
 
   useEffect(() => {
     buildingMaskPixelsRef.current = null;
@@ -486,18 +486,18 @@ export default function App() {
             {game.trackId && buildingIndex >= 0 && (
               <div
                 ref={buildingRef}
-                className="standalone-building relative h-full w-full"
+                className={`standalone-building relative h-full w-full ${buildingImageReady ? '' : 'awaiting-image'}`}
                 style={{
                   transform: `translateX(${buildingAtIntroPosition ? introBuildingOffset : 0}px) scale(${buildingOnIntroOrGame && game.trackId === 'telco' ? 0.8 : buildingOnIntroOrGame && (game.trackId === 'digital-banks' || game.trackId === 'banks') ? 0.9 : 1})`,
                   // Always set, so the intro offset also animates on the way back from the game (it mounts without one).
-                  transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}`,
+                  transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}, opacity ${animationMs(500)} ease-in-out`,
                 }}
               >
                 <img
                   key={game.trackId}
-                  src={asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)}
-                  srcSet={`${asset(`/img/buildings/building${buildingIndex}_ws-1920.webp`)} 1920w, ${asset(`/img/buildings/building${buildingIndex}_ws-2560.webp`)} 2560w`}
-                  sizes="(min-width: 1024px) 1920px, 120vw"
+                  ref={buildingImageRef}
+                  {...buildingImage(buildingIndex)}
+                  sizes={buildingImageSizes}
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain"
                   draggable={false}

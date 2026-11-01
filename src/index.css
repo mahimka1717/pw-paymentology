@@ -622,6 +622,17 @@ h6 {
   to   { opacity: 1; filter: blur(0); }
 }
 
+/* Until a layer's main image has loaded (useImageReady), the layer stays hidden with its animations paused,
+   so dots, badges and billboards never show up before the city or building they sit on. */
+.awaiting-image {
+  opacity: 0;
+}
+
+.awaiting-image,
+.awaiting-image * {
+  animation-play-state: paused !important;
+}
+
 .city-base-enter {
   opacity: 0;
   transform-origin: center;
