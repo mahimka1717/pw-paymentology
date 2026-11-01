@@ -39,7 +39,7 @@ const carDriveDelay = 750;
 const carTranslateX = (carEndX - carStartX) / carWidth;
 const carTranslateY = (carEndY - carStartY) / carWidth * (922 / 655);
 const carMobileEndScale = 0.95;
-const carMobileQuery = '(max-width: 1023px)';
+const carMobileQuery = '(max-width: 1024px)';
 const carFrames = [
   ['01_drive_right.webp', 1, 0, 0],
   ['02_turn_rear_side.webp', 0.86, 0.07, 0],
@@ -251,7 +251,7 @@ export function InteractiveCity({ hoveredTrackId, selectedTrackId = null, onHove
           ref={cityImageRef}
           src={asset('/img/city/city-900.webp')}
           srcSet={`${asset('/img/city/city-900.webp')} 900w, ${asset('/img/city/city-1800.webp')} 1800w`}
-          sizes="(min-width: 1024px) 900px, 100vw"
+          sizes="(min-width: 1025px) 900px, 100vw"
           width={2670}
           height={2508}
           alt="Choose a Paymentology track from the interactive city"

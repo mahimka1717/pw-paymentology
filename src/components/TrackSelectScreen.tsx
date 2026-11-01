@@ -3,7 +3,7 @@ import { tracks } from '../data/tracks';
 import { InteractiveCity } from './InteractiveCity';
 import { animationMs, scaledMs } from '../utils/animationTiming';
 import { preloadBuilding } from '../utils/buildingImages';
-import { useMediaQuery } from '../hooks/useMediaQuery';
+import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useMediaQuery';
 
 import type { Phase } from './App';
 import type { CSSProperties, KeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
@@ -34,7 +34,7 @@ export function TrackSelectScreen({ phase, hoveredTrackId, onHoverTrack, onSelec
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const selectButtonRef = useRef<HTMLButtonElement | null>(null);
   const touchSelectionTimeoutRef = useRef<number | null>(null);
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

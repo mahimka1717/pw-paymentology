@@ -78,7 +78,7 @@ export default function App() {
   const buildingMaskPixelsRef = useRef<BuildingMaskPixels | null>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
   const previousMobileVideo = useRef<boolean | null>(null);
-  const isMobileVideo = useMediaQuery('(max-width: 1023px)');
+  const isMobileVideo = !useMediaQuery(DESKTOP_QUERY);
   const [videoReady, setVideoReady] = useState(false);
   // The background video only starts downloading once the city image is in, so it doesn't slow the city down.
   const [cityReady, setCityReady] = useState(false);

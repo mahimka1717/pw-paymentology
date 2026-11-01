@@ -31,7 +31,7 @@
     </script>
 
     <!-- The city is the first thing on screen: start loading it with the scripts, not after them. Keep in sync with InteractiveCity. -->
-    <link rel="preload" as="image" href="/img/city/city-900.webp" imagesrcset="/img/city/city-900.webp 900w, /img/city/city-1800.webp 1800w" imagesizes="(min-width: 1024px) 900px, 100vw" fetchpriority="high">
+    <link rel="preload" as="image" href="/img/city/city-900.webp" imagesrcset="/img/city/city-900.webp 900w, /img/city/city-1800.webp 1800w" imagesizes="(min-width: 1025px) 900px, 100vw" fetchpriority="high">
     <link rel="preload" href="/node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/subset-PPMonumentWide-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/subset-PPMonumentWide-Black.woff2" as="font" type="font/woff2" crossorigin>
@@ -39,6 +39,17 @@
   </head>
   <body class="min-h-screen text-white antialiased" data-screen="select">
     <div id="root"></div>
+    <!-- Shown only on a phone held sideways (see .rotate-notice in index.css): the game has no landscape phone layout. -->
+    <div class="rotate-notice" aria-live="polite">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect x="21" y="8" width="22" height="40" rx="4" stroke="currentColor" stroke-width="3" />
+        <path d="M29 42h6" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        <path d="M50 22a20 20 0 0 1 2 26" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        <path d="M47 46l5 3 3-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <p class="rotate-notice-title">Please rotate your device</p>
+      <p class="rotate-notice-text">The Issuer Challenge is played in portrait mode.</p>
+    </div>
     <noscript>
       <p style="margin: 0; padding: 40vh 24px 0; font: 18px/1.5 Inter, Arial, sans-serif; text-align: center; color: #fff;">
         This game needs JavaScript. Please enable it in your browser settings and reload the page.
