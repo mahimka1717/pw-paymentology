@@ -6,7 +6,7 @@ import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
-import { buildingImage, buildingImageSizes } from '../utils/buildingImages';
+import { buildingImage } from '../utils/buildingImages';
 import { useImageReady } from '../hooks/useImageReady';
 
 interface Props {
@@ -64,8 +64,7 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
             >
               <img
                 ref={buildingImageRef}
-                {...buildingImage(buildingIndex)}
-                sizes={buildingImageSizes}
+                src={buildingImage(buildingIndex)}
                 alt=""
                 className="absolute inset-0 h-full w-full object-contain"
                 draggable={false}

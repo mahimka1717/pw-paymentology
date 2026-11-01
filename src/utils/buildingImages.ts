@@ -1,14 +1,8 @@
 import { asset } from './asset';
 
-// Shared by the desktop building (App) and the mobile intro, so a preload picks the same file the screen will use.
-export const buildingImageSizes = '(min-width: 1024px) 1920px, 120vw';
-
+// One 1920px file for every screen: on retina a 2560px version was ~50% heavier and looked the same.
 export function buildingImage(index: number) {
-  const src = asset(`/img/buildings/building${index}_ws-1920.webp`);
-  return {
-    src,
-    srcSet: `${src} 1920w, ${asset(`/img/buildings/building${index}_ws-2560.webp`)} 2560w`,
-  };
+  return asset(`/img/buildings/building${index}_ws-1920.webp`);
 }
 
 const preloaded = new Set<number>();
@@ -21,10 +15,6 @@ export function preloadBuilding(index: number) {
   if (preloaded.has(index)) return;
   preloaded.add(index);
 
-  const image = new Image();
-  const { src, srcSet } = buildingImage(index);
-  image.sizes = buildingImageSizes;
-  image.srcset = srcSet;
-  image.src = src;
+  new Image().src = buildingImage(index);
   new Image().src = asset(`/img/buildings/building${index}_icon.png`);
 }

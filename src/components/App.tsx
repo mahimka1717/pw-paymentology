@@ -15,7 +15,7 @@ import { buildingNeonLayers } from '../data/buildingNeon';
 import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
-import { buildingImage, buildingImageSizes, preloadBuilding } from '../utils/buildingImages';
+import { buildingImage, preloadBuilding } from '../utils/buildingImages';
 
 const GameScreen = lazy(() =>
   import('./GameScreen').then(module => ({ default: module.GameScreen })),
@@ -527,8 +527,7 @@ export default function App() {
                 <img
                   key={game.trackId}
                   ref={buildingImageRef}
-                  {...buildingImage(buildingIndex)}
-                  sizes={buildingImageSizes}
+                  src={buildingImage(buildingIndex)}
                   alt=""
                   className="absolute inset-0 h-full w-full object-contain"
                   draggable={false}

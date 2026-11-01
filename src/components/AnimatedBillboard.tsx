@@ -1,4 +1,5 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { useImageReady } from '../hooks/useImageReady';
 import { animationMs } from '../utils/animationTiming';
 import { asset } from '../utils/asset';
 
@@ -58,7 +59,8 @@ export function AnimatedBillboard({
     distortion.skewY ? `skewY(${distortion.skewY}deg)` : '',
     `scale(${scale})`,
   ].filter(Boolean).join(' ');
-  const imageRef = useRef<HTMLImageElement>(null);
+  // The billboard switches on with a fade once its poster is in; a poster already in memory shows straight away.
+  const [imageRef, imageReady] = useImageReady(image ?? firstImage);
   const nextImageRef = useRef<HTMLImageElement>(null);
 
   // Posters are heavy: if the billboard leaves the screen mid-download, stop it so the next screen gets the bandwidth.
@@ -83,6 +85,8 @@ export function AnimatedBillboard({
         transform: transforms,
         transformOrigin: distortion.origin ?? 'center',
         filter: `brightness(${brightness}) saturate(${saturation})`,
+        opacity: imageReady ? 1 : 0,
+        transition: `opacity ${animationMs(400)} ease-out`,
         '--billboard-duration': animationMs(duration),
         '--billboard-delay': animationMs(delay),
       } as CSSProperties}
