@@ -36,6 +36,23 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
+// The "Did you know?" mascot is an animation of a few hundred KB: it is fetched in the background once the game
+// screen is up, so it is usually in by the time the player opens it.
+let mascotLoad: Promise<void> | null = null;
+let mascotLoaded = false;
+
+function loadMascot() {
+  mascotLoad ??= new Promise(resolve => {
+    const image = new Image();
+    image.onload = image.onerror = () => {
+      mascotLoaded = true;
+      resolve();
+    };
+    image.src = asset('/mascot.webp');
+  });
+  return mascotLoad;
+}
+
 export function GameScreen({
   phase,
   track,
@@ -56,6 +73,7 @@ export function GameScreen({
   const [showScoreDelta, setShowScoreDelta] = useState(false);
   const [showActionButtons, setShowActionButtons] = useState(false);
   const [showInsight, setShowInsight] = useState(false);
+  const [mascotReady, setMascotReady] = useState(mascotLoaded);
   const [isClosingInsight, setIsClosingInsight] = useState(false);
   const [buttonsExiting, setButtonsExiting] = useState(false);
   const [questionExiting, setQuestionExiting] = useState(false);
@@ -71,6 +89,20 @@ export function GameScreen({
   const questionRef = useRef<HTMLDivElement>(null);
   const [questionHeight, setQuestionHeight] = useState<number | null>(null);
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
+
+  // Start a second after the screen appears, or right away if "Did you know?" is opened before that.
+  useEffect(() => {
+    if (mascotReady) return;
+    let cancelled = false;
+    const start = () => loadMascot().then(() => {
+      if (!cancelled) setMascotReady(true);
+    });
+    const timeout = window.setTimeout(start, showInsight ? 0 : scaledMs(1000));
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [mascotReady, showInsight]);
 
   // Below desktop the question panel's background lives here, outside the per-question ScenarioQuestion,
   // so it can grow or shrink smoothly to each new question's height.
@@ -236,7 +268,7 @@ export function GameScreen({
           <main className="relative flex-1 flex flex-col min-h-[calc(100vh-var(--topbar-h)-32px)] lg:min-h-0 lg:[--insight-anchor-x:max(0px,calc(100%_-_1106px))]">
             {showInsight && (
               <div className="pointer-events-none absolute bottom-0 left-[calc(var(--insight-anchor-x)-30px)] z-40 hidden h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:flex items-center justify-center">
-                <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
+                <div className={`${isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'} ${mascotReady ? '' : 'awaiting-image'}`}>
                   <img src={asset('/mascot.webp')} alt="" className="max-h-full max-w-full" draggable={false} decoding="async" />
                 </div>
               </div>
@@ -397,7 +429,7 @@ export function GameScreen({
                         ref={mascotRef}
                         className="absolute bottom-[calc(100%+2px)] left-1/2 z-40 h-[150px] w-[108px] -translate-x-1/2 overflow-hidden lg:hidden flex items-end justify-center"
                       >
-                        <div className={isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'}>
+                        <div className={`${isClosingInsight ? 'slide-down-hide' : 'slide-up-reveal'} ${mascotReady ? '' : 'awaiting-image'}`}>
                           <img src={asset('/mascot.webp')} alt="" className="max-h-full max-w-full translate-y-[10px]" draggable={false} decoding="async" />
                         </div>
                       </div>

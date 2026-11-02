@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   showNavigation: boolean;
@@ -12,6 +12,21 @@ export function TopBar({ showNavigation, onGoBack, onPlayAgain }: Props) {
   const [logoHovered, setLogoHovered] = useState(false);
   const [logoPressed, setLogoPressed] = useState(false);
 
+  // Hiding the buttons takes them out from under the pointer without a pointerleave (Safari sends none), so
+  // the hover and pressed states are cleared here; otherwise a label like "Play again" stays on screen.
+  useEffect(() => {
+    if (showNavigation) return;
+    setBackHovered(false);
+    setBackPressed(false);
+    setLogoHovered(false);
+    setLogoPressed(false);
+  }, [showNavigation]);
+
+  // Fade out first and only then turn invisible: switching visibility at once skipped the fade, and desktop
+  // Safari sometimes didn't repaint the fixed bar after it, leaving the hidden buttons on screen.
+  const navigationClass = showNavigation ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none';
+  const navigationStyle = { transition: `opacity 300ms, visibility 0s linear ${showNavigation ? '0s' : '300ms'}` };
+
   const backColor = backPressed ? '#A586FF' : 'white';
   const logoFill = logoPressed ? '#A586FF' : logoHovered ? '#D2AFFE' : 'white';
 
@@ -22,7 +37,8 @@ export function TopBar({ showNavigation, onGoBack, onPlayAgain }: Props) {
     >
       {/* Back button */}
       <div
-        className={`flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer transition-opacity duration-300 ${showNavigation ? 'opacity-100' : 'invisible opacity-0 pointer-events-none'}`}
+        className={`flex items-center gap-3 bg-transparent border-0 outline-none p-0 cursor-pointer ${navigationClass}`}
+        style={navigationStyle}
         aria-hidden={!showNavigation}
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setBackHovered(true);
@@ -67,7 +83,8 @@ export function TopBar({ showNavigation, onGoBack, onPlayAgain }: Props) {
 
       {/* Play again */}
       <div
-        className={`flex items-center gap-3 transition-opacity duration-300 ${showNavigation ? 'opacity-100' : 'invisible opacity-0 pointer-events-none'}`}
+        className={`flex items-center gap-3 ${navigationClass}`}
+        style={navigationStyle}
         aria-hidden={!showNavigation}
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setLogoHovered(true);

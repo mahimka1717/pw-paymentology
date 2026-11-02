@@ -15,7 +15,8 @@ import { buildingNeonLayers } from '../data/buildingNeon';
 import { standaloneBillboards } from '../data/standaloneBillboards';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
-import { buildingImage, preloadBuilding } from '../utils/buildingImages';
+import { buildingImage, desktopBuildingSrcSet, preloadBuilding } from '../utils/buildingImages';
+import { preloadOutcomeImage } from '../utils/resultImages';
 
 const GameScreen = lazy(() =>
   import('./GameScreen').then(module => ({ default: module.GameScreen })),
@@ -146,6 +147,13 @@ export default function App() {
       video.pause();
     }
   }, [isMobileVideo, videoVisible]);
+
+  // Once the last question is answered, fetch the result screen's code (with its inlined icons) and outcome image.
+  useEffect(() => {
+    if (!game.upcomingOutcome) return;
+    void import('./ResultScreen');
+    preloadOutcomeImage(game.upcomingOutcome);
+  }, [game.upcomingOutcome]);
 
   // On desktop, set it in a layout effect so screen-specific CSS applies in the same frame as the new screen.
   useLayoutEffect(() => {
@@ -524,15 +532,17 @@ export default function App() {
                   transition: `transform ${buildingMoveDuration} ${buildingMoveEasing} ${buildingMoveDelay}, opacity ${animationMs(500)} ease-in-out`,
                 }}
               >
-                <img
-                  key={game.trackId}
-                  ref={buildingImageRef}
-                  src={buildingImage(buildingIndex)}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-contain"
-                  draggable={false}
-                  decoding="async"
-                />
+                <picture key={game.trackId}>
+                  <source media={DESKTOP_QUERY} srcSet={desktopBuildingSrcSet(buildingIndex)} />
+                  <img
+                    ref={buildingImageRef}
+                    src={buildingImage(buildingIndex)}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-contain"
+                    draggable={false}
+                    decoding="async"
+                  />
+                </picture>
                 <img
                   src={asset(`/img/buildings/building${buildingIndex}_icon.png`)}
                   alt=""

@@ -138,6 +138,12 @@ export function useGameState() {
   const result = state.screen === 'result' && currentTrack
     ? calculateOutcome(currentTrack.id, state.totalScore, state.aggressiveCount)
     : null;
+  // Already settled once the last question is answered, a step before the result screen.
+  const lastQuestionAnswered = state.screen === 'game' && currentTrack
+    && state.scenarioIndex === currentTrack.scenarios.length - 1 && state.selectedOption !== null;
+  const upcomingOutcome = lastQuestionAnswered
+    ? calculateOutcome(currentTrack.id, state.totalScore, state.aggressiveCount).outcome
+    : null;
 
   const selectTrack = useCallback((trackId: string) => dispatch({ type: 'SELECT_TRACK', trackId }), []);
   const startGame = useCallback(() => dispatch({ type: 'START_GAME' }), []);
@@ -159,6 +165,7 @@ export function useGameState() {
     currentTrack,
     currentScenario,
     result: result as { outcome: Outcome; style: Style; normalized: Score } | null,
+    upcomingOutcome: upcomingOutcome as Outcome | null,
     totalScenarios: currentTrack?.scenarios.length ?? 0,
     selectTrack,
     startGame,

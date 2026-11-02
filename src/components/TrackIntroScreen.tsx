@@ -6,7 +6,8 @@ import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
 import { AnimatedBillboard } from './AnimatedBillboard';
 import { asset } from '../utils/asset';
-import { buildingImage } from '../utils/buildingImages';
+import { buildingImage, desktopBuildingSrcSet } from '../utils/buildingImages';
+import { DESKTOP_QUERY } from '../hooks/useMediaQuery';
 import { useImageReady } from '../hooks/useImageReady';
 
 interface Props {
@@ -62,14 +63,18 @@ export function TrackIntroScreen({ phase, track, onStart, keepTitle }: Props) {
                 }
               }}
             >
-              <img
-                ref={buildingImageRef}
-                src={buildingImage(buildingIndex)}
-                alt=""
-                className="absolute inset-0 h-full w-full object-contain"
-                draggable={false}
-                decoding="async"
-              />
+              {/* Hidden on desktop, but the browser still downloads it: the desktop source makes it reuse the desktop building's file. */}
+              <picture>
+                <source media={DESKTOP_QUERY} srcSet={desktopBuildingSrcSet(buildingIndex)} />
+                <img
+                  ref={buildingImageRef}
+                  src={buildingImage(buildingIndex)}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-contain"
+                  draggable={false}
+                  decoding="async"
+                />
+              </picture>
               <img
                 src={asset(`/img/buildings/building${buildingIndex}_icon.png`)}
                 alt=""

@@ -3,7 +3,12 @@ import { Score } from '../data/tracks';
 import { outcomeDescriptions, resultStyleCopy, Outcome, Style } from '../data/scoring';
 import type { Phase } from './App';
 import { animationMs } from '../utils/animationTiming';
-import { asset } from '../utils/asset';
+import { outcomeImages } from '../utils/resultImages';
+import boldIcon from '../assets/result/bold.svg';
+import situationalIcon from '../assets/result/situational.svg';
+import deliberateIcon from '../assets/result/deliberate.svg';
+import disciplinedIcon from '../assets/result/disciplined.svg';
+import { useImageReady } from '../hooks/useImageReady';
 
 interface Props {
   phase: Phase;
@@ -21,18 +26,13 @@ function cascade(phase: Phase, index: number, total = 3): CSSProperties {
   return { animation: `cascade-out ${animationMs(333)} ease ${animationMs((total - 1 - index) * 100)} forwards` };
 }
 
-const outcomeImages: Record<Outcome, string> = {
-  'Built to Scale': asset('/img/result/result0.jpg'),
-  'Fast but Fragile': asset('/img/result/result1.jpg'),
-  'Trusted Operator': asset('/img/result/result2.jpg'),
-  'Stuck in Neutral': asset('/img/result/result3.jpg'),
-};
-
+// Imported rather than served from public/: Vite inlines files this small into the bundle, so the icon
+// needs no request of its own and is there for its entrance animation even on a slow connection.
 const styleIcons: Record<Style, string> = {
-  Bold: asset('/img/result/1.svg'),
-  Situational: asset('/img/result/2.svg'),
-  Deliberate: asset('/img/result/3.svg'),
-  Disciplined: asset('/img/result/4.svg'),
+  Bold: boldIcon,
+  Situational: situationalIcon,
+  Deliberate: deliberateIcon,
+  Disciplined: disciplinedIcon,
 };
 
 function StyleIcon({ style }: { style: Style }) {
@@ -40,18 +40,22 @@ function StyleIcon({ style }: { style: Style }) {
 }
 
 export function ResultScreen({ phase, outcome, style, onRestart }: Props) {
+  const [outcomeImageRef, outcomeImageReady] = useImageReady(outcome);
+
   return (
     <div className="min-h-[calc(100vh-var(--topbar-h))] flex items-center justify-center px-4 md:px-6 pt-0 pb-4 md:pb-10 lg:min-h-[920px]">
       <div className="w-full max-w-[87.50vw] md:max-w-[672px] flex flex-col gap-[16px] lg:max-w-[1680px] lg:gap-0">
 
         {/* Part 1 — Outcome box */}
         <div className="flex flex-col overflow-hidden rounded-[16px] lg:mr-[70px] lg:flex-row" style={{ boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.20)', ...cascade(phase, 0) }}>
-          {/* Left — image */}
-          <div className="flex-shrink-0 w-full lg:w-[43%]">
+          {/* Left — image: until it loads the space keeps the card colour, then the image fades in */}
+          <div className="flex-shrink-0 w-full lg:w-[43%]" style={{ background: '#703ff5' }}>
             <img
+              ref={outcomeImageRef}
               src={outcomeImages[outcome]}
               alt={outcome}
               className="h-[180px] w-full object-cover md:h-[260px] lg:h-full"
+              style={{ opacity: outcomeImageReady ? 1 : 0, transition: `opacity ${animationMs(500)} ease-out` }}
             />
           </div>
           {/* Right — text */}
